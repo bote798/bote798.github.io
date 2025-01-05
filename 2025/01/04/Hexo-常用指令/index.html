@@ -26,17 +26,17 @@
 <meta property="og:site_name" content="EVA">
 <meta property="og:description" content="HexoHexo是一个对新手很友好，并且可扩展能力强的静态网站生成框架 1.创建一个空文档（只有空文档才能部署Hexo项目）2.提前安装好	Node.js、GitHexo是基于Node.js的框架，部署时需要用到git进行部署（版本使用最新的即可） 3.在空文档下打开cmd，然后依次输入以下命令1234npm install -g hexo-cli		# 安装hexohexo init					#">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="c:\Users\LZH18\Desktop\7d08a991a08f4b118fd73024e97c3f76.png">
-<meta property="og:image" content="c:\Users\LZH18\Desktop\f275411a6a634320a4dc76c9022ca46a.png">
-<meta property="og:image" content="c:\Users\LZH18\Desktop\a209696f38564499bf70996908b665d1.png">
-<meta property="og:image" content="c:\Users\LZH18\Desktop\4bbbbfb0c0d5493888ad8f81374e9246.png">
-<meta property="og:image" content="c:\Users\LZH18\Desktop\188e4b4b5e6747ae8f8fdb037dd2e372.png">
+<meta property="og:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89.png">
+<meta property="og:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%882%EF%BC%89.png">
+<meta property="og:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%883%EF%BC%89.png">
+<meta property="og:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%884%EF%BC%89.png">
+<meta property="og:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%885%EF%BC%89.png">
 <meta property="article:published_time" content="2025-01-04T14:31:22.000Z">
-<meta property="article:modified_time" content="2025-01-04T14:53:43.932Z">
+<meta property="article:modified_time" content="2025-01-05T05:39:20.730Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="web">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="c:\Users\LZH18\Desktop\7d08a991a08f4b118fd73024e97c3f76.png">
+<meta name="twitter:image" content="http://example.com/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89.png">
   
   
   
@@ -289,25 +289,25 @@
 <p>此时，就已经完成了一个基础的hexo项目。</p>
 <h4 id="4、部署到-GitHub-Pages"><a href="#4、部署到-GitHub-Pages" class="headerlink" title="4、部署到 GitHub Pages"></a>4、部署到 GitHub Pages</h4><p>创建GitHub仓库<br>在GitHub新建仓库，仓库名为用户名.github.io,这里的用户名替换为自己GitHub的用户名</p>
 <p>比如我的用户名是bote798，新建的仓库名就是bote798.github.io</p>
-<p><img src="C:\Users\LZH18\Desktop\7d08a991a08f4b118fd73024e97c3f76.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%881%EF%BC%89.png" srcset="/img/loading.gif" lazyload></p>
 <p>创建时选择 public 将仓库公开，推荐勾选 Add a REAMD file 为仓库创建描述文件</p>
 <p><strong>配置SSH密钥连接GitHub</strong><br>		由于21年GitHub 取消了对密码身份验证的支持，所以需要使用 GitHub 的个人访问令牌来代替密码，但每次上传都需要输入一次用户名和 token 显然比较麻烦，安全性也较低，配置 ssh 后就可以更加方便的上传文件</p>
 <p>打开C盘，进入 Users 文件夹，接着打开电脑用户名文件夹，寻找是否有.ssh文件夹，如果有的话需删除掉，没有就继续进行下面的步骤</p>
-<p><img src="C:\Users\LZH18\Desktop\f275411a6a634320a4dc76c9022ca46a.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%882%EF%BC%89.png" srcset="/img/loading.gif" lazyload></p>
 <p>在该文件夹下右键打开Git Bash，输入以下命令生成ssh密钥，中途需按下三次回车键</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh-keygen -t rsa -C <span class="hljs-string">&quot;github绑定的邮箱&quot;</span><br></code></pre></td></tr></table></figure>
 
 <p>成功后在该目录下生成了.ssh文件夹，用记事本打开.ssh文件夹下的id_rsa.pub文件，复制里面的内容</p>
 <p>在GitHub设置中点击SSH and GPG keys选项，点击New SSH key</p>
-<p><img src="C:\Users\LZH18\Desktop\a209696f38564499bf70996908b665d1.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%883%EF%BC%89.png" srcset="/img/loading.gif" lazyload></p>
 <p>出现以下界面</p>
-<p><img src="C:\Users\LZH18\Desktop\4bbbbfb0c0d5493888ad8f81374e9246.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%884%EF%BC%89.png" srcset="/img/loading.gif" lazyload></p>
 <p>填写 Title项 为 hexo，将复制的内容粘贴到 Key 文本框中，点击 Add SSH key 后需要输入一次 GitHub 密码，即可添加成功</p>
 <p>再次打开Git Bush,输入以下命令验证是否能连接成功</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh -T git@github.com<br></code></pre></td></tr></table></figure>
 
 <p>如果询问是否继续连接，输入yes即可，如下图出现successfully即为连接成功</p>
-<p><img src="C:\Users\LZH18\Desktop\188e4b4b5e6747ae8f8fdb037dd2e372.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/img/Hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%EF%BC%885%EF%BC%89.png" srcset="/img/loading.gif" lazyload></p>
 <p>最后，配置用户名和邮箱</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git config --global user.name <span class="hljs-string">&quot;Github上的username&quot;</span><br>git config --global user.email <span class="hljs-string">&quot;GitHub绑定的邮箱&quot;</span><br></code></pre></td></tr></table></figure>
 
@@ -390,6 +390,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2025/01/05/multipaths%E9%85%8D%E7%BD%AE%E5%A4%9A%E8%B7%AF%E5%BE%84/" title="multipaths配置多路径">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">multipaths配置多路径</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
