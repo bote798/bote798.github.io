@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>snmp_服务端配置</title>
+    <link href="/2025/01/06/snmp-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE/"/>
+    <url>/2025/01/06/snmp-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE/</url>
+    
+    <content type="html"><![CDATA[<h2 id="1-snmp是什么？"><a href="#1-snmp是什么？" class="headerlink" title="1.snmp是什么？"></a>1.snmp是什么？</h2><p>​<strong>SNMP</strong>（Simple Network Management Protocol，简单网络管理协议）是一种广泛使用的网络管理协议，用于监控和管理网络设备，如服务器、路由器、交换机、打印机等。它允许网络管理员从中央位置监控网络性能，发现和解决网络问题。</p><h3 id="2-配置snmp服务端"><a href="#2-配置snmp服务端" class="headerlink" title="2.配置snmp服务端"></a>2.配置snmp服务端</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-comment">#  以下操作仅为示例操作，详细操作请按实际情况而定</span><br><br><span class="hljs-comment"># 1.编辑snmp配置文件</span><br>vim /etc/snmpd.conf<br><br><span class="hljs-comment">##############################</span><br><span class="hljs-comment"># community 中是对应 sec.name 的连接密码</span><br><span class="hljs-comment"># SNMP 中 连接密码被称为 community sec.name 类似于用户名</span><br>将 <br>   com2sec notConfigUser default public <br>修改为<br>   com2sec notConfigUser default monitor<br><br><span class="hljs-comment">##############################</span><br><span class="hljs-comment"># groupName &lt;---&gt; securityName</span><br><span class="hljs-comment"># 组名      &lt;---&gt; 上面设置的用户名</span><br><span class="hljs-comment"># 可指定每个group 使用SNMP协议版本</span><br><span class="hljs-comment">##############################</span><br><span class="hljs-comment"># group  &lt;---&gt; read write notif</span><br><span class="hljs-comment"># 上面的group &lt;--&gt; 读/写/通知(SNMP trap)使用的上面的view设置</span><br>将第62行的<br>   access  notConfigGroup <span class="hljs-string">&quot;&quot;</span> any noauth exact systemview none none<br>修改为<br>   access  notConfigGroup <span class="hljs-string">&quot;&quot;</span> any noauth exact all none none<br><span class="hljs-comment">##############################</span><br><span class="hljs-comment"># view SNMP 中OID设定</span><br><span class="hljs-comment"># name = 此视图名</span><br><span class="hljs-comment"># include/exclude 包括/排除之后的OID地址</span><br><span class="hljs-comment"># subtree=OID地址(.0 表示所有的OID)</span><br>将第85行的<br><span class="hljs-comment">#view all    included  .1       80</span><br>去掉注释 <br><br>2.重启SNMP服务<br>systemctl restart snmppd.service<br><br>3.添加为开机自启<br>systemctl <span class="hljs-built_in">enable</span> snmpd.service<br><br>4.验证snmp是否可以获取到值<br>snmpwalk -v 2c -c monitor [设备IP]<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>防火墙端口管理</title>
     <link href="/2025/01/06/%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E7%AE%A1%E7%90%86/"/>
     <url>/2025/01/06/%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E7%AE%A1%E7%90%86/</url>
