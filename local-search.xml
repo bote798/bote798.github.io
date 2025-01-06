@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>配置NFS(服务端与客户端)</title>
+    <link href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/"/>
+    <url>/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/</url>
+    
+    <content type="html"><![CDATA[<h2 id="1-服务端"><a href="#1-服务端" class="headerlink" title="1.服务端"></a>1.服务端</h2><p>安装nfs包</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">yum install nfs-utils -y<br></code></pre></td></tr></table></figure><p>启动nfs服务，并设置为开机自启动</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl start nfs-server.service<br>systemctl <span class="hljs-built_in">enable</span> nfs-server.service<br></code></pre></td></tr></table></figure><p>选择磁盘作为nfs共享分区</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">lsblk 查看硬盘名<br>fdisk /硬盘名<br><br>第一个为 n<br><br>第二个为 p，然后全部默认后<br><br>第三个为w<br><br>退出<br></code></pre></td></tr></table></figure><p>对硬盘分区格式化</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">mkfs.ext4 /dev/分区名<br></code></pre></td></tr></table></figure><p>创建一个挂载nfs目录并挂载</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> /nfs<br>mount /dev/分区名<br></code></pre></td></tr></table></figure><p>查看是否挂载成功</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">lsblk<br></code></pre></td></tr></table></figure><p>配置共享目录</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim /etc/exports<br></code></pre></td></tr></table></figure><p>输入以下内容</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">/nfs 客户端ip/24(掩码号)(rw,no_root_squash)(有很多参数，可以百度看看)<br></code></pre></td></tr></table></figure><p>重启nfs服务</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl restart nfs-server.service<br></code></pre></td></tr></table></figure><h2 id="2-客户端"><a href="#2-客户端" class="headerlink" title="2.客户端"></a>2.客户端</h2><p><strong>此脚本可直接复制执行</strong></p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br><span class="hljs-comment"># 设置nfs服务并设置为开机自启动</span><br>systemctl start nfs-server.service<br>systemctl <span class="hljs-built_in">enable</span> nfs.server.service<br><br><span class="hljs-comment"># 创建一个挂载目录</span><br><span class="hljs-built_in">mkdir</span> /nfs01<br>mount -t nfs 服务端ip:/nfs /nfs01<br><span class="hljs-comment"># 查看是否挂载完成</span><br>ds -Th<br><span class="hljs-comment"># 如果不通则关闭防火墙</span><br>systemctl stop firewalld<br>firewall-cmd --state<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>multipaths配置多路径</title>
     <link href="/2025/01/05/multipaths%E9%85%8D%E7%BD%AE%E5%A4%9A%E8%B7%AF%E5%BE%84/"/>
     <url>/2025/01/05/multipaths%E9%85%8D%E7%BD%AE%E5%A4%9A%E8%B7%AF%E5%BE%84/</url>
