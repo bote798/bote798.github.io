@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>防火墙端口管理</title>
+    <link href="/2025/01/06/%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E7%AE%A1%E7%90%86/"/>
+    <url>/2025/01/06/%E9%98%B2%E7%81%AB%E5%A2%99%E7%AB%AF%E5%8F%A3%E7%AE%A1%E7%90%86/</url>
+    
+    <content type="html"><![CDATA[<p>​防火墙端口管理在操作中经常会用到，但是在实际布置生产环境或者一些带单向网闸一系列设备时，我们需要关闭的端口就会很多，这时再去一个个关闭，很显然就非常麻烦了，所以运维经常使用自动化脚本去进行管理。</p><p>以下脚本可直接使用（不能运行时，请修改对应的系统指令）</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br><br><span class="hljs-comment"># 获取用户输入的要关闭的端口列表</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;指定区间格式为： 1000:2000 ===&gt; 将丢弃1000到2000所有端口的tcp数据包&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;请输入要关闭的端口列表，用空格分隔：&quot;</span><br><span class="hljs-built_in">read</span> -a ports_to_close<br><br><span class="hljs-comment"># 获取用户输入的要允许的端口列表</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;指定区间格式为： 1000:2000 ===&gt; 将允许1000到2000所有端口的tcp数据包&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;请输入要允许的端口列表，用空格分隔：&quot;</span><br><span class="hljs-built_in">read</span> -a ports_to_allow<br><br><span class="hljs-comment"># 备份iptables配置</span><br>iptables-save &gt; /path/to/iptables_backup.txt<br><br><span class="hljs-comment"># 加载iptables规则</span><br>iptables -F<br>iptables -X<br>iptables -Z<br><br><span class="hljs-comment"># 允许流量通过的端口</span><br><span class="hljs-keyword">for</span> port <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;ports_to_allow[@]&#125;</span>&quot;</span>; <span class="hljs-keyword">do</span><br>    iptables -A INPUT -p tcp --dport <span class="hljs-variable">$port</span> -j ACCEPT<br>    iptables -A OUTPUT -p tcp --sport <span class="hljs-variable">$port</span> -j ACCEPT<br><span class="hljs-keyword">done</span><br><br><span class="hljs-comment"># 关闭的端口</span><br><span class="hljs-keyword">for</span> port <span class="hljs-keyword">in</span> <span class="hljs-string">&quot;<span class="hljs-variable">$&#123;ports_to_close[@]&#125;</span>&quot;</span>; <span class="hljs-keyword">do</span><br>    iptables -A INPUT -p tcp --dport <span class="hljs-variable">$port</span> -j DROP<br>    iptables -A OUTPUT -p tcp --sport <span class="hljs-variable">$port</span> -j DROP<br><span class="hljs-keyword">done</span><br><br><span class="hljs-comment"># 保存iptables规则（redhat系统）</span><br>service iptables save<br><span class="hljs-comment"># 或 iptables-save &gt; /etc/sysconfig/iptables</span><br><br><span class="hljs-comment"># （debian系统）</span><br><span class="hljs-comment"># sudo sh -c &quot;iptables-save &gt; /etc/iptables/rules.v4&quot;</span><br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;防火墙端口已更新。&quot;</span><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>禁止root账户远程连接</title>
     <link href="/2025/01/06/%E7%A6%81%E6%AD%A2root%E8%B4%A6%E6%88%B7%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/"/>
     <url>/2025/01/06/%E7%A6%81%E6%AD%A2root%E8%B4%A6%E6%88%B7%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/</url>
