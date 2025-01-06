@@ -4,6 +4,25 @@
   
   
   <entry>
+    <title>禁止root账户远程连接</title>
+    <link href="/2025/01/06/%E7%A6%81%E6%AD%A2root%E8%B4%A6%E6%88%B7%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/"/>
+    <url>/2025/01/06/%E7%A6%81%E6%AD%A2root%E8%B4%A6%E6%88%B7%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/</url>
+    
+    <content type="html"><![CDATA[<p> 在我们实际运维中，经常出于安全考虑禁止root账户远程连接，以下bash脚本可直接使用。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br><span class="hljs-comment"># 备份文件</span><br><span class="hljs-built_in">cp</span> /etc/ssh/sshd_config /etc/ssh/sshd_config.bak<br><br><span class="hljs-comment"># 修改SSH配置文件</span><br>sed -i <span class="hljs-string">&#x27;s/PermitRootLogin yes/</span><br><span class="hljs-string">PermitRootLogin no/g&#x27;</span> /etc/ssh/sshd_config<br><br><span class="hljs-comment"># 重启SSH服务</span><br>systemctl restart sshd<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Root 账户远程连接已禁止&quot;</span><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>配置NFS(服务端与客户端)</title>
     <link href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/"/>
     <url>/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/</url>

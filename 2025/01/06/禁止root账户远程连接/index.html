@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
-    <link rel="canonical" href="https://bote798.top/2025/01/04/安装vim插件-coc-nvim代码补全/"/>
+    <link rel="canonical" href="https://bote798.top/2025/01/06/禁止root账户远程连接/"/>
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
@@ -21,22 +21,22 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="安装vim插件（coc.nvim代码补全） 安装node.js和npm(版本最好高一点) 最好再找个安装教程看一下环境变量配置 1234sudo apt install nodejssudo apt install npm# 设置一下环境变量curl -sL install-node.now.sh&#x2F;lts | bash    安装vim－plug（插件管理器） 12345curl -fLo ~&#x2F;.">
+    <meta name="description" content="在我们实际运维中，经常出于安全考虑禁止root账户远程连接，以下bash脚本可直接使用。 12345678910111213#!&#x2F;bin&#x2F;bash# 备份文件cp &#x2F;etc&#x2F;ssh&#x2F;sshd_config &#x2F;etc&#x2F;ssh&#x2F;sshd_config.bak# 修改SSH配置文件sed -i &#x27;s&#x2F;PermitRootLogin yes&#x2F;PermitRootLogin no&#x2F;g&#x27;">
 <meta property="og:type" content="article">
-<meta property="og:title" content="安装vim插件(coc.nvim代码补全)">
-<meta property="og:url" content="https://bote798.top/2025/01/04/%E5%AE%89%E8%A3%85vim%E6%8F%92%E4%BB%B6-coc-nvim%E4%BB%A3%E7%A0%81%E8%A1%A5%E5%85%A8/index.html">
+<meta property="og:title" content="禁止root账户远程连接">
+<meta property="og:url" content="https://bote798.top/2025/01/06/%E7%A6%81%E6%AD%A2root%E8%B4%A6%E6%88%B7%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/index.html">
 <meta property="og:site_name" content="EVA">
-<meta property="og:description" content="安装vim插件（coc.nvim代码补全） 安装node.js和npm(版本最好高一点) 最好再找个安装教程看一下环境变量配置 1234sudo apt install nodejssudo apt install npm# 设置一下环境变量curl -sL install-node.now.sh&#x2F;lts | bash    安装vim－plug（插件管理器） 12345curl -fLo ~&#x2F;.">
+<meta property="og:description" content="在我们实际运维中，经常出于安全考虑禁止root账户远程连接，以下bash脚本可直接使用。 12345678910111213#!&#x2F;bin&#x2F;bash# 备份文件cp &#x2F;etc&#x2F;ssh&#x2F;sshd_config &#x2F;etc&#x2F;ssh&#x2F;sshd_config.bak# 修改SSH配置文件sed -i &#x27;s&#x2F;PermitRootLogin yes&#x2F;PermitRootLogin no&#x2F;g&#x27;">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-01-04T12:28:35.000Z">
-<meta property="article:modified_time" content="2025-01-04T12:29:30.783Z">
+<meta property="article:published_time" content="2025-01-06T06:30:31.000Z">
+<meta property="article:modified_time" content="2025-01-06T06:33:38.285Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>安装vim插件(coc.nvim代码补全) - EVA</title>
+  <title>禁止root账户远程连接 - EVA</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="安装vim插件(coc.nvim代码补全)"></span>
+            <span id="subtitle" data-typed-text="禁止root账户远程连接"></span>
           
         </div>
 
@@ -213,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-01-04 20:28" pubdate>
-          2025年1月4日 晚上
+        <time datetime="2025-01-06 14:30" pubdate>
+          2025年1月6日 下午
         </time>
       </span>
     
@@ -225,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          556 字
+          84 字
         
       </span>
     
@@ -236,7 +236,7 @@
         
         
         
-          5 分钟
+          1 分钟
         
       </span>
     
@@ -273,53 +273,14 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">安装vim插件(coc.nvim代码补全)</h1>
+            <h1 id="seo-header">禁止root账户远程连接</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="安装vim插件（coc-nvim代码补全）"><a href="#安装vim插件（coc-nvim代码补全）" class="headerlink" title="安装vim插件（coc.nvim代码补全）"></a>安装vim插件（coc.nvim代码补全）</h2><ol>
-<li><p>安装node.js和npm(版本最好高一点)</p>
-<p>最好再找个安装教程看一下环境变量配置</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install nodejs</span><br><span class="line"><span class="built_in">sudo</span> apt install npm</span><br><span class="line"><span class="comment"># 设置一下环境变量</span></span><br><span class="line">curl -sL install-node.now.sh/lts | bash</span><br></pre></td></tr></table></figure>
+                <p> 在我们实际运维中，经常出于安全考虑禁止root账户远程连接，以下bash脚本可直接使用。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><br><span class="hljs-comment"># 备份文件</span><br><span class="hljs-built_in">cp</span> /etc/ssh/sshd_config /etc/ssh/sshd_config.bak<br><br><span class="hljs-comment"># 修改SSH配置文件</span><br>sed -i <span class="hljs-string">&#x27;s/PermitRootLogin yes/</span><br><span class="hljs-string">PermitRootLogin no/g&#x27;</span> /etc/ssh/sshd_config<br><br><span class="hljs-comment"># 重启SSH服务</span><br>systemctl restart sshd<br><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Root 账户远程连接已禁止&quot;</span><br></code></pre></td></tr></table></figure>
 
-
-</li>
-<li><p>安装vim－plug（插件管理器）</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -fLo ~/.vim/autoload/plug.vim --create-dirs \</span><br><span class="line">    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim</span><br><span class="line"></span><br><span class="line"><span class="built_in">mkdir</span> -p  ~/.vim/autoload/</span><br><span class="line"><span class="built_in">cp</span> plug.vim  ~/.vim/autoload/plug.vim</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>.vimrc文件有的系统有，有的没有，没有就自己建一个。这是系统的vim配置文件，home中的是用户的vim配置文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.vimrc</span><br></pre></td></tr></table></figure>
-
-
-
-<p>将这些复制到vimrc中</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">call plug#begin()</span><br><span class="line"><span class="string">&quot; The default plugin directory will be as follows:</span></span><br><span class="line"><span class="string">&quot;</span>   - Vim (Linux/macOS): <span class="string">&#x27;~/.vim/plugged&#x27;</span></span><br><span class="line"><span class="string">&quot;   - Vim (Windows): &#x27;~/vimfiles/plugged&#x27;</span></span><br><span class="line"><span class="string">&quot;</span>   - Neovim (Linux/macOS/Windows): stdpath(<span class="string">&#x27;data&#x27;</span>) . <span class="string">&#x27;/plugged&#x27;</span></span><br><span class="line"><span class="string">&quot; You can specify a custom plugin directory by passing it as the argument</span></span><br><span class="line"><span class="string">&quot;</span>   - e.g. `call plug#begin(<span class="string">&#x27;~/.vim/plugged&#x27;</span>)`</span><br><span class="line"><span class="string">&quot;   - Avoid using standard Vim directory names like &#x27;plugin&#x27;</span></span><br><span class="line"><span class="string">&quot;</span> Make sure you use single quotes</span><br><span class="line"> </span><br><span class="line"><span class="string">&quot; Shorthand notation; fetches https://github.com/junegunn/vim-easy-align</span></span><br><span class="line"><span class="string">Plug &#x27;junegunn/vim-easy-align&#x27;</span></span><br><span class="line"><span class="string">&quot;</span> Any valid git URL is allowed</span><br><span class="line">Plug <span class="string">&#x27;https://github.com/junegunn/vim-github-dashboard.git&#x27;</span></span><br><span class="line"> </span><br><span class="line"><span class="string">&quot; Multiple Plug commands can be written in a single line using | separators</span></span><br><span class="line"><span class="string">Plug &#x27;SirVer/ultisnips&#x27; | Plug &#x27;honza/vim-snippets&#x27;</span></span><br><span class="line"><span class="string">&quot;</span> On-demand loading</span><br><span class="line">Plug <span class="string">&#x27;scrooloose/nerdtree&#x27;</span>, &#123; <span class="string">&#x27;on&#x27;</span>:  <span class="string">&#x27;NERDTreeToggle&#x27;</span> &#125;</span><br><span class="line">Plug <span class="string">&#x27;tpope/vim-fireplace&#x27;</span>, &#123; <span class="string">&#x27;for&#x27;</span>: <span class="string">&#x27;clojure&#x27;</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="string">&quot; Using a non-default branch</span></span><br><span class="line"><span class="string">Plug &#x27;rdnetto/YCM-Generator&#x27;, &#123; &#x27;branch&#x27;: &#x27;stable&#x27; &#125;</span></span><br><span class="line"><span class="string">&quot;</span> Using a tagged release; wildcard allowed (requires git 1.9.2 or above)</span><br><span class="line">Plug <span class="string">&#x27;fatih/vim-go&#x27;</span>, &#123; <span class="string">&#x27;tag&#x27;</span>: <span class="string">&#x27;*&#x27;</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="string">&quot; Plugin options</span></span><br><span class="line"><span class="string">Plug &#x27;nsf/gocode&#x27;, &#123; &#x27;tag&#x27;: &#x27;v.20150303&#x27;, &#x27;rtp&#x27;: &#x27;vim&#x27; &#125;</span></span><br><span class="line"><span class="string">&quot;</span> Plugin outside ~/.vim/plugged with post-update hook</span><br><span class="line">Plug <span class="string">&#x27;junegunn/fzf&#x27;</span>, &#123; <span class="string">&#x27;dir&#x27;</span>: <span class="string">&#x27;~/.fzf&#x27;</span>, <span class="string">&#x27;do&#x27;</span>: <span class="string">&#x27;./install --all&#x27;</span> &#125;</span><br><span class="line"> </span><br><span class="line"><span class="string">&quot; Unmanaged plugin (manually installed and updated)</span></span><br><span class="line"><span class="string">Plug &#x27;~/my-prototype-plugin&#x27;</span></span><br><span class="line"><span class="string">&quot;</span> Initialize plugin system</span><br><span class="line"><span class="string">&quot; - Automatically executes `filetype plugin indent on` and `syntax enable`.</span></span><br><span class="line"><span class="string">call plug#end()</span></span><br><span class="line"><span class="string">&quot;</span> You can revert the settings after the call like so:</span><br><span class="line"><span class="string">&quot;   filetype indent off   &quot;</span> Disable file-type-specific indentation</span><br><span class="line"><span class="string">&quot;   syntax off            &quot;</span> Disable syntax highlighting</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>每一次在.vimrc文件中加入插件配置后，保存退出执行插件安装命令 PlugInstall</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">下载插件                             :PlugInstall</span><br><span class="line"></span><br><span class="line">下载新的插件                在call plug#begin()和call plug#end()之间添加一下新的插件</span><br><span class="line"></span><br><span class="line">安装特定插件                          :PlugInstall gist-vim</span><br><span class="line"></span><br><span class="line">卸载插件                             :PlugClean</span><br><span class="line"></span><br><span class="line">更新vim-plug                        :PlugUpgrade</span><br><span class="line"></span><br><span class="line">更新所有已经安装的插件         		:PlugUpdate</span><br><span class="line"></span><br><span class="line">查看插件状态                         :PlugStatus</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>加入coc.nvim配置，执行安装命令，在nvim中执行检查命令检查状态</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 在Plug#begin() 和 Plug#end()中间加这个</span></span><br><span class="line">Plug <span class="string">&#x27;neoclide/coc.nvim&#x27;</span>, &#123;<span class="string">&#x27;branch&#x27;</span>: <span class="string">&#x27;release&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
-
-
-</li>
-<li><p>配置python补全servers</p>
-<p>相关网址: <a target="_blank" rel="noopener" href="https://github.com/neoclide/coc.nvim/wiki/Language-servers#python">Language servers · neoclide&#x2F;coc.nvim Wiki · GitHub</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pip3 install <span class="string">&#x27;python-language-server[all]&#x27;</span></span><br><span class="line">vim ~/.vimrc</span><br><span class="line">:CocInstall coc-pyright</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>记得安装一下cmake吧，之后安装总用</strong></p>
-<p>退回主目录，输入：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt install cmake</span><br><span class="line"><span class="built_in">sudo</span> apt-get install cmake-qt-gui</span><br></pre></td></tr></table></figure></li>
-</ol>
 
                 
               </div>
@@ -344,8 +305,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>安装vim插件(coc.nvim代码补全)</div>
-      <div>https://bote798.top/2025/01/04/安装vim插件-coc-nvim代码补全/</div>
+      <div>禁止root账户远程连接</div>
+      <div>https://bote798.top/2025/01/06/禁止root账户远程连接/</div>
     </div>
     <div class="license-meta">
       
@@ -357,7 +318,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年1月4日</div>
+          <div>2025年1月6日</div>
         </div>
       
       
@@ -389,15 +350,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/01/04/Hexo-%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4/" title="Hexo_常用指令">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hexo_常用指令</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/" title="配置NFS(服务端与客户端)">
+                        <span class="hidden-mobile">配置NFS(服务端与客户端)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
