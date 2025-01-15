@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
-    <link rel="canonical" href="https://bote798.top/2025/01/14/docker系列-三-————练手：部署nginx/"/>
+    <link rel="canonical" href="https://bote798.top/2025/01/15/docker系列-四-————容器数据卷/"/>
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
@@ -21,16 +21,16 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="首先正常流程是：先搜索镜像再下载镜像 12docker search 镜像名docker pull 镜像名  1.下载镜像但是我们有自己的镜像仓库，所以我们拉取自己的即可镜像仓库 &#x3D;&#x3D;》nginx &#x3D;&#x3D;》操作指南按照指南里面的步骤操作中的前两步将镜像拉去下来（注意，需要什么镜像先使用github的actions（第一期的方法）添加到自己的仓库里） 命令是一样">
+    <meta name="description" content="1、容器数据卷介绍。​		docker容器在产生数据的时候，如果不通过docker commit生成新的镜像，使得数据作为镜像的一部分保存下来，那么当容器删除之后，数据自然而然的也会消失。为了能保存数据，容器中引用了数据卷的概念。 2、作用以及特点。卷就是目录或者文件，存在一个或者多个容器之中，由docker挂载到容器，但是不属于联合文件系统，因此能够绕过Union File System提供一些">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker系列(三)————练手：部署nginx">
-<meta property="og:url" content="https://bote798.top/2025/01/14/docker%E7%B3%BB%E5%88%97-%E4%B8%89-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E7%BB%83%E6%89%8B%EF%BC%9A%E9%83%A8%E7%BD%B2nginx/index.html">
+<meta property="og:title" content="docker系列(四)————容器数据卷">
+<meta property="og:url" content="https://bote798.top/2025/01/15/docker%E7%B3%BB%E5%88%97-%E5%9B%9B-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7/index.html">
 <meta property="og:site_name" content="EVA">
-<meta property="og:description" content="首先正常流程是：先搜索镜像再下载镜像 12docker search 镜像名docker pull 镜像名  1.下载镜像但是我们有自己的镜像仓库，所以我们拉取自己的即可镜像仓库 &#x3D;&#x3D;》nginx &#x3D;&#x3D;》操作指南按照指南里面的步骤操作中的前两步将镜像拉去下来（注意，需要什么镜像先使用github的actions（第一期的方法）添加到自己的仓库里） 命令是一样">
+<meta property="og:description" content="1、容器数据卷介绍。​		docker容器在产生数据的时候，如果不通过docker commit生成新的镜像，使得数据作为镜像的一部分保存下来，那么当容器删除之后，数据自然而然的也会消失。为了能保存数据，容器中引用了数据卷的概念。 2、作用以及特点。卷就是目录或者文件，存在一个或者多个容器之中，由docker挂载到容器，但是不属于联合文件系统，因此能够绕过Union File System提供一些">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://bote798.top/img/docker.jpeg">
-<meta property="article:published_time" content="2025-01-14T11:55:29.000Z">
-<meta property="article:modified_time" content="2025-01-14T12:27:54.890Z">
+<meta property="article:published_time" content="2025-01-15T15:08:08.000Z">
+<meta property="article:modified_time" content="2025-01-15T16:48:13.389Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="docker">
@@ -39,7 +39,7 @@
   
   
   
-  <title>docker系列(三)————练手：部署nginx - EVA</title>
+  <title>docker系列(四)————容器数据卷 - EVA</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -205,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker系列(三)————练手：部署nginx"></span>
+            <span id="subtitle" data-typed-text="docker系列(四)————容器数据卷"></span>
           
         </div>
 
@@ -216,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-01-14 19:55" pubdate>
-          2025年1月14日 晚上
+        <time datetime="2025-01-15 23:08" pubdate>
+          2025年1月15日 晚上
         </time>
       </span>
     
@@ -228,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          810 字
+          1.2k 字
         
       </span>
     
@@ -239,7 +239,7 @@
         
         
         
-          7 分钟
+          10 分钟
         
       </span>
     
@@ -276,37 +276,58 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">docker系列(三)————练手：部署nginx</h1>
+            <h1 id="seo-header">docker系列(四)————容器数据卷</h1>
             
             
               <div class="markdown-body">
                 
-                <h2 id="首先正常流程是："><a href="#首先正常流程是：" class="headerlink" title="首先正常流程是："></a>首先正常流程是：</h2><p>先搜索镜像再下载镜像</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker search 镜像名<br>docker pull 镜像名<br></code></pre></td></tr></table></figure>
+                <h4 id="1、容器数据卷介绍。"><a href="#1、容器数据卷介绍。" class="headerlink" title="1、容器数据卷介绍。"></a>1、容器数据卷介绍。</h4><p>​		docker容器在产生数据的时候，如果不通过docker commit生成新的镜像，使得数据作为镜像的一部分保存下来，那么当容器删除之后，数据自然而然的也会消失。为了能保存数据，容器中引用了数据卷的概念。</p>
+<h4 id="2、作用以及特点。"><a href="#2、作用以及特点。" class="headerlink" title="2、作用以及特点。"></a>2、作用以及特点。</h4><p>卷就是目录或者文件，存在一个或者多个容器之中，由docker挂载到容器，但是不属于联合文件系统，因此能够绕过Union File System提供一些用于持续存储或者共享数据的特性。</p>
+<p>卷的设计目的就是数据的持久化，完全独立于容器的生存周期，因此docker不会再容器删除时删除其挂载的数据卷。</p>
+<p><strong>它还存在以下几种特点：</strong></p>
+<p>​			1、数据卷可在容器之间共享或者重用数据。<br>​			2、卷中的更改可以直接生效。<br>​			3、数据卷中的更改不会包含在镜像的更新中。<br>​			4、数据卷的生命周期一直持续到没有容器使用它为止。</p>
+<p>​		<strong>再说简单点：方便我们将数据导出来，在删除原本的容器后将其中可用的数据与新的容器对接。</strong></p>
+<p>​		<strong>比如  容器a的数据目录挂载在宿主机home下，两处数据同步，a删除后，直接将b新建容器的数据目录再挂载在宿主机home下，同步数据，便能少去数据复刻步骤</strong></p>
+<h4 id="3、使用数据卷。"><a href="#3、使用数据卷。" class="headerlink" title="3、使用数据卷。"></a>3、使用数据卷。</h4><p>（1）：直接使用 -v 命令挂载</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -it -v 主机目录:容器目录 /bin/bash<br></code></pre></td></tr></table></figure>
 
-<h4 id="1-下载镜像"><a href="#1-下载镜像" class="headerlink" title="1.下载镜像"></a>1.下载镜像</h4><p>但是我们有自己的镜像仓库，所以我们拉取自己的即可<br>镜像仓库 &#x3D;&#x3D;》nginx &#x3D;&#x3D;》操作指南<br>按照指南里面的步骤操作中的前两步将镜像拉去下来<br>（注意，需要什么镜像先使用github的actions（第一期的方法）添加到自己的仓库里）</p>
-<p>命令是一样的，只不过我们需要先登录阿里云Docker Registry，然后docker pull +自己的镜像名即可</p>
-<h4 id="2-查看镜像"><a href="#2-查看镜像" class="headerlink" title="2.查看镜像"></a>2.查看镜像</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker images<br></code></pre></td></tr></table></figure>
+<p>创建一个centos容器，并且打开其终端界面，然后将容器centos系统的&#x2F;home目录挂载到宿主机的&#x2F;home&#x2F;test01上</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -it -v /home/test01:/home centos /bin/bash<br></code></pre></td></tr></table></figure>
 
-<h4 id="3-启动容器"><a href="#3-启动容器" class="headerlink" title="3.启动容器"></a>3.启动容器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d --name 容器名 -p 80:80 镜像名<br></code></pre></td></tr></table></figure>
+<p>另外打开一个终端查看宿主机home路径下是否出现test01目录，这个test01目录，就是我们刚启动容器centos的home目录，并且，此时这两个目录是同步的状态，我们在home目录中写入任何新的文件，都会同步到宿主机&#x2F;home&#x2F;test01下，注意是双向同步的。</p>
+<p>（2）：测试同步</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在宿主机或容器的终端创建一个测试文本</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;tong bu&quot;</span> &gt; home/test.txt<br><span class="hljs-comment"># 查看一下另一端的目录下是否有文本文件</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="4-查看容器"><a href="#4-查看容器" class="headerlink" title="4.查看容器"></a>4.查看容器</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps<br></code></pre></td></tr></table></figure>
+<p>当然，我们可以使用更简单的方法查看是否挂载成功</p>
+<p>首先记住这个命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker inspect 容器ID<br><span class="hljs-comment"># 该命令会返回一个包含所选容器的所有相关数据的 JSON 对象，包括配置、网络设置、挂载点等。</span><br></code></pre></td></tr></table></figure>
 
-<p><img src="/img/docker_3.png" srcset="/img/loading.gif" lazyload></p>
-<h4 id="5-测试访问"><a href="#5-测试访问" class="headerlink" title="5.测试访问"></a>5.测试访问</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl 127.0.0.1:80<br>然后就会出现一幅网页代码:<br>&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br>&lt;<span class="hljs-built_in">head</span>&gt;<br>&lt;title&gt;Welcome to nginx!&lt;/title&gt;<br>&lt;style&gt;<br>html &#123; color-scheme: light dark; &#125;<br>body &#123; width: 35em; margin: 0 auto;<br>font-family: Tahoma, Verdana, Arial, sans-serif; &#125;<br>&lt;/style&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;h1&gt;Welcome to nginx!&lt;/h1&gt;<br>&lt;p&gt;If you see this page, the nginx web server is successfully installed and<br>working. Further configuration is required.&lt;/p&gt;<br><br>&lt;p&gt;For online documentation and support please refer to<br>&lt;a href=<span class="hljs-string">&quot;http://nginx.org/&quot;</span>&gt;nginx.org&lt;/a&gt;.&lt;br/&gt;<br>Commercial support is available at<br>&lt;a href=<span class="hljs-string">&quot;http://nginx.com/&quot;</span>&gt;nginx.com&lt;/a&gt;.&lt;/p&gt;<br><br>&lt;p&gt;&lt;em&gt;Thank you <span class="hljs-keyword">for</span> using nginx.&lt;/em&gt;&lt;/p&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br><br></code></pre></td></tr></table></figure>
+<p>我们找到Mounts，它代表着挂载，type是类型（绑定），source是源（&#x2F;home&#x2F;test01），也就是把什么挂载到哪里。destination（home）就是挂载的目标路径了。</p>
+<p><img src="/img/docker_4_%E4%B8%BB%E6%9C%BA%E7%9B%AE%E5%BD%95%E6%8C%82%E8%BD%BD.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里bote只演示修改容器内文件同步到宿主机挂载文件。反过来也是一样的，这里就不再赘述了。之后如果要修改容器内挂载文件，只需在我们本地挂载点修改就好了，它会自动同步到docker。</p>
+<h5 id="更改方法将在下一篇文章补充给大家。"><a href="#更改方法将在下一篇文章补充给大家。" class="headerlink" title="#####  更改方法将在下一篇文章补充给大家。"></a>#####  更改方法将在下一篇文章补充给大家。</h5><h4 id="4、具名挂载与匿名挂载。"><a href="#4、具名挂载与匿名挂载。" class="headerlink" title="4、具名挂载与匿名挂载。"></a>4、具名挂载与匿名挂载。</h4><p>首先记住这个</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker volume <span class="hljs-built_in">ls</span> <span class="hljs-comment">#查看所有卷的情况。</span><br></code></pre></td></tr></table></figure>
 
-<h4 id="6-进入容器修改界面"><a href="#6-进入容器修改界面" class="headerlink" title="6.进入容器修改界面"></a>6.进入容器修改界面</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker <span class="hljs-built_in">exec</span> -it 容器ID /bin/bash<br><br>whereis nginx 查找文件位置<br>nginx: /usr/sbin/nginx /usr/lib/nginx /etc/nginx /usr/share/nginx<br><br>这些为其文件，配置与物理机上的大差不差<br></code></pre></td></tr></table></figure>
+<h5 id="（1）匿名挂载"><a href="#（1）匿名挂载" class="headerlink" title="（1）匿名挂载"></a>（1）匿名挂载</h5><p>我们首先使用匿名挂载的命令启动一个容器。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d -P --name=nginx02 -v /etc/nginx nginx<br></code></pre></td></tr></table></figure>
 
-<h4 id="7-外网访问"><a href="#7-外网访问" class="headerlink" title="7.外网访问"></a>7.外网访问</h4><p>如果你用的是虚拟机，直接浏览器中：虚拟机的ip:80即可</p>
-<p>我偷懒直接用80映射了，实际工作中80端口要禁止，其他nginx配置看后续其他文章即可</p>
-<h4 id="8-注意事项与参数介绍"><a href="#8-注意事项与参数介绍" class="headerlink" title="8.注意事项与参数介绍"></a>8.注意事项与参数介绍</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run [可选参数] image 命令 <span class="hljs-comment">#启动容器（无镜像会先下载镜像）</span><br><span class="hljs-comment">#参数说明</span><br>--name = <span class="hljs-string">&quot;Name&quot;</span>   容器名字<br>-c   后面跟待完成的命令<br>-d   以后台方式运行并且返回ID，启动守护进程式容器<br>-i   使用交互方式运行容器，通常与t同时使用<br>-t   为容器重新分配一个伪输入终端。也即启动交互式容器<br>-p   指定容器端口    -p 容器端口:物理机端口  映射端口<br>-P   随机指定端口<br>-v   给容器挂载存储卷<br></code></pre></td></tr></table></figure>
+<p>然后使用docker volume ls 查看，那一长串就是挂载到宿主机的名字。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># less 在信息输出过多的时候使用</span><br>docker inspect （容器ID） | less<br></code></pre></td></tr></table></figure>
 
-<p>大家注意-i 、 -t 、 -d这几个参数。</p>
-<p>it：给我一个可以操作的前台终端。</p>
-<p>id：以后台守护进程的方式运行容器。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">1：交互方式创建容器，退出后容器关闭。<br>docker run -it 镜像名称:标签 /bin/bash<br><br>2：守护进程方式创建容器。<br>docker run -<span class="hljs-built_in">id</span> 镜像名称:标签<br>通过这种方式创建的容器，我们不会直接进入到容器界面，而是在后台运行了容器，<br>如果我们需要进去，则还需要一个命令。<br>docker <span class="hljs-built_in">exec</span> -it  镜像名称:标签  /bin/bash<br>通过这种方式运行的容器，就不会自动退出了。<br></code></pre></td></tr></table></figure>
+<p>然后输入&#x2F;Mounts, “ &#x2F; ”后是你想查到的内容<br>大家仔细看一下，是不是&#x2F;etc&#x2F;nginx就是那一长串，挂载到了我&#x2F;var&#x2F;lib…路径下，复制一下路径去看一下即可。</p>
+<p><img src="/img/docker_4_%E5%8C%BF%E5%90%8D%E6%8C%82%E8%BD%BD.png" srcset="/img/loading.gif" lazyload></p>
+<h5 id="（2）具名挂载"><a href="#（2）具名挂载" class="headerlink" title="（2）具名挂载"></a>（2）具名挂载</h5><p>具名挂载就很简单了，与匿名挂载类似</p>
+<p>同样，我们使用具名挂载的方式启动一个容器。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d -P --name=nginxt04 -v jumingguazai:/etc/nginx nginx<br>docker volume <span class="hljs-built_in">ls</span> 查看卷<br>docker inspect ID | less 找到挂载点。<br></code></pre></td></tr></table></figure>
 
-<h4 id="9-最后"><a href="#9-最后" class="headerlink" title="9.最后"></a>9.最后</h4><p>我的文章主要是实际操作，理论极少，因为我希望大家先会操作，只要会操作，会配置，能工作就可以，理论方面会在做的多了以后很快就懂了，而且更加融会贯通。</p>
+<p><img src="/img/docker_4_%E5%85%B7%E5%90%8D%E6%8C%82%E8%BD%BD.png" srcset="/img/loading.gif" lazyload></p>
+<p>这时我们发现它的Name：jumingguazai，这个也就是我们设置的挂载名</p>
+<p>这就是具名挂载。</p>
+<h5 id="（3）如何确定是具名挂载还是匿名挂载"><a href="#（3）如何确定是具名挂载还是匿名挂载" class="headerlink" title="（3）如何确定是具名挂载还是匿名挂载"></a>（3）如何确定是具名挂载还是匿名挂载</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">-v  容器内路径               <span class="hljs-comment"># 匿名挂在</span><br>-v  卷名：容器内路径          <span class="hljs-comment"># 具名挂在</span><br>-v  /宿主机路径：容器内路径    <span class="hljs-comment"># 指定路径挂载</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 通过 -v 容器内路径  :ro   rw   可以改变读写权限</span><br><span class="hljs-comment"># 注意修改需要移除 docker rm 容器名</span><br>ro  <span class="hljs-built_in">readonly</span>   <span class="hljs-comment">#只读</span><br>rw  readwrite  <span class="hljs-comment">#可写可读</span><br>例： docker run -d --name=nginx01 -v test01:/etc/nginx:ro nginx<br>   	docker run -d --name=nginx01 -v test01:/etc/nginx:rw nginx<br></code></pre></td></tr></table></figure>
+
+<h3 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h3><p>好的，大家下期 Dockerfile 再见。</p>
 
                 
               </div>
@@ -333,8 +354,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker系列(三)————练手：部署nginx</div>
-      <div>https://bote798.top/2025/01/14/docker系列-三-————练手：部署nginx/</div>
+      <div>docker系列(四)————容器数据卷</div>
+      <div>https://bote798.top/2025/01/15/docker系列-四-————容器数据卷/</div>
     </div>
     <div class="license-meta">
       
@@ -346,7 +367,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年1月14日</div>
+          <div>2025年1月15日</div>
         </div>
       
       
@@ -378,9 +399,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/01/15/docker%E7%B3%BB%E5%88%97-%E5%9B%9B-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%AE%B9%E5%99%A8%E6%95%B0%E6%8D%AE%E5%8D%B7/" title="docker系列(四)————容器数据卷">
+                      <a href="/2025/01/16/docker%E7%B3%BB%E5%88%97-%E5%9B%9B-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%8D%B7%E6%8C%82%E8%BD%BD%E8%B7%AF%E5%BE%84%E6%9B%B4%E6%94%B9%E6%96%B9%E6%B3%95/" title="docker系列(四)————数据卷挂载路径更改方法">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">docker系列(四)————容器数据卷</span>
+                        <span class="hidden-mobile">docker系列(四)————数据卷挂载路径更改方法</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -388,8 +409,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/01/10/docker%E7%B3%BB%E5%88%97-%E4%BA%8C-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85docker%E4%B8%8E%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" title="docker系列(二)————安装docker与基础命令">
-                        <span class="hidden-mobile">docker系列(二)————安装docker与基础命令</span>
+                      <a href="/2025/01/14/docker%E7%B3%BB%E5%88%97-%E4%B8%89-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E7%BB%83%E6%89%8B%EF%BC%9A%E9%83%A8%E7%BD%B2nginx/" title="docker系列(三)————练手：部署nginx">
+                        <span class="hidden-mobile">docker系列(三)————练手：部署nginx</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
