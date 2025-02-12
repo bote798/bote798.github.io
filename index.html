@@ -229,6 +229,82 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2025/02/12/docker%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/" target="_self">
+          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="docker部署脚本">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/02/12/docker%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/" target="_self">
+          docker部署脚本
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2025/02/12/docker%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/" target="_self">
+        <div>
+          执行时显示解释头有问题，则是windows与linux之间的换行符问题 用vim打开执行命令： 1set fileformat=unix  以下为安装docker的脚本 123456789101112131415161718192021222324#!/bin/bashecho &quot;开始安装docker&quot;# 1.安装docker依赖环境yum install -y yum-uti
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-02-12 15:16" pubdate>
+              2025-02-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/script/" class="category-chain-item">script</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">#linux</a>
+            
+              <a href="/tags/script/">#script</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2025/01/16/docker%E7%B3%BB%E5%88%97-%E5%9B%9B-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%8D%B7%E6%8C%82%E8%BD%BD%E8%B7%AF%E5%BE%84%E6%9B%B4%E6%94%B9%E6%96%B9%E6%B3%95/" target="_self">
           <img src="/img/docker.jpeg" srcset="/img/loading.gif" lazyload alt="docker系列(四)————数据卷挂载路径更改方法">
         </a>
@@ -842,73 +918,6 @@
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
             <time datetime="2025-01-06 14:30" pubdate>
-              2025-01-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/linux/" class="category-chain-item">linux</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux/">#linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="配置NFS(服务端与客户端)">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/" target="_self">
-          配置NFS(服务端与客户端)
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2025/01/06/%E9%85%8D%E7%BD%AENFS-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E5%AE%A2%E6%88%B7%E7%AB%AF/" target="_self">
-        <div>
-          1.服务端安装nfs包 1yum install nfs-utils -y  启动nfs服务，并设置为开机自启动 12systemctl start nfs-server.servicesystemctl enable nfs-server.service  选择磁盘作为nfs共享分区 12345678910lsblk 查看硬盘名fdisk /硬盘名第一个为 n第二个为 p，然后全部默认后第三个为
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-01-06 14:09" pubdate>
               2025-01-06
             </time>
           </div>
