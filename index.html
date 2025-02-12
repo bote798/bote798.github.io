@@ -245,7 +245,7 @@
       
       <a class="index-excerpt " href="/2025/02/12/docker%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/" target="_self">
         <div>
-          执行时显示解释头有问题，则是windows与linux之间的换行符问题 用vim打开执行命令： 1set fileformat=unix  以下为安装docker的脚本 123456789101112131415161718192021222324#!/bin/bashecho &quot;开始安装docker&quot;# 1.安装docker依赖环境yum install -y yum-uti
+          执行时显示解释头有问题，则是windows与linux之间的换行符问题 1234方法1:用vim打开执行命令：set fileformat=unix方法2:用工具dos2unixdos2unix ./your_script.sh  以下为安装docker的脚本 123456789101112131415161718192021222324#!/bin/bashecho &quot;开始安装dock
         </div>
       </a>
 
