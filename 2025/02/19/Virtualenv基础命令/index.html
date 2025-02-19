@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
-    <link rel="canonical" href="https://bote798.top/2025/02/12/docker部署脚本/"/>
+    <link rel="canonical" href="https://bote798.top/2025/02/19/Virtualenv基础命令/"/>
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
@@ -21,25 +21,25 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="执行时显示解释头有问题，则是windows与linux之间的换行符问题 1234方法1:用vim打开执行命令：set fileformat&#x3D;unix方法2:用工具dos2unixdos2unix .&#x2F;your_script.sh  以下为安装docker的脚本 123456789101112131415161718192021222324#!&#x2F;bin&#x2F;bashecho &quot;开始安装dock">
+    <meta name="description" content="1.安装 virtualenv 如果你还没有安装 virtualenv，可以使用 pip 进行安装：   1pip install virtualenv  2.创建虚拟环境在指定目录下创建一个新的虚拟环境：1virtualenv myenv  或者你可以指定 Python 版本： 1virtualenv -p &#x2F;usr&#x2F;bin&#x2F;python3 myenv  3.激活虚拟环境激活虚拟环境后，你的 s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="docker部署脚本">
-<meta property="og:url" content="https://bote798.top/2025/02/12/docker%E9%83%A8%E7%BD%B2%E8%84%9A%E6%9C%AC/index.html">
+<meta property="og:title" content="Virtualenv基础命令">
+<meta property="og:url" content="https://bote798.top/2025/02/19/Virtualenv%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/index.html">
 <meta property="og:site_name" content="EVA">
-<meta property="og:description" content="执行时显示解释头有问题，则是windows与linux之间的换行符问题 1234方法1:用vim打开执行命令：set fileformat&#x3D;unix方法2:用工具dos2unixdos2unix .&#x2F;your_script.sh  以下为安装docker的脚本 123456789101112131415161718192021222324#!&#x2F;bin&#x2F;bashecho &quot;开始安装dock">
+<meta property="og:description" content="1.安装 virtualenv 如果你还没有安装 virtualenv，可以使用 pip 进行安装：   1pip install virtualenv  2.创建虚拟环境在指定目录下创建一个新的虚拟环境：1virtualenv myenv  或者你可以指定 Python 版本： 1virtualenv -p &#x2F;usr&#x2F;bin&#x2F;python3 myenv  3.激活虚拟环境激活虚拟环境后，你的 s">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://bote798.top/img/linux.jpg">
-<meta property="article:published_time" content="2025-02-12T07:16:02.000Z">
-<meta property="article:modified_time" content="2025-02-12T07:28:35.079Z">
+<meta property="og:image" content="https://bote798.top/img/python.png">
+<meta property="article:published_time" content="2025-02-19T13:06:36.000Z">
+<meta property="article:modified_time" content="2025-02-19T13:14:59.284Z">
 <meta property="article:author" content="bote798">
-<meta property="article:tag" content="linux">
-<meta property="article:tag" content="script">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="开发">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://bote798.top/img/linux.jpg">
+<meta name="twitter:image" content="https://bote798.top/img/python.png">
   
   
   
-  <title>docker部署脚本 - EVA</title>
+  <title>Virtualenv基础命令 - EVA</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -205,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="docker部署脚本"></span>
+            <span id="subtitle" data-typed-text="Virtualenv基础命令"></span>
           
         </div>
 
@@ -216,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-02-12 15:16" pubdate>
-          2025年2月12日 下午
+        <time datetime="2025-02-19 21:06" pubdate>
+          2025年2月19日 晚上
         </time>
       </span>
     
@@ -228,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          207 字
+          324 字
         
       </span>
     
@@ -239,7 +239,7 @@
         
         
         
-          2 分钟
+          3 分钟
         
       </span>
     
@@ -276,17 +276,44 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">docker部署脚本</h1>
+            <h1 id="seo-header">Virtualenv基础命令</h1>
             
             
               <div class="markdown-body">
                 
-                <p>执行时显示解释头有问题，则是windows与linux之间的换行符问题</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">方法1:用vim打开执行命令：<br><span class="hljs-built_in">set</span> fileformat=unix<br>方法2:用工具dos2unix<br>dos2unix ./your_script.sh<br></code></pre></td></tr></table></figure>
+                <h4 id="1-安装-virtualenv-如果你还没有安装-virtualenv，可以使用-pip-进行安装："><a href="#1-安装-virtualenv-如果你还没有安装-virtualenv，可以使用-pip-进行安装：" class="headerlink" title="1.安装 virtualenv 如果你还没有安装 virtualenv，可以使用 pip 进行安装："></a>1.安装 virtualenv 如果你还没有安装 <code>virtualenv</code>，可以使用 <code>pip</code> 进行安装：</h4>   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install virtualenv<br></code></pre></td></tr></table></figure>
 
-<p>以下为安装docker的脚本</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;开始安装docker&quot;</span><br><span class="hljs-comment"># 1.安装docker依赖环境</span><br>yum install -y yum-utils device-mapper-persistent-data lvm2<br><span class="hljs-comment"># 2.配置国内docker-ce（社区版）的yum源（采用阿里云）</span><br>yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo<br><span class="hljs-comment"># 3.安装docker CE</span><br>yum -y install docker-ce docker-ce-cli containerd.io<br><span class="hljs-comment"># 4.开启网络转发功能</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;net.ipv4.ip_forward = 1&quot;</span> | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> -a /etc/sysctl.conf<br><span class="hljs-comment"># 执行生效</span><br>sysctl -p<br><span class="hljs-comment"># 加载驱动</span><br>modprobe ip_tables<br><span class="hljs-comment"># 查看状态</span><br><span class="hljs-built_in">cat</span> /proc/sys/net/ipv4/ip_forward<br><span class="hljs-comment"># 查看一下iptable规则，关闭防火墙后会自动插入新规则</span><br>iptables -nL <br><span class="hljs-comment"># 关闭防火墙</span><br>systemctl stop firewalld &amp;&amp; systemctl <span class="hljs-built_in">disable</span> firewalld  <br><span class="hljs-comment"># 重启docker</span><br>systemctl restart docker<br><span class="hljs-comment"># 启动服务 并 设置开机自启</span><br>systemctl start docker &amp;&amp; systemctl <span class="hljs-built_in">enable</span> docker<br></code></pre></td></tr></table></figure>
+<h4 id="2-创建虚拟环境在指定目录下创建一个新的虚拟环境："><a href="#2-创建虚拟环境在指定目录下创建一个新的虚拟环境：" class="headerlink" title="2.创建虚拟环境在指定目录下创建一个新的虚拟环境："></a>2.创建虚拟环境在指定目录下创建一个新的虚拟环境：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">virtualenv myenv<br></code></pre></td></tr></table></figure>
 
+<p>或者你可以指定 Python 版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">virtualenv -p /usr/bin/python3 myenv<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-激活虚拟环境激活虚拟环境后，你的-shell-提示符会显示当前活动的环境名称。"><a href="#3-激活虚拟环境激活虚拟环境后，你的-shell-提示符会显示当前活动的环境名称。" class="headerlink" title="3.激活虚拟环境激活虚拟环境后，你的 shell 提示符会显示当前活动的环境名称。"></a>3.激活虚拟环境激活虚拟环境后，你的 shell 提示符会显示当前活动的环境名称。</h4><ul>
+<li><p>在 Windows 上**(进入到你创建的虚拟环境文件中的Script目录，直接执行activate)**：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">.\myenv\Scripts\activate<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>在 macOS&#x2F;Linux 上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> myenv/bin/activate<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="4-停用虚拟环境当你想退出虚拟环境时，可以使用以下命令："><a href="#4-停用虚拟环境当你想退出虚拟环境时，可以使用以下命令：" class="headerlink" title="4.停用虚拟环境当你想退出虚拟环境时，可以使用以下命令："></a>4.停用虚拟环境当你想退出虚拟环境时，可以使用以下命令：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">deactivate<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-删除虚拟环境删除虚拟环境只需删除其所在的文件夹即可："><a href="#5-删除虚拟环境删除虚拟环境只需删除其所在的文件夹即可：" class="headerlink" title="5.删除虚拟环境删除虚拟环境只需删除其所在的文件夹即可："></a>5.删除虚拟环境删除虚拟环境只需删除其所在的文件夹即可：</h4><p>linux:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">rm</span> -rf myenv<br></code></pre></td></tr></table></figure>
+
+<p>或者在 Windows 上：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">rmdir</span> /s /q myenv<br></code></pre></td></tr></table></figure>
+
+<h4 id="6-列出已安装的包在激活的虚拟环境中，你可以使用-pip-列出已安装的包："><a href="#6-列出已安装的包在激活的虚拟环境中，你可以使用-pip-列出已安装的包：" class="headerlink" title="6.列出已安装的包在激活的虚拟环境中，你可以使用 pip 列出已安装的包："></a>6.列出已安装的包在激活的虚拟环境中，你可以使用 <code>pip</code> 列出已安装的包：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip list<br></code></pre></td></tr></table></figure>
+
+<h4 id="7-安装包使用-pip-安装包到当前激活的虚拟环境中："><a href="#7-安装包使用-pip-安装包到当前激活的虚拟环境中：" class="headerlink" title="7.安装包使用 pip 安装包到当前激活的虚拟环境中："></a>7.安装包使用 <code>pip</code> 安装包到当前激活的虚拟环境中：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install package_name<br></code></pre></td></tr></table></figure>
+
+<h4 id="8-更新包更新已安装的包："><a href="#8-更新包更新已安装的包：" class="headerlink" title="8.更新包更新已安装的包："></a>8.更新包更新已安装的包：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install --upgrade package_name<br></code></pre></td></tr></table></figure>
+
+<h4 id="9-卸载包卸载不需要的包："><a href="#9-卸载包卸载不需要的包：" class="headerlink" title="9.卸载包卸载不需要的包："></a>9.卸载包卸载不需要的包：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip uninstall package_name<br></code></pre></td></tr></table></figure>
+
+<h4 id="10-导出环境配置文件将当前环境中的所有包及其版本信息导出到一个-requirements-txt-文件中："><a href="#10-导出环境配置文件将当前环境中的所有包及其版本信息导出到一个-requirements-txt-文件中：" class="headerlink" title="10.导出环境配置文件将当前环境中的所有包及其版本信息导出到一个 requirements.txt 文件中："></a>10.导出环境配置文件将当前环境中的所有包及其版本信息导出到一个 <code>requirements.txt</code> 文件中：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip freeze &gt; requirements.txt<br></code></pre></td></tr></table></figure>
+
+<h4 id="11-从配置文件安装包根据-requirements-txt-文件安装所有需要的包："><a href="#11-从配置文件安装包根据-requirements-txt-文件安装所有需要的包：" class="headerlink" title="11.从配置文件安装包根据 requirements.txt 文件安装所有需要的包："></a>11.从配置文件安装包根据 <code>requirements.txt</code> 文件安装所有需要的包：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">pip install -r requirements.txt<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -305,12 +332,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  <a href="/categories/python/" class="category-chain-item">python</a>
   
   
     <span>></span>
     
-  <a href="/categories/linux/script/" class="category-chain-item">script</a>
+  <a href="/categories/python/Virtualenv/" class="category-chain-item">Virtualenv</a>
   
   
 
@@ -327,9 +354,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/linux/" class="print-no-link">#linux</a>
+        <a href="/tags/python/" class="print-no-link">#python</a>
       
-        <a href="/tags/script/" class="print-no-link">#script</a>
+        <a href="/tags/%E5%BC%80%E5%8F%91/" class="print-no-link">#开发</a>
       
     </div>
   
@@ -341,8 +368,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>docker部署脚本</div>
-      <div>https://bote798.top/2025/02/12/docker部署脚本/</div>
+      <div>Virtualenv基础命令</div>
+      <div>https://bote798.top/2025/02/19/Virtualenv基础命令/</div>
     </div>
     <div class="license-meta">
       
@@ -354,7 +381,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年2月12日</div>
+          <div>2025年2月19日</div>
         </div>
       
       
@@ -386,18 +413,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/02/19/Anaconda%E4%B8%8Evirtualenv/" title="Anaconda与virtualenv">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Anaconda与virtualenv</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/01/16/docker%E7%B3%BB%E5%88%97-%E5%9B%9B-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E6%95%B0%E6%8D%AE%E5%8D%B7%E6%8C%82%E8%BD%BD%E8%B7%AF%E5%BE%84%E6%9B%B4%E6%94%B9%E6%96%B9%E6%B3%95/" title="docker系列(四)————数据卷挂载路径更改方法">
-                        <span class="hidden-mobile">docker系列(四)————数据卷挂载路径更改方法</span>
+                      <a href="/2025/02/19/Anaconda%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" title="Anaconda基础命令">
+                        <span class="hidden-mobile">Anaconda基础命令</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
