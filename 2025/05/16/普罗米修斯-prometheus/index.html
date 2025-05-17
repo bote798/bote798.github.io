@@ -30,7 +30,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://bote798.top/img/prometheus/0.jpg">
 <meta property="article:published_time" content="2025-05-16T09:30:16.000Z">
-<meta property="article:modified_time" content="2025-05-16T09:39:04.434Z">
+<meta property="article:modified_time" content="2025-05-17T16:50:20.933Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="prometheus">
@@ -228,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.1k 字
+          3k 字
         
       </span>
     
@@ -239,7 +239,7 @@
         
         
         
-          18 分钟
+          26 分钟
         
       </span>
     
@@ -433,7 +433,69 @@
 <p>③回到web管理界面–》点Status –》点Targets –》可以看到监控<br>mariadb了</p>
 <p><img src="/img/prometheus/5.png" srcset="/img/loading.gif" lazyload alt="5"></p>
 <p><img src="/img/prometheus/6.png" srcset="/img/loading.gif" lazyload alt="6"></p>
-<h2 id="四、Grafana可视化图形工具"><a href="#四、Grafana可视化图形工具" class="headerlink" title="四、Grafana可视化图形工具"></a>四、Grafana可视化图形工具</h2>
+<h2 id="四、Grafana可视化图形工具"><a href="#四、Grafana可视化图形工具" class="headerlink" title="四、Grafana可视化图形工具"></a>四、Grafana可视化图形工具</h2><h3 id="1、什么是Grafana"><a href="#1、什么是Grafana" class="headerlink" title="1、什么是Grafana"></a>1、什么是Grafana</h3><p>Grafana是一个开源的度量分析和可视化工具，可以通过将采集的数据分析，查询，然后进行可视化的展示,并能实现报警。</p>
+<p><img src="/img/prometheus/7.png" srcset="/img/loading.gif" lazyload alt="7"></p>
+<p>网址:<a target="_blank" rel="noopener" href="https://grafana.com/">https://grafana.com/</a></p>
+<h3 id="2、使用Grafana连接Prometheus"><a href="#2、使用Grafana连接Prometheus" class="headerlink" title="2、使用Grafana连接Prometheus"></a>2、使用Grafana连接Prometheus</h3><p>① 在grafana服务器上安装grafana<br>下载地址:<a target="_blank" rel="noopener" href="https://grafana.com/grafana/download">https://grafana.com/grafana/download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 我这里选择的rpm包，下载后直接rpm-ivh安装就OK</span><br>[root@grafana~]#rpm-ivh /root/Desktop/grafana-5.3.4-1.x86_64.rpm<br><span class="hljs-comment"># 启动服务</span><br>[root@grafana~]#systemctl start grafana-server<br>[root@grafana~]#systemctl <span class="hljs-built_in">enable</span> grafana-server<br><span class="hljs-comment"># 确认端口(3000)</span><br>[root@grafana~]#lsof -i :3000<br></code></pre></td></tr></table></figure>
+
+<p>②通过浏览器访问http:&#x2F;&#x2F; grafana服务器IP:3000就到了登录界面,使用默认的admin用户,admin密码就可以登陆了</p>
+<p><img src="/img/prometheus/8.png" srcset="/img/loading.gif" lazyload alt="8"></p>
+<p>③下面我们把prometheus服务器收集的数据做为一个数据源添加到grafana,让grafana可以得到prometheus的数据。</p>
+<p><img src="/img/prometheus/9.png" srcset="/img/loading.gif" lazyload alt="9"></p>
+<p><img src="/img/prometheus/10.png" srcset="/img/loading.gif" lazyload alt="10"></p>
+<p>④然后为添加好的数据源做图形显示</p>
+<p><img src="/img/prometheus/11.png" srcset="/img/loading.gif" lazyload alt="11"></p>
+<p><img src="/img/prometheus/12.png" srcset="/img/loading.gif" lazyload alt="12"></p>
+<p><img src="/img/prometheus/13.png" srcset="/img/loading.gif" lazyload alt="13"></p>
+<p><img src="/img/prometheus/14.png" srcset="/img/loading.gif" lazyload alt="14"></p>
+<p>⑤保存</p>
+<p><img src="/img/prometheus/15.png" srcset="/img/loading.gif" lazyload alt="15"></p>
+<p>⑥最后在dashboard可以查看到</p>
+<p><img src="/img/prometheus/16.png" srcset="/img/loading.gif" lazyload alt="16"></p>
+<p>⑦匹配条件显示</p>
+<p><img src="/img/prometheus/17.png" srcset="/img/loading.gif" lazyload alt="17"></p>
+<h3 id="3、Grafana图形显示MySQL监控数据"><a href="#3、Grafana图形显示MySQL监控数据" class="headerlink" title="3、Grafana图形显示MySQL监控数据"></a>3、Grafana图形显示MySQL监控数据</h3><p>① 在grafana上修改配置文件,并下载安装mysql监控的dashboard（包含<br>相关json文件，这些json文件可以看作是开发人员开发的一个监控模板)<br>参考网址:<a target="_blank" rel="noopener" href="https://github.com/percona/grafana-dashboards">https://github.com/percona/grafana-dashboards</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在grafana配置文件里最后加上以下三行</span><br>[root@grafana~]#vim /etc/grafana/grafana.ini<br><br>[dashboards.json]<br>enabled=<span class="hljs-literal">true</span><br>path=/var/lib/grafana/dashboards<br><br>[root@grafana~]#<span class="hljs-built_in">cd</span> /var/lib/grafana/<br>[root@grafanagrafana]#git <span class="hljs-built_in">clone</span> https://github.com/percona/grafana-dashboards.git<br>[root@grafanagrafana]#<span class="hljs-built_in">cp</span> -r grafana-dashboards/dashboards/ /var/lib/grafana/<br><br><span class="hljs-comment"># 重启grafana服务</span><br>[root@grafanagrafana]#systemctl restart grafana-server<br></code></pre></td></tr></table></figure>
+
+<p>②在grafana图形界面导入相关json文件</p>
+<p><img src="/img/prometheus/18.png" srcset="/img/loading.gif" lazyload alt="18"></p>
+<p>③点import导入后,报prometheus数据源找不到,因为这些json文件里默认要找的就是叫Prometheus的数据源，但我们前面建立的数据源却是叫<br>prometheus_data(坑啊)<br>那么请自行把原来的prometheus_data源改名为Prometheus即可(注意:<br>第一个字母P是大写)<br>然后再回去刷新,就有数据了(如下图所示)</p>
+<p><img src="/img/prometheus/19.png" srcset="/img/loading.gif" lazyload alt="19"></p>
+<p>④过段时间再看，就会有数据了(如下图所示)</p>
+<p><img src="/img/prometheus/20.png" srcset="/img/loading.gif" lazyload alt="20"></p>
+<h3 id="4、Grafana-onealert报警"><a href="#4、Grafana-onealert报警" class="headerlink" title="4、Grafana+onealert报警"></a>4、Grafana+onealert报警</h3><p>prometheus报警需要使用alertmanager这个组件，而且报警规则需要手<br>动编写(对运维来说不友好)。所以我这里选用grafana+onealert报警。注意:实现报警前把所有机器时间同步再检查一遍。</p>
+<p>①先在onealert里添加grafana应用(申请onealert账号在zabbix已经讲过)</p>
+<p><img src="/img/prometheus/21.png" srcset="/img/loading.gif" lazyload alt="21"></p>
+<p>②配置通知策略</p>
+<p><img src="/img/prometheus/22.png" srcset="/img/loading.gif" lazyload alt="22"></p>
+<p>③在grafana增加通知通道</p>
+<p><img src="/img/prometheus/23.png" srcset="/img/loading.gif" lazyload alt="23"></p>
+<p><img src="/img/prometheus/25.png" srcset="/img/loading.gif" lazyload alt="24"></p>
+<p>④现在可以去设置一个报警来测试了(这里以我们前面加的cpu负载监控来做测试)</p>
+<p><img src="/img/prometheus/26.png" srcset="/img/loading.gif" lazyload alt="25"></p>
+<p><img src="/img/prometheus/27.png" srcset="/img/loading.gif" lazyload alt="26"></p>
+<p>⑤保存后就可以测试了<br>如果agent1上的cpu负载还没有到0.5，你可以试试0.1,或者运行一些程序把agent1负载调大。最终能测试报警成功。</p>
+<p><img src="/img/prometheus/28.png" srcset="/img/loading.gif" lazyload alt="27"></p>
+<p>最终的邮件报警效果：</p>
+<p><img src="/img/prometheus/29.png" srcset="/img/loading.gif" lazyload alt="28"></p>
+<p>测试mysql链接数报警:</p>
+<p><img src="/img/prometheus/30.png" srcset="/img/loading.gif" lazyload alt="29"></p>
+<p><img src="/img/prometheus/31.png" srcset="/img/loading.gif" lazyload alt="30"></p>
+<p><img src="/img/prometheus/32.png" srcset="/img/loading.gif" lazyload alt="31"></p>
+<h3 id="5、总结报警不成功的可能原因"><a href="#5、总结报警不成功的可能原因" class="headerlink" title="5、总结报警不成功的可能原因"></a>5、总结报警不成功的可能原因</h3><ol>
+<li>各服务器之间时间不同步，这样时序数据会出问题，也会造成报警出问题</li>
+<li>必须写通知内容，留空内容是不会发报警的</li>
+<li>修改完报警配置后，记得要点右上角的保存</li>
+<li>保存配置后，需要由OK状态变为alerting状态才会报警(也就是说，你配置保存后，就已经是alerting状态是不会报警的)</li>
+<li>grafana与onealert通信有问题</li>
+</ol>
+<h3 id="6、课外扩展"><a href="#6、课外扩展" class="headerlink" title="6、课外扩展"></a>6、课外扩展</h3><p>prometheus目前还在发展中，很多相应的监控都需要开发。但在官网的<br>dashboard库中,也有一些官方和社区开发人员开发的dashboard可以直接拿来用。</p>
+<p><img src="/img/prometheus/33.png" srcset="/img/loading.gif" lazyload alt="32"></p>
+<p>示例：</p>
+<p><img src="/img/prometheus/34.png" srcset="/img/loading.gif" lazyload alt="33"></p>
+<p><em><strong>不一定版本兼容,如果不兼容，可多试几个不同版本</strong></em></p>
+
                 
               </div>
             
