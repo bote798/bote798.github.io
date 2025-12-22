@@ -1,0 +1,900 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Prometheus(普罗米修斯)监控系统学习目标 能够安装 Prometheus 服务器   能够通过安装 node_exporter 监控远程 Linux   能够通过安装 mysqld_exporter 监控远程 MySQL 数据库   能够安装 Grafana   能够在 Grafana 添加 Prometheus 数据源   能够在 Grafana 添加监控 CPU 负载的图形   能够">
+<meta property="og:type" content="article">
+<meta property="og:title" content="普罗米修斯(prometheus)">
+<meta property="og:url" content="http://bote798.github.io/2025/05/16/%E6%99%AE%E7%BD%97%E7%B1%B3%E4%BF%AE%E6%96%AF-prometheus/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="Prometheus(普罗米修斯)监控系统学习目标 能够安装 Prometheus 服务器   能够通过安装 node_exporter 监控远程 Linux   能够通过安装 mysqld_exporter 监控远程 MySQL 数据库   能够安装 Grafana   能够在 Grafana 添加 Prometheus 数据源   能够在 Grafana 添加监控 CPU 负载的图形   能够">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/prometheus/0.jpg">
+<meta property="article:published_time" content="2025-05-16T09:30:16.000Z">
+<meta property="article:modified_time" content="2025-05-19T13:35:26.928Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="prometheus">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/prometheus/0.jpg">
+  
+  
+  
+  <title>普罗米修斯(prometheus) - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="普罗米修斯(prometheus)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-16 17:30" pubdate>
+          2025年5月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">普罗米修斯(prometheus)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Prometheus-普罗米修斯-监控系统"><a href="#Prometheus-普罗米修斯-监控系统" class="headerlink" title="Prometheus(普罗米修斯)监控系统"></a>Prometheus(普罗米修斯)监控系统</h1><h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ul>
+<li>能够安装 Prometheus 服务器  </li>
+<li>能够通过安装 <code>node_exporter</code> 监控远程 Linux  </li>
+<li>能够通过安装 <code>mysqld_exporter</code> 监控远程 MySQL 数据库  </li>
+<li>能够安装 Grafana  </li>
+<li>能够在 Grafana 添加 Prometheus 数据源  </li>
+<li>能够在 Grafana 添加监控 CPU 负载的图形  </li>
+<li>能够在 Grafana 图形显示 MySQL 监控数据  </li>
+<li>能够通过 Grafana + OneAlert 实现报警</li>
+</ul>
+<hr>
+<h2 id="任务背景"><a href="#任务背景" class="headerlink" title="任务背景"></a>任务背景</h2><p>某某某公司是一家电商网站，由于业务快速发展，需对现有机器进行业务监控，责成运维部门实施此项目。</p>
+<hr>
+<h2 id="任务要求"><a href="#任务要求" class="headerlink" title="任务要求"></a>任务要求</h2><ol>
+<li><strong>部署监控服务器</strong>，实现 7x24 实时监控。  </li>
+<li><strong>设计监控系统</strong>，针对业务及研发部门设计监控项和触发器，提出合理意见。  </li>
+<li><strong>问题预警机制</strong>，对可能出现的问题及时告警并形成严格处理机制。  </li>
+<li><strong>告警分级系统</strong>：  <ul>
+<li>一级报警：电话通知  </li>
+<li>二级报警：微信通知  </li>
+<li>三级报警：邮件通知</li>
+</ul>
+</li>
+<li><strong>异地集中监控</strong>：处理服务器异地监控问题，K8S 内部使用 Prometheus。</li>
+</ol>
+<hr>
+<h2 id="任务分析"><a href="#任务分析" class="headerlink" title="任务分析"></a>任务分析</h2><p>为什么要监控？<br>答:实时收集数据，通过报警及时发现问题，及时处理。数据为优化也可以<br>提供依据。<br>监控四要素：</p>
+<p>​	监控对象: 			[主机状态 服务 资源 页面，url]</p>
+<p>​	用什么监控 :		[zabbix-server zabbix-agent]&#x3D;&gt;普罗米修斯监控</p>
+<p>​	什么时间监控 :	[7x24 5x8]</p>
+<p>​	报警给谁:			 [管理员]</p>
+<h2 id="项目选型"><a href="#项目选型" class="headerlink" title="项目选型"></a>项目选型</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>特点</th>
+<th>官网地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MRTG</strong>(Multi Router Traﬃc Grapher)</td>
+<td>通过snmp协议得到设备的流量信息，并以包含PNG格式的图形的HTML文档方式显示给用户。</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Cacti</strong>(仙人掌)</td>
+<td>用php语言实现的一个软件，它的主要功能是用snmp服务获取数据，然后用rrdtool储存和更新数据。</td>
+<td><a target="_blank" rel="noopener" href="https://www.cacti.net/">https://www.cacti.net/</a></td>
+</tr>
+<tr>
+<td><strong>ntop</strong></td>
+<td></td>
+<td>:<a target="_blank" rel="noopener" href="https://www.ntop.org/">https://www.ntop.org/</a></td>
+</tr>
+<tr>
+<td><strong>Nagios</strong></td>
+<td>跨平台、插件多、报警功能强大</td>
+<td><a target="_blank" rel="noopener" href="https://www.nagios.org/">https://www.nagios.org/</a></td>
+</tr>
+<tr>
+<td><strong>centreon</strong></td>
+<td>底层使用的就是nagios。是一个nagios整合版软件。</td>
+<td><a target="_blank" rel="noopener" href="https://www.centreon.com/">https://www.centreon.com/</a></td>
+</tr>
+<tr>
+<td><strong>ganglia</strong></td>
+<td>设计用于测量数以千计的节点,资源消耗非常小。</td>
+<td><a target="_blank" rel="noopener" href="http://ganglia.info/">http://ganglia.info/</a></td>
+</tr>
+<tr>
+<td><strong>open-falcon</strong></td>
+<td>小米发布的运维监控软件，高效率，高可用。时间较短，用户基数小。</td>
+<td><a target="_blank" rel="noopener" href="http://open-falcon.org/">http://open-falcon.org/</a></td>
+</tr>
+<tr>
+<td><strong>Prometheus</strong></td>
+<td>基于时间序列的容器监控解决方案，适合 Docker 和 Kubernetes</td>
+<td><a target="_blank" rel="noopener" href="https://prometheus.io/">https://prometheus.io/</a></td>
+</tr>
+<tr>
+<td><strong>Zabbix</strong></td>
+<td>跨平台、多条件告警、API 接口丰富</td>
+<td><a target="_blank" rel="noopener" href="https://www.zabbix.com/">https://www.zabbix.com/</a></td>
+</tr>
+</tbody></table>
+<p><em>综合分析：Prometheus比较适合公司的监控需求</em></p>
+<hr>
+<h2 id="一、Prometheus-概述"><a href="#一、Prometheus-概述" class="headerlink" title="一、Prometheus 概述"></a>一、Prometheus 概述</h2><p>Prometheus(由go语言(golang)开发)是一套开源的监控&amp;报警&amp;时间序列数据库的组合。适合监控docker容器。因为kubernetes(俗称k8s)的流行带动了prometheus的发展。<br><a target="_blank" rel="noopener" href="https://prometheus.io/docs/introduction/overview/">https://prometheus.io/docs/introduction/overview/</a></p>
+<h2 id="二、时间序列数据"><a href="#二、时间序列数据" class="headerlink" title="二、时间序列数据"></a>二、时间序列数据</h2><h3 id="1、什么是序列数据"><a href="#1、什么是序列数据" class="headerlink" title="1、什么是序列数据"></a>1、什么是序列数据</h3><p>时间序列数据(TimeSeries Data) :按照时间顺序记录系统、设备状态变化<br>的数据被称为时序数据。<br>应用的场景很多,如：</p>
+<ul>
+<li>无人驾驶车辆运行中要记录的经度，纬度，速度，方向，旁边物体的距离等等。每时每刻都要将数据记录下来做分析。</li>
+<li>某一个地区的各车辆的行驶轨迹数据</li>
+<li>传统证券行业实时交易数据</li>
+<li>实时运维监控数据等</li>
+</ul>
+<h3 id="2、时间序列数据特点"><a href="#2、时间序列数据特点" class="headerlink" title="2、时间序列数据特点"></a>2、时间序列数据特点</h3><ul>
+<li>性能好</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs markdown">关系型数据库对于大规模数据的处理性能糟糕。NOSQL可以比较好的处理<br>大规模数据，让依然比不上时间序列数据库。<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>存储成本低</li>
+</ul>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs md">高效的压缩算法，节省存储空间，有效降低IO<br>Prometheus有着非常高效的时间序列数据存储方法，每个采样数据仅仅占用3.5byte左右空间，上百万条时间序列，30秒间隔，保留60天，大概花了<br>200多G（来自官方数据)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3、Prometheus的主要特征"><a href="#3、Prometheus的主要特征" class="headerlink" title="3、Prometheus的主要特征"></a>3、Prometheus的主要特征</h3><h3 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h3><ul>
+<li><strong>多维度数据模型</strong>  </li>
+<li><strong>灵活的查询语言（PromQL）</strong>  </li>
+<li><strong>不依赖分布式存储，单个服务器节点是自主的</strong></li>
+<li><strong>以HTTP方式，通过pull模型拉去时间序列数据</strong></li>
+<li><strong>Pull 模型采集数据</strong>（支持 Push 网关）**[**也可以通过中间网关支持push模型  <strong>]</strong></li>
+<li><strong>通过服务发现或者静态配置，来发现目标服务对象</strong></li>
+<li><strong>支持多种多样的图表和界面展示</strong></li>
+</ul>
+<h3 id="4-架构图"><a href="#4-架构图" class="headerlink" title="4.架构图"></a>4.架构图</h3><p><img src="/img/prometheus/1.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="三、实验环境准备"><a href="#三、实验环境准备" class="headerlink" title="三、实验环境准备"></a>三、实验环境准备</h2><p><img src="/img/prometheus/2.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="（1）静态ip-要求能上外网"><a href="#（1）静态ip-要求能上外网" class="headerlink" title="（1）静态ip(要求能上外网)"></a><strong>（1）静态ip(要求能上外网)</strong></h4><h4 id="（2）主机名"><a href="#（2）主机名" class="headerlink" title="（2）主机名"></a><strong>（2）主机名</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">各自配置好主机名<br><span class="hljs-comment">#hostnamectlset-hostname--staticserver.cluster.com</span><br>三台都互相绑定IP与主机名<br><span class="hljs-comment">#vim/etc/hosts</span><br>10.1.1.13	server.cluster.com<br>10.1.1.14	agent1.cluster.com<br>10.1.1.15	grafana.cluster.com<br></code></pre></td></tr></table></figure>
+
+<h4 id="（3）时间同步-时间同步一定要确认一下"><a href="#（3）时间同步-时间同步一定要确认一下" class="headerlink" title="（3）时间同步(时间同步一定要确认一下)"></a><strong>（3）时间同步(时间同步一定要确认一下)</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#查看当前时区</span><br>timedatectl<br><br><span class="hljs-comment">#时区不一致时，时区改为亚洲上海</span><br>timedatectl set-timezone Asia/Shanghai<br><br><span class="hljs-comment">############# Chrony服务(联网时进行时间校正) ################</span><br><span class="hljs-comment"># 1.安装</span><br>yum intall chrony<br><br><span class="hljs-comment"># 2.配置修改</span><br>vim /etc/chrony.conf<br><br><span class="hljs-comment">######### 常见配置示例 ##########</span><br><span class="hljs-comment"># 使用阿里云NTP服务器（国内推荐）</span><br>server ntp.aliyun.com iburst<br><span class="hljs-comment"># 使用腾讯云NTP服务器</span><br>server ntp.tencent.com iburst<br><span class="hljs-comment"># 使用公共NTP池</span><br>pool pool.ntp.org iburst<br><br><span class="hljs-comment"># 允许其他客户端同步时间（可选）</span><br><span class="hljs-comment"># allow 192.168.135.0/24</span><br><br><span class="hljs-comment"># 启用硬件时间同步</span><br>rtcsync<br><br><span class="hljs-comment"># 记录时间偏差日志</span><br>logdir /var/log/chrony<br><br><span class="hljs-comment">##############################</span><br><br><span class="hljs-comment"># 3.设置开机自启</span><br>systemctl <span class="hljs-built_in">enable</span> chronyd<br><span class="hljs-comment"># 4.重启服务</span><br>systemctl restart chronyd<br><span class="hljs-comment"># 5.查看状态</span><br>systemctl status chronyd<br><span class="hljs-comment"># 6.验证同步情况</span><br>chronyc sources -v<br><span class="hljs-comment"># 7.查看本机时间</span><br><span class="hljs-built_in">date</span><br><br><span class="hljs-comment"># 查看硬件时间</span><br>hwclock --show<br><span class="hljs-comment"># 修改硬件时间</span><br>hwclock --<span class="hljs-built_in">set</span> --<span class="hljs-built_in">date</span> <span class="hljs-string">&#x27;20250521 14:38:09&#x27;</span><br>hwclock -w //将系统时间同步到硬件时间，或者输入 hwclock --systohc<br>hwclock -s //将硬件时间同步到系统时间<br></code></pre></td></tr></table></figure>
+
+<h4 id="关键参数说明"><a href="#关键参数说明" class="headerlink" title="关键参数说明"></a><strong>关键参数说明</strong></h4><ul>
+<li><code>iburst</code>: 加快初始同步速度。</li>
+<li><code>rtcsync</code>: 将系统时间同步到硬件时钟（RTC）。</li>
+<li><code>allow</code>: 允许指定网络段的客户端同步时间。</li>
+</ul>
+<h4 id="（4）关闭防火墙-selinux"><a href="#（4）关闭防火墙-selinux" class="headerlink" title="（4）关闭防火墙,selinux"></a><strong>（4）关闭防火墙,selinux</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># systemctl stop firewalld</span><br><span class="hljs-comment"># systemctl disable firewalld</span><br><span class="hljs-comment"># iptables-F</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="1、安装prometheus（141）"><a href="#1、安装prometheus（141）" class="headerlink" title="1、安装prometheus（141）"></a>1、安装prometheus（141）</h3><p>从<a target="_blank" rel="noopener" href="https://prometheus.io/download/%E4%B8%8B%E8%BD%BD%E7%9B%B8%E5%BA%94%E7%89%88%E6%9C%AC%EF%BC%8C%E5%AE%89%E8%A3%85%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%AE%98%E7%BD%91%E6%8F%90%E4%BE%9B%E7%9A%84%E6%98%AF%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%EF%BC%8C%E8%A7%A3%E5%8E%8B%E5%B0%B1%E8%83%BD%E7%94%A8%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E7%BC%96%E8%AF%91">https://prometheus.io/download/下载相应版本，安装到服务器上官网提供的是二进制版，解压就能用，不需要编译</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@server~]#tar xf prometheus-2.5.0.linux-amd64.tar.gz -C /usr/local/<br>[root@server~]#<span class="hljs-built_in">mv</span> /usr/local/prometheus-2.5.0.linux-amd64/ /usr/local/prometheus<br><br>直接使用默认配置文件启动<br>[root@server~]#/usr/local/prometheus/prometheus --config.file=<span class="hljs-string">&quot;/usr/local/prometheus/prometheus.yml&quot;</span><br><br>确认端口(9090)<br>[root@server~]#lsof-i:9090<br></code></pre></td></tr></table></figure>
+
+<h3 id="2、prometheus界面"><a href="#2、prometheus界面" class="headerlink" title="2、prometheus界面"></a><strong>2、prometheus界面</strong></h3><p>通过浏览器访问 http:&#x2F;&#x2F;服务器IP:9090 就可以访问到prometheus的主界面。</p>
+<p>默认只监控了本机一台，点Status –》点Targets –》可以看到只监控了本机。</p>
+<p><img src="/img/prometheus/3.png" srcset="/img/loading.gif" lazyload alt="3"></p>
+<h3 id="3、主机数据展示"><a href="#3、主机数据展示" class="headerlink" title="3、主机数据展示"></a>3、主机数据展示</h3><p>通过http:&#x2F;&#x2F;服务器IP:9090&#x2F;metrics可以查看到监控的数据</p>
+<p>在web主界面可以通过关键字查询监控项</p>
+<p><img src="/img/prometheus/4.png" srcset="/img/loading.gif" lazyload alt="4"></p>
+<h3 id="4、监控远程Linux主机（142）"><a href="#4、监控远程Linux主机（142）" class="headerlink" title="4、监控远程Linux主机（142）"></a>4、监控远程Linux主机（142）</h3><p>①在远程linux主机(被监控端agent1)上安装node_exporter组件下载地址:<a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@agent1~]#tar xf node_exporter-0.16.0.linux-amd64.tar.gz -C /usr/local/<br>[root@agent1~]#<span class="hljs-built_in">mv</span> /usr/local/node_exporter-0.16.0.linux-amd64/ /usr/local/node_exporter<br><span class="hljs-comment"># 里面就一个启动命令node_exporter,可以直接使用此命令启动</span><br>[root@agent1~]#<span class="hljs-built_in">ls</span> /usr/local/node_exporter/<br>LICENSE node_exporter NOTICE<br>[root@agent1~]#<span class="hljs-built_in">nohup</span> sh /usr/local/node_exporter/node_exporter &amp;<br></code></pre></td></tr></table></figure>
+
+<p>扩展:nohup命令:如果把启动node_exporter的终端给关闭,那么进程也会随之关闭。nohup命令会帮你解决这个问题。<br>②通过浏览器访问http:&#x2F;&#x2F;被监控端IP:9100&#x2F;metrics就可以查看到node_exporter在被监控端收集的监控信息</p>
+<p>③回到prometheus服务器的配置文件里添加被监控机器的配置段</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在主配置文件最后加上下面三行</span><br>[root@server~]#vim/usr/local/prometheus/prometheus.yml<br>-job_name:<span class="hljs-string">&#x27;agent1&#x27;</span><br>表被监控的机器		<span class="hljs-comment"># 取一个job名称来代表被监控的机器</span><br> static_configs:<br> -targets:[<span class="hljs-string">&#x27;10.1.1.14:9100&#x27;</span>]	<span class="hljs-comment"># 这里改成被监控机器</span><br>的IP，后面端口接9100	<br><br><span class="hljs-comment"># 改完配置文件后,重启服务</span><br>[root@server~]#pkill prometheus<br>[root@server~]#lsof-i:9090		<span class="hljs-comment"># 确认端口没有进程占用</span><br><br>[root@server~]#/usr/local/prometheus/prometheus --config.file=<span class="hljs-string">&quot;/usr/local/prometheus/prometheus.yml&quot;</span><br><br>[root@server~]#lsof-i:9090 		<span class="hljs-comment"># 确认端口被占用，说明重启成功</span><br></code></pre></td></tr></table></figure>
+
+<p>④回到web管理界面–》点Status –》点Targets –》可以看到多了一台监控目标</p>
+<p>练习:加上本机prometheus的监控<br>答:在本机安装node_exporter，也使用上面的方式监控起来。</p>
+<h3 id="5、监控远程MySQL（142）"><a href="#5、监控远程MySQL（142）" class="headerlink" title="5、监控远程MySQL（142）"></a>5、监控远程MySQL（142）</h3><p>①在被管理机agent1上安装mysqld_exporter组件</p>
+<p>下载地址:<a target="_blank" rel="noopener" href="https://prometheus.io/download/">https://prometheus.io/download/</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装mysqld_exporter组件</span><br>[root@agent1~]# tar xf mysqld_exporter-0.11.0.linux-amd64.tar.gz -C /usr/local/<br>[root@agent1~]#<span class="hljs-built_in">mv</span> /usr/local/mysqld_exporter-0.11.0.linux-amd64/ /usr/local/mysqld_exporter<br>[root@agent1~]#<span class="hljs-built_in">ls</span> /usr/local/mysqld_exporter/<br>LICENSE mysqld_exporter NOTICE<br><span class="hljs-comment"># 安装mariadb数据库,并授权</span><br>[root@agent1~]#yum install mariadb-server mariadb -y<br>[root@agent1~]#systemctl restart mariadb<br>[root@agent1~]#systemctl <span class="hljs-built_in">enable</span> mariadb<br>[root@agent1~]#mysql<br><span class="hljs-comment"># 创建用户，并设置密码</span><br>MariaDB[(none)]&gt;CREATE USER <span class="hljs-string">&#x27;mysql_monitor&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;123&#x27;</span>;<br><span class="hljs-comment"># 给用户授权</span><br>MariaDB[(none)]&gt;GRANT SELECT, REPLICATION CLIENT, PROCESS ON *.* TO <span class="hljs-string">&#x27;mysql_monitor&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span>;<br><br>(注意:授权ip为localhost，因为不是prometheus服务器来直接找mariadb<br>获取数据，而是prometheus服务器找mysql_exporter,mysql_exporter<br>再找mariadb。所以这个localhost是指的mysql_exporter的IP)<br><br><span class="hljs-comment"># 刷新权限</span><br>MariaDB[(none)]&gt;flush privileges;<br>MariaDB[(none)]&gt;quit<br><br><span class="hljs-comment"># 创建一个mariadb配置文件，写上连接的用户名与密码(和上面的授权的用户名和密码要对应)</span><br>[root@agent1~]#vim /usr/local/mysqld_exporter/.my.cnf<br>[client]<br>user=mysql_monitor<br>password=123<br><br><span class="hljs-comment"># 启动mysqld_exporter</span><br>[root@agent1~]#<span class="hljs-built_in">nohup</span><br>/usr/local/mysqld_exporter/mysqld_exporter --config.my-cnf=/usr/local/mysqld_exporter/.my.cnf&amp;<br>确认端口(9104)<br>[root@agent1~]#lsof -i :9104<br></code></pre></td></tr></table></figure>
+
+<p>②回到prometheus服务器的配置文件里添加被监控的mariadb的配置段</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">在主配置文件最后再加上下面三行<br>[root@server~]#vim /usr/local/prometheus/prometheus.yml<br><br>-job_name:<span class="hljs-string">&#x27;agent1_mariadb&#x27;</span>		<span class="hljs-comment"># 取一个job名称来代表被监控的mariadb	</span><br>	static_configs:<br>	-targets:[<span class="hljs-string">&#x27;10.1.1.14:9104&#x27;</span>]		<span class="hljs-comment"># 这里改成被监控机器的IP，后面端口接9104</span><br><br>改完配置文件后,重启服务<br>[root@server~]#pkill prometheus<br>[root@server~]#lsof -i:9090<br>[root@server~]#/usr/local/prometheus/prometheus --config.file=<span class="hljs-string">&quot;/usr/local/prometheus/prometheus.yml&quot;</span><br>[root@server~]#lsof -i:9090<br></code></pre></td></tr></table></figure>
+
+<p>③回到web管理界面–》点Status –》点Targets –》可以看到监控<br>mariadb了</p>
+<p><img src="/img/prometheus/5.png" srcset="/img/loading.gif" lazyload alt="5"></p>
+<p><img src="/img/prometheus/6.png" srcset="/img/loading.gif" lazyload alt="6"></p>
+<h2 id="四、Grafana可视化图形工具（143）"><a href="#四、Grafana可视化图形工具（143）" class="headerlink" title="四、Grafana可视化图形工具（143）"></a>四、Grafana可视化图形工具（143）</h2><h3 id="1、什么是Grafana"><a href="#1、什么是Grafana" class="headerlink" title="1、什么是Grafana"></a>1、什么是Grafana</h3><p>Grafana是一个开源的度量分析和可视化工具，可以通过将采集的数据分析，查询，然后进行可视化的展示,并能实现报警。</p>
+<p><img src="/img/prometheus/7.png" srcset="/img/loading.gif" lazyload alt="7"></p>
+<p>网址:<a target="_blank" rel="noopener" href="https://grafana.com/">https://grafana.com/</a></p>
+<h3 id="2、使用Grafana连接Prometheus"><a href="#2、使用Grafana连接Prometheus" class="headerlink" title="2、使用Grafana连接Prometheus"></a>2、使用Grafana连接Prometheus</h3><p>① 在grafana服务器上安装grafana<br>下载地址:<a target="_blank" rel="noopener" href="https://grafana.com/grafana/download">https://grafana.com/grafana/download</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 我这里选择的rpm包，下载后直接rpm-ivh安装就OK</span><br>[root@grafana~]#rpm -ivh /root/Desktop/grafana-5.3.4-1.x86_64.rpm<br><span class="hljs-comment"># 启动服务</span><br>[root@grafana~]#systemctl start grafana-server<br>[root@grafana~]#systemctl <span class="hljs-built_in">enable</span> grafana-server<br><span class="hljs-comment"># 确认端口(3000)</span><br>[root@grafana~]#lsof -i :3000<br></code></pre></td></tr></table></figure>
+
+<p>②通过浏览器访问http:&#x2F;&#x2F; grafana服务器IP:3000就到了登录界面,使用默认的admin用户,admin密码就可以登陆了</p>
+<p><img src="/img/prometheus/8.png" srcset="/img/loading.gif" lazyload alt="8"></p>
+<p>③下面我们把prometheus服务器收集的数据做为一个数据源添加到grafana,让grafana可以得到prometheus的数据。</p>
+<p><img src="/img/prometheus/9.png" srcset="/img/loading.gif" lazyload alt="9"></p>
+<p><img src="/img/prometheus/10.png" srcset="/img/loading.gif" lazyload alt="10"></p>
+<p>④然后为添加好的数据源做图形显示</p>
+<p><img src="/img/prometheus/11.png" srcset="/img/loading.gif" lazyload alt="11"></p>
+<p><img src="/img/prometheus/12.png" srcset="/img/loading.gif" lazyload alt="12"></p>
+<p><img src="/img/prometheus/13.png" srcset="/img/loading.gif" lazyload alt="13"></p>
+<p><img src="/img/prometheus/14.png" srcset="/img/loading.gif" lazyload alt="14"></p>
+<p>⑤保存</p>
+<p><img src="/img/prometheus/15.png" srcset="/img/loading.gif" lazyload alt="15"></p>
+<p>⑥最后在dashboard可以查看到</p>
+<p><img src="/img/prometheus/16.png" srcset="/img/loading.gif" lazyload alt="16"></p>
+<p>⑦匹配条件显示</p>
+<p><img src="/img/prometheus/17.png" srcset="/img/loading.gif" lazyload alt="17"></p>
+<h3 id="3、Grafana图形显示MySQL监控数据"><a href="#3、Grafana图形显示MySQL监控数据" class="headerlink" title="3、Grafana图形显示MySQL监控数据"></a>3、Grafana图形显示MySQL监控数据</h3><p>① 在grafana上修改配置文件,并下载安装mysql监控的dashboard（包含<br>相关json文件，这些json文件可以看作是开发人员开发的一个监控模板)<br>参考网址:<a target="_blank" rel="noopener" href="https://github.com/percona/grafana-dashboards">https://github.com/percona/grafana-dashboards</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在grafana配置文件里最后加上以下三行</span><br>[root@grafana~]#vim /etc/grafana/grafana.ini<br><br>[dashboards.json]<br>enabled=<span class="hljs-literal">true</span><br>path=/var/lib/grafana/dashboards<br><br>[root@grafana~]#<span class="hljs-built_in">cd</span> /var/lib/grafana/<br>[root@grafanagrafana]#git <span class="hljs-built_in">clone</span> https://github.com/percona/grafana-dashboards.git<br>[root@grafanagrafana]#<span class="hljs-built_in">cp</span> -r grafana-dashboards/dashboards/ /var/lib/grafana/<br><br><span class="hljs-comment"># 重启grafana服务</span><br>[root@grafanagrafana]#systemctl restart grafana-server<br></code></pre></td></tr></table></figure>
+
+<p>②在grafana图形界面导入相关json文件</p>
+<p><img src="/img/prometheus/18.png" srcset="/img/loading.gif" lazyload alt="18"></p>
+<p>③点import导入后,报prometheus数据源找不到,因为这些json文件里默认要找的就是叫Prometheus的数据源，但我们前面建立的数据源却是叫<br>prometheus_data(坑啊)<br>那么请自行把原来的prometheus_data源改名为Prometheus即可(注意:<br>第一个字母P是大写)<br>然后再回去刷新,就有数据了(如下图所示)</p>
+<p><img src="/img/prometheus/19.png" srcset="/img/loading.gif" lazyload alt="19"></p>
+<p>④过段时间再看，就会有数据了(如下图所示)</p>
+<p><img src="/img/prometheus/20.png" srcset="/img/loading.gif" lazyload alt="20"></p>
+<h3 id="4、Grafana-onealert报警"><a href="#4、Grafana-onealert报警" class="headerlink" title="4、Grafana+onealert报警"></a>4、Grafana+onealert报警</h3><p>prometheus报警需要使用alertmanager这个组件，而且报警规则需要手<br>动编写(对运维来说不友好)。所以我这里选用grafana+onealert报警。注意:实现报警前把所有机器时间同步再检查一遍。</p>
+<p>①先在onealert里添加grafana应用(申请onealert账号在zabbix已经讲过)</p>
+<p><img src="/img/prometheus/21.png" srcset="/img/loading.gif" lazyload alt="21"></p>
+<p>②配置通知策略</p>
+<p><img src="/img/prometheus/22.png" srcset="/img/loading.gif" lazyload alt="22"></p>
+<p>③在grafana增加通知通道</p>
+<p><img src="/img/prometheus/23.png" srcset="/img/loading.gif" lazyload alt="23"></p>
+<p><img src="/img/prometheus/25.png" srcset="/img/loading.gif" lazyload alt="24"></p>
+<p>④现在可以去设置一个报警来测试了(这里以我们前面加的cpu负载监控来做测试)</p>
+<p><img src="/img/prometheus/26.png" srcset="/img/loading.gif" lazyload alt="25"></p>
+<p><img src="/img/prometheus/27.png" srcset="/img/loading.gif" lazyload alt="26"></p>
+<p>⑤保存后就可以测试了<br>如果agent1上的cpu负载还没有到0.5，你可以试试0.1,或者运行一些程序把agent1负载调大。最终能测试报警成功。</p>
+<p><img src="/img/prometheus/28.png" srcset="/img/loading.gif" lazyload alt="27"></p>
+<p>最终的邮件报警效果：</p>
+<p><img src="/img/prometheus/29.png" srcset="/img/loading.gif" lazyload alt="28"></p>
+<p>测试mysql链接数报警:</p>
+<p><img src="/img/prometheus/30.png" srcset="/img/loading.gif" lazyload alt="29"></p>
+<p><img src="/img/prometheus/31.png" srcset="/img/loading.gif" lazyload alt="30"></p>
+<p><img src="/img/prometheus/32.png" srcset="/img/loading.gif" lazyload alt="31"></p>
+<h3 id="5、总结报警不成功的可能原因"><a href="#5、总结报警不成功的可能原因" class="headerlink" title="5、总结报警不成功的可能原因"></a>5、总结报警不成功的可能原因</h3><ol>
+<li>各服务器之间时间不同步，这样时序数据会出问题，也会造成报警出问题</li>
+<li>必须写通知内容，留空内容是不会发报警的</li>
+<li>修改完报警配置后，记得要点右上角的保存</li>
+<li>保存配置后，需要由OK状态变为alerting状态才会报警(也就是说，你配置保存后，就已经是alerting状态是不会报警的)</li>
+<li>grafana与onealert通信有问题</li>
+</ol>
+<h3 id="6、课外扩展"><a href="#6、课外扩展" class="headerlink" title="6、课外扩展"></a>6、课外扩展</h3><p>prometheus目前还在发展中，很多相应的监控都需要开发。但在官网的<br>dashboard库中,也有一些官方和社区开发人员开发的dashboard可以直接拿来用。</p>
+<p><img src="/img/prometheus/33.png" srcset="/img/loading.gif" lazyload alt="32"></p>
+<p>示例：</p>
+<p><img src="/img/prometheus/34.png" srcset="/img/loading.gif" lazyload alt="33"></p>
+<p><em><strong>不一定版本兼容,如果不兼容，可多试几个不同版本</strong></em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" class="category-chain-item">系统运维</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/prometheus/" class="print-no-link">#prometheus</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>普罗米修斯(prometheus)</div>
+      <div>http://bote798.github.io/2025/05/16/普罗米修斯-prometheus/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月16日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年5月19日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/19/Linux%E6%97%B6%E9%97%B4%E6%A0%A1%E5%87%86%E2%80%94%E2%80%94Chrony/" title="Linux时间校准——Chrony">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux时间校准——Chrony</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/15/nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="nginx负载均衡">
+                        <span class="hidden-mobile">nginx负载均衡</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

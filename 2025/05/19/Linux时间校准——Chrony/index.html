@@ -1,0 +1,815 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、概述Chrony是一款开源的网络时间协议（NTP）客户端和服务端软件，旨在提供高精度的时间同步功能。相较于传统的 NTP 实现如 ntpd，Chrony提供了一些改进和优势，包括更快的同步速度、低延迟、低CPU占用和低内存消耗。以下是 Chrony的几个关键特性和使用场景： 组成 **chronyd**：这是一个后台守护进程，负责与时间服务器通信，根据网络条件和系统时钟特性动态调整内核中的系统">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux时间校准——Chrony">
+<meta property="og:url" content="http://bote798.github.io/2025/05/19/Linux%E6%97%B6%E9%97%B4%E6%A0%A1%E5%87%86%E2%80%94%E2%80%94Chrony/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="一、概述Chrony是一款开源的网络时间协议（NTP）客户端和服务端软件，旨在提供高精度的时间同步功能。相较于传统的 NTP 实现如 ntpd，Chrony提供了一些改进和优势，包括更快的同步速度、低延迟、低CPU占用和低内存消耗。以下是 Chrony的几个关键特性和使用场景： 组成 **chronyd**：这是一个后台守护进程，负责与时间服务器通信，根据网络条件和系统时钟特性动态调整内核中的系统">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
+<meta property="article:published_time" content="2025-05-19T12:17:58.000Z">
+<meta property="article:modified_time" content="2025-05-19T14:40:26.489Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
+  
+  
+  
+  <title>Linux时间校准——Chrony - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux时间校准——Chrony"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-19 20:17" pubdate>
+          2025年5月19日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux时间校准——Chrony</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h2><p><code>Chrony</code>是一款开源的网络时间协议（NTP）客户端和服务端软件，旨在提供高精度的时间同步功能。相较于传统的 <code>NTP</code> 实现如 <code>ntpd</code>，<code>Chrony</code>提供了一些改进和优势，包括更快的同步速度、低延迟、低CPU占用和低内存消耗。以下是 <code>Chrony</code>的几个关键特性和使用场景：</p>
+<h3 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h3><ul>
+<li>**<code>chronyd</code>**：这是一个后台守护进程，负责与时间服务器通信，根据网络条件和系统时钟特性动态调整内核中的系统时钟，以最小化时间和频率误差。它能够智能地应对网络延迟、间歇性连接、时钟漂移以及虚拟环境中的不稳定性。</li>
+<li>**<code>chronyc</code>**：这是一个命令行工具，为用户提供了一个界面来监控<code>Chrony</code>的性能、查看同步状态、调整配置参数以及手动执行某些操作，如立即同步或查看时间源的状态。</li>
+</ul>
+<h3 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h3><ol>
+<li><strong>快速同步</strong>：<code>Chrony</code>使用特殊算法能快速减少系统时钟的偏移和频率误差，非常适合那些非24小时运行的系统，如虚拟机。</li>
+<li><strong>频率调整</strong>：能够更有效地应对时钟频率的快速变化，适合于拥有不稳定时钟的虚拟环境或受节能技术影响的系统。</li>
+<li><strong>节能技术兼容性</strong>：即使在节能技术导致CPU频率变化的系统中也能保持良好的时间同步。</li>
+<li><strong>灵活配置</strong>：支持多种同步源，包括<code>NTP</code>服务器、<code>GPS</code>接收器或其他参考时钟，以及手动时间输入。</li>
+</ol>
+<h3 id="使用场景："><a href="#使用场景：" class="headerlink" title="使用场景："></a>使用场景：</h3><ol>
+<li><strong>企业服务器</strong>：确保数据中心内的所有服务器保持时间同步，这对于日志记录、交易时间戳、数据一致性等至关重要。</li>
+<li><strong>桌面系统</strong>：提高个人电脑的时间精度，尤其是对于依赖精确时间的应用，如开发环境、金融交易软件或科学计算。</li>
+<li><strong>嵌入式系统和物联网设备</strong>：在资源有限的设备上，<code>Chrony</code>的低资源消耗特性使其成为理想的选择。</li>
+<li><strong>虚拟环境</strong>：在云服务器或虚拟机中，<code>Chrony</code>能有效应对由于虚拟化带来的时钟漂移问题。</li>
+<li><strong>高精度应用</strong>：科研机构、天文观测、卫星通信等领域，需要高度精确时间同步的应用场景。</li>
+</ol>
+<h2 id="二、安装"><a href="#二、安装" class="headerlink" title="二、安装"></a>二、安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#查看当前时区</span><br>timedatectl<br><br><span class="hljs-comment">#时区不一致时，时区改为亚洲上海</span><br>timedatectl set-timezone Asia/Shanghai<br><br><span class="hljs-comment"># 1.安装</span><br>yum install chrony<br><br><span class="hljs-comment"># 2.备份原配置文件</span><br><span class="hljs-built_in">cp</span> /etc/chrony.conf /etc/chrony.conf_bak<br><br><span class="hljs-comment"># 3.修改配置文件</span><br>vim /etc/chrony.conf<br><span class="hljs-comment">#####################################################</span><br><span class="hljs-comment"># 使用阿里云NTP服务器（国内推荐）</span><br>server ntp.aliyun.com iburst<br><span class="hljs-comment"># 使用腾讯云NTP服务器</span><br>server ntp.tencent.com iburst<br><span class="hljs-comment"># 使用公共NTP池</span><br>pool pool.ntp.org iburst<br><br><span class="hljs-comment"># 允许其他客户端同步时间（可选）</span><br><span class="hljs-comment"># allow 192.168.135.0/24</span><br><br><span class="hljs-comment"># 启用硬件时间同步</span><br>rtcsync<br><br><span class="hljs-comment"># 记录时间偏差日志</span><br>logdir /var/log/chrony<br><span class="hljs-comment">#####################################################</span><br><br><span class="hljs-comment"># 4.启动服务</span><br><span class="hljs-comment"># 设置开机自启</span><br>systemctl <span class="hljs-built_in">enable</span> chronyd<br><span class="hljs-comment"># 重启服务</span><br>systemctl restart chronyd<br><span class="hljs-comment"># 查看状态</span><br>systemctl status chronyd<br><span class="hljs-comment"># 5.验证同步情况</span><br>chronyc sources -v<br><span class="hljs-comment"># 查看本机时间</span><br><span class="hljs-built_in">date</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>systemctl status chronyd</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@node1-142 etc]# systemctl status chronyd<br>● chronyd.service - NTP client/server<br>     Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; preset: enabled)<br>     Active: active (running) since Mon 2025-05-19 20:15:03 CST; 13s ago<br>       Docs: man:chronyd(8)<br>             man:chrony.conf(5)<br>   Main PID: 13058 (chronyd)<br>      Tasks: 1 (<span class="hljs-built_in">limit</span>: 21564)<br>     Memory: 672.0K ()<br>     CGroup: /system.slice/chronyd.service<br>             └─13058 /usr/sbin/chronyd<br><br>5月 19 20:15:03 node1-142 systemd[1]: Starting NTP client/server...<br>5月 19 20:15:03 node1-142 chronyd[13058]: chronyd version 4.3 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND &gt;<br>5月 19 20:15:03 node1-142 chronyd[13058]: Frequency 0.000 +/- 1000000.000 ppm <span class="hljs-built_in">read</span> from /var/lib/chrony/drift<br>5月 19 20:15:03 node1-142 systemd[1]: Started NTP client/server.<br>5月 19 20:15:07 node1-142 chronyd[13058]: Selected <span class="hljs-built_in">source</span> 203.107.6.88 (ntp.aliyun.com)  <span class="hljs-comment"># 这里说明已经索引到ntp服务器了</span><br></code></pre></td></tr></table></figure>
+
+<p> <strong>chronyc sources -v</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@node1-142 etc]# chronyc sources -v<br><br>  .-- Source mode  <span class="hljs-string">&#x27;^&#x27;</span> = server, <span class="hljs-string">&#x27;=&#x27;</span> = peer, <span class="hljs-string">&#x27;#&#x27;</span> = <span class="hljs-built_in">local</span> clock.<br> / .- Source state <span class="hljs-string">&#x27;*&#x27;</span> = current best, <span class="hljs-string">&#x27;+&#x27;</span> = combined, <span class="hljs-string">&#x27;-&#x27;</span> = not combined,<br>| /             <span class="hljs-string">&#x27;x&#x27;</span> = may be <span class="hljs-keyword">in</span> error, <span class="hljs-string">&#x27;~&#x27;</span> = too variable, <span class="hljs-string">&#x27;?&#x27;</span> = unusable.<br>||                                                 .- xxxx [ yyyy ] +/- zzzz<br>||      Reachability register (octal) -.           |  xxxx = adjusted offset,<br>||      Log2(Polling interval) --.      |          |  yyyy = measured offset,<br>||                                \     |          |  zzzz = estimated error.<br>||                                 |    |           \<br><br>MS Name/IP address         Stratum Poll Reach LastRx Last sample               <br>===============================================================================<br><br>^* 203.107.6.88                  2   6    37    21    +34us[ +505us] +/-   25ms<br>[root@node1-142 etc]# <span class="hljs-built_in">date</span><br>2025年 05月 19日 星期一 20:17:03 CST<br></code></pre></td></tr></table></figure>
+
+<p><em><strong>以上为以公网ntp为例</strong></em></p>
+<h2 id="三、相关指令"><a href="#三、相关指令" class="headerlink" title="三、相关指令"></a>三、相关指令</h2><h3 id="（1）选项说明"><a href="#（1）选项说明" class="headerlink" title="（1）选项说明"></a>（1）选项说明</h3><table>
+<thead>
+<tr>
+<th align="center">选项</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-4</td>
+<td align="center">仅解析 IPv4 地址并创建 IPv4 套接字。</td>
+</tr>
+<tr>
+<td align="center">-6</td>
+<td align="center">仅解析 IPv6 地址并创建 IPv6 套接字。</td>
+</tr>
+<tr>
+<td align="center"><code>-f file</code></td>
+<td align="center">指定配置文件路径（默认为 <code>/etc/chrony.conf</code>）。</td>
+</tr>
+<tr>
+<td align="center">-n</td>
+<td align="center">不分离终端，保持在前台运行。</td>
+</tr>
+<tr>
+<td align="center">-d</td>
+<td align="center">不分离终端，将日志输出到终端而非 <code>syslog</code>。若编译支持调试，则重复使用 <code>-d</code> 可显示调试信息。</td>
+</tr>
+<tr>
+<td align="center"><code>-l file</code></td>
+<td align="center">将日志输出到指定文件而非 <code>syslog</code> 或终端。</td>
+</tr>
+<tr>
+<td align="center">-q</td>
+<td align="center">快速同步时间后退出（需 root 权限）。</td>
+</tr>
+<tr>
+<td align="center">-Q</td>
+<td align="center">仅显示时间偏移，不调整时间（无需 root 权限）。</td>
+</tr>
+<tr>
+<td align="center">-r</td>
+<td align="center">重新加载并删除服务器&#x2F;参考时钟的历史数据文件（需 <code>dumpdir</code> 指定目录）。</td>
+</tr>
+<tr>
+<td align="center">-R</td>
+<td align="center">忽略 <code>initstepslew</code> 和 <code>makestep</code> 指令（常与 <code>-r</code> 结合用于重启）。</td>
+</tr>
+<tr>
+<td align="center">-s</td>
+<td align="center">从硬件时钟（RTC）或 <code>driftfile</code> 的最后修改时间设置系统时间（Linux 系统支持）。</td>
+</tr>
+<tr>
+<td align="center"><code>-t timeout</code></td>
+<td align="center">设置超时时间（秒），超时后退出。</td>
+</tr>
+<tr>
+<td align="center"><code>-u user</code></td>
+<td align="center">启动后切换为指定用户（默认 <code>chrony</code>），需依赖 <code>libcap</code>（Linux）。</td>
+</tr>
+<tr>
+<td align="center"><code>-F level</code></td>
+<td align="center">启用 seccomp 过滤器（Linux 专用），限制系统调用。</td>
+</tr>
+<tr>
+<td align="center">-P priority</td>
+<td align="center">在 Linux 中使用实时调度器（SCHED_FIFO），优先级 0-100；在 macOS 中启用时间约束策略。</td>
+</tr>
+<tr>
+<td align="center">-m</td>
+<td align="center">锁定进程到内存，避免分页（Linux 专用）。</td>
+</tr>
+<tr>
+<td align="center">-x</td>
+<td align="center">禁用系统时钟控制（仅用于 NTP 服务器模式，不调整本地时间）。</td>
+</tr>
+<tr>
+<td align="center"><code>-v</code></td>
+<td align="center">显示版本号并退出。</td>
+</tr>
+</tbody></table>
+<h3 id="（2）配置文件-etc-chrony-conf"><a href="#（2）配置文件-etc-chrony-conf" class="headerlink" title="（2）配置文件 (&#x2F;etc&#x2F;chrony.conf)"></a>（2）配置文件 (&#x2F;etc&#x2F;chrony.conf)</h3><p>关键配置项包括：</p>
+<table>
+<thead>
+<tr>
+<th>server：</th>
+<th><strong>指定 NTP 服务器（如 <code>server 0.pool.ntp.org iburst</code>）。</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>driftfile：</strong></td>
+<td>记录系统时钟偏差的文件路径（如 &#x2F;var&#x2F;lib&#x2F;chrony&#x2F;drift）。</td>
+</tr>
+<tr>
+<td><strong>makestep：</strong></td>
+<td>允许在首次启动时快速调整时间（如 makestep 1.0 3&#x2F;7200）。</td>
+</tr>
+<tr>
+<td><strong>rtcsync：</strong></td>
+<td>启用内核每 11 分钟同步硬件时钟（RTC）。</td>
+</tr>
+<tr>
+<td><strong>logdir：</strong></td>
+<td>指定日志目录（如 &#x2F;var&#x2F;log&#x2F;chrony）。</td>
+</tr>
+</tbody></table>
+<h3 id="（3）使用场景示例："><a href="#（3）使用场景示例：" class="headerlink" title="（3）使用场景示例："></a>（3）使用场景示例：</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1.启动并后台运行：</span><br>systemctl start chronyd<br>systemctl <span class="hljs-built_in">enable</span> chronyd<br><br><span class="hljs-comment"># 2.快速同步时间：</span><br>chronyd -q <span class="hljs-string">&#x27;server time.example.com iburst&#x27;</span><br><br><span class="hljs-comment"># 3.查看版本与退出：</span><br>chronyd -v<br><br><span class="hljs-comment"># 4.从硬件时钟设置时间：</span><br>chronyd -s<br><br><span class="hljs-comment"># 5.调试模式输出到终端：</span><br>chronyd -d<br><br><span class="hljs-comment"># 6.查看 Chrony日志</span><br><span class="hljs-comment"># 默认的日志路径在 /var/log/chrony/chronyd.log</span><br><span class="hljs-built_in">cat</span> /var/log/chrony/chronyd.log<br><br><span class="hljs-comment"># 或使用 journalctl 查看实时日志：</span><br>journalctl -u chronyd -f<br><br></code></pre></td></tr></table></figure>
+
+<h2 id="四、内网环境下服务配置"><a href="#四、内网环境下服务配置" class="headerlink" title="四、内网环境下服务配置"></a>四、内网环境下服务配置</h2><p>其他的先看一下稀土掘金里的收藏文章</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" class="category-chain-item">系统运维</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux时间校准——Chrony</div>
+      <div>http://bote798.github.io/2025/05/19/Linux时间校准——Chrony/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月19日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年5月19日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/20/Linux%E5%91%BD%E4%BB%A4%E9%80%9F%E6%9F%A5/" title="Linux命令速查">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux命令速查</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/16/%E6%99%AE%E7%BD%97%E7%B1%B3%E4%BF%AE%E6%96%AF-prometheus/" title="普罗米修斯(prometheus)">
+                        <span class="hidden-mobile">普罗米修斯(prometheus)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

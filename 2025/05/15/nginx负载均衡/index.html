@@ -1,0 +1,733 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 基础负载均衡配置在nginx.conf的http块中添加以下配置： 12345678910111213141516http &#123;    upstream backend &#123;        # 默认轮询策略        server 192.168.1.101:8080;        server 192.168.1.102:8080;        server 192">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx负载均衡">
+<meta property="og:url" content="http://bote798.github.io/2025/05/15/nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="1. 基础负载均衡配置在nginx.conf的http块中添加以下配置： 12345678910111213141516http &#123;    upstream backend &#123;        # 默认轮询策略        server 192.168.1.101:8080;        server 192.168.1.102:8080;        server 192">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/nginx/1.png">
+<meta property="article:published_time" content="2025-05-15T07:59:54.000Z">
+<meta property="article:modified_time" content="2025-05-15T08:01:38.228Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/nginx/1.png">
+  
+  
+  
+  <title>nginx负载均衡 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="nginx负载均衡"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-15 15:59" pubdate>
+          2025年5月15日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          636 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">nginx负载均衡</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="1-基础负载均衡配置"><a href="#1-基础负载均衡配置" class="headerlink" title="1. 基础负载均衡配置"></a><strong>1. 基础负载均衡配置</strong></h3><p>在<code>nginx.conf</code>的<code>http</code>块中添加以下配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">http &#123;<br>    upstream backend &#123;<br>        <span class="hljs-comment"># 默认轮询策略</span><br>        server 192.168.1.101:8080;<br>        server 192.168.1.102:8080;<br>        server 192.168.1.103:8080;<br>    &#125;<br><br>    server &#123;<br>        listen 80;<br>        location / &#123;<br>            proxy_pass http://backend;<br>            proxy_set_header Host <span class="hljs-variable">$host</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-负载均衡策略详解"><a href="#2-负载均衡策略详解" class="headerlink" title="2. 负载均衡策略详解"></a><strong>2. 负载均衡策略详解</strong></h3><h4 id="2-1-加权轮询（Weighted-Round-Robin）"><a href="#2-1-加权轮询（Weighted-Round-Robin）" class="headerlink" title="2.1 加权轮询（Weighted Round Robin）"></a><strong>2.1 加权轮询（Weighted Round Robin）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    server 192.168.1.101:8080 weight=5;  <span class="hljs-comment"># 50%流量</span><br>    server 192.168.1.102:8080 weight=3;  <span class="hljs-comment"># 30%流量</span><br>    server 192.168.1.103:8080 weight=2;  <span class="hljs-comment"># 20%流量</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-2-最少连接（Least-Connections）"><a href="#2-2-最少连接（Least-Connections）" class="headerlink" title="2.2 最少连接（Least Connections）"></a><strong>2.2 最少连接（Least Connections）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    least_conn;<br>    server 192.168.1.101:8080;<br>    server 192.168.1.102:8080;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-3-IP哈希（Session-Persistence）"><a href="#2-3-IP哈希（Session-Persistence）" class="headerlink" title="2.3 IP哈希（Session Persistence）"></a><strong>2.3 IP哈希（Session Persistence）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    ip_hash;<br>    server 192.168.1.101:8080;<br>    server 192.168.1.102:8080;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="2-4-响应时间动态分配（商业版功能）"><a href="#2-4-响应时间动态分配（商业版功能）" class="headerlink" title="2.4 响应时间动态分配（商业版功能）"></a><strong>2.4 响应时间动态分配（商业版功能）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    fair;<br>    server 192.168.1.101:8080;<br>    server 192.168.1.102:8080;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-高级配置参数"><a href="#3-高级配置参数" class="headerlink" title="3. 高级配置参数"></a><strong>3. 高级配置参数</strong></h3><h4 id="3-1-健康检查机制"><a href="#3-1-健康检查机制" class="headerlink" title="3.1 健康检查机制"></a><strong>3.1 健康检查机制</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    server 192.168.1.101:8080 max_fails=3 fail_timeout=30s;<br>    server 192.168.1.102:8080 max_fails=3 fail_timeout=30s;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>max_fails</code>：允许的最大失败次数</li>
+<li><code>fail_timeout</code>：服务器被标记为不可用的时间</li>
+</ul>
+<h4 id="3-2-备份服务器配置"><a href="#3-2-备份服务器配置" class="headerlink" title="3.2 备份服务器配置"></a><strong>3.2 备份服务器配置</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    server 192.168.1.101:8080;<br>    server 192.168.1.102:8080 backup;  <span class="hljs-comment"># 备用服务器</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h4 id="3-3-慢启动机制"><a href="#3-3-慢启动机制" class="headerlink" title="3.3 慢启动机制"></a><strong>3.3 慢启动机制</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">upstream backend &#123;<br>    server 192.168.1.101:8080 slow_start=30s;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-完整配置示例"><a href="#4-完整配置示例" class="headerlink" title="4. 完整配置示例"></a><strong>4. 完整配置示例</strong></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs bash">http &#123;<br>    <span class="hljs-comment"># 定义上游服务器组</span><br>    upstream myapp &#123;<br>        least_conn;<br>        server app1.example.com:8080 weight=3;<br>        server app2.example.com:8080 max_fails=2;<br>        server backup.example.com:8080 backup;<br>    &#125;<br><br>    <span class="hljs-comment"># 负载均衡服务器配置</span><br>    server &#123;<br>        listen 80;<br>        server_name loadbalancer.example.com;<br><br>        <span class="hljs-comment"># 静态文件缓存</span><br>        location /static/ &#123;<br>            root /var/www/html;<br>            expires 30d;<br>        &#125;<br><br>        <span class="hljs-comment"># 动态请求转发</span><br>        location / &#123;<br>            proxy_pass http://myapp;<br>            proxy_http_version 1.1;<br>            proxy_set_header Upgrade <span class="hljs-variable">$http_upgrade</span>;<br>            proxy_set_header Connection <span class="hljs-string">&#x27;upgrade&#x27;</span>;<br>            proxy_set_header Host <span class="hljs-variable">$host</span>;<br>            proxy_cache_bypass <span class="hljs-variable">$http_upgrade</span>;<br>            proxy_connect_timeout 5s;  <span class="hljs-comment"># 连接超时时间</span><br>        &#125;<br><br>        <span class="hljs-comment"># 健康检查端点</span><br>        location /nginx_status &#123;<br>            stub_status on;<br>            access_log off;<br>            allow 192.168.1.0/24;<br>            deny all;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-监控与调试"><a href="#5-监控与调试" class="headerlink" title="5. 监控与调试"></a><strong>5. 监控与调试</strong></h3><h4 id="5-1-查看实时状态"><a href="#5-1-查看实时状态" class="headerlink" title="5.1 查看实时状态"></a><strong>5.1 查看实时状态</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl http://localhost/nginx_status<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">Active connections: 3 <br>server accepts handled requests<br> 12 12 24 <br>Reading: 0 Writing: 1 Waiting: 2<br></code></pre></td></tr></table></figure>
+
+<h4 id="5-2-日志分析配置"><a href="#5-2-日志分析配置" class="headerlink" title="5.2 日志分析配置"></a><strong>5.2 日志分析配置</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">log_format upstream_log <span class="hljs-string">&#x27;$remote_addr - $remote_user [$time_local] &#x27;</span><br>                       <span class="hljs-string">&#x27;&quot;$request&quot; $status $body_bytes_sent &#x27;</span><br>                       <span class="hljs-string">&#x27;&quot;$http_referer&quot; &quot;$http_user_agent&quot; &#x27;</span><br>                       <span class="hljs-string">&#x27;upstream: $upstream_addr response_time: $upstream_response_time&#x27;</span>;<br><br>access_log /var/log/nginx/access.log upstream_log;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-性能优化建议"><a href="#6-性能优化建议" class="headerlink" title="6. 性能优化建议"></a><strong>6. 性能优化建议</strong></h3><p>1.<strong>连接复用配置</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">proxy_http_version 1.1;<br>proxy_set_header Connection <span class="hljs-string">&quot;&quot;</span>;<br>keepalive 32;  <span class="hljs-comment"># 每个worker保持的连接数</span><br></code></pre></td></tr></table></figure>
+
+<p>2.<strong>缓冲区优化</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">proxy_buffers 16 32k;<br>proxy_buffer_size 64k;<br></code></pre></td></tr></table></figure>
+
+<p>3.<strong>超时控制</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">proxy_connect_timeout 5s;<br>proxy_send_timeout 10s;<br>proxy_read_timeout 15s;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="7-常见问题排查"><a href="#7-常见问题排查" class="headerlink" title="7. 常见问题排查"></a><strong>7. 常见问题排查</strong></h3><h4 id="7-1-502-Bad-Gateway"><a href="#7-1-502-Bad-Gateway" class="headerlink" title="7.1 502 Bad Gateway"></a><strong>7.1 502 Bad Gateway</strong></h4><p>检查项：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">ss -tnlp | grep 8080           <span class="hljs-comment"># 确认后端服务运行</span><br><span class="hljs-built_in">tail</span> -f /var/log/nginx/error.log  <span class="hljs-comment"># 查看详细错误</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="7-2-流量分配不均"><a href="#7-2-流量分配不均" class="headerlink" title="7.2 流量分配不均"></a><strong>7.2 流量分配不均</strong></h4><ul>
+<li>确认是否启用<code>ip_hash</code>导致固定分配</li>
+<li>检查后端服务器的响应时间差异</li>
+</ul>
+<hr>
+<h3 id="8-TLS终止配置"><a href="#8-TLS终止配置" class="headerlink" title="8. TLS终止配置"></a><strong>8. TLS终止配置</strong></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">server &#123;<br>    listen 443 ssl;<br>    ssl_certificate /etc/nginx/ssl/server.crt;<br>    ssl_certificate_key /etc/nginx/ssl/server.key;<br>    <br>    location / &#123;<br>        proxy_pass http://backend;<br>        proxy_set_header X-Forwarded-Proto https;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>配置完成后执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> nginx -t &amp;&amp; <span class="hljs-built_in">sudo</span> systemctl reload nginx<br></code></pre></td></tr></table></figure>
+
+<p>根据实际业务需求选择合适的策略组合，建议先进行压力测试（可使用<code>ab</code>或<code>wrk</code>工具）验证配置效果。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>nginx负载均衡</div>
+      <div>http://bote798.github.io/2025/05/15/nginx负载均衡/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年5月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/16/%E6%99%AE%E7%BD%97%E7%B1%B3%E4%BF%AE%E6%96%AF-prometheus/" title="普罗米修斯(prometheus)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">普罗米修斯(prometheus)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/15/%E5%8D%8E%E4%B8%BA%E8%AE%BE%E5%A4%87%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/" title="华为设备命令大全">
+                        <span class="hidden-mobile">华为设备命令大全</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

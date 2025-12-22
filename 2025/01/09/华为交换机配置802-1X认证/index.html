@@ -1,0 +1,701 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1.802.1X是做什么的？在中型及以上的项目实施中，802.1X是必备的一项配置，简单来说就是检测网络用户的身份，以保证敏感信息的安全性。 ​		在这一验证过程中有以下三种角色：  Supplicant（请求者）：这是尝试访问受保护网络资源的客户端设备。 Authenticator（认证器）：通常是交换机或无线接入点（AP），它充当守门员的角色，只允许经过身份验证的设备访问网络。 Authent">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为交换机配置802.1X认证">
+<meta property="og:url" content="http://bote798.github.io/2025/01/09/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE802-1X%E8%AE%A4%E8%AF%81/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="1.802.1X是做什么的？在中型及以上的项目实施中，802.1X是必备的一项配置，简单来说就是检测网络用户的身份，以保证敏感信息的安全性。 ​		在这一验证过程中有以下三种角色：  Supplicant（请求者）：这是尝试访问受保护网络资源的客户端设备。 Authenticator（认证器）：通常是交换机或无线接入点（AP），它充当守门员的角色，只允许经过身份验证的设备访问网络。 Authent">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/%E5%8D%8E%E4%B8%BAlogo.jpeg">
+<meta property="article:published_time" content="2025-01-09T11:30:10.000Z">
+<meta property="article:modified_time" content="2025-01-16T14:02:15.229Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="网络工程师">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/%E5%8D%8E%E4%B8%BAlogo.jpeg">
+  
+  
+  
+  <title>华为交换机配置802.1X认证 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="华为交换机配置802.1X认证"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-01-09 19:30" pubdate>
+          2025年1月9日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">华为交换机配置802.1X认证</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-802-1X是做什么的？"><a href="#1-802-1X是做什么的？" class="headerlink" title="1.802.1X是做什么的？"></a>1.802.1X是做什么的？</h2><p>在中型及以上的项目实施中，802.1X是必备的一项配置，简单来说就是检测网络用户的身份，以保证敏感信息的安全性。</p>
+<p>​		在这一验证过程中有以下三种角色：</p>
+<ul>
+<li><strong>Supplicant（请求者）</strong>：这是尝试访问受保护网络资源的客户端设备。</li>
+<li><strong>Authenticator（认证器）</strong>：通常是交换机或无线接入点（AP），它充当守门员的角色，只允许经过身份验证的设备访问网络。</li>
+<li><strong>Authentication Server（认证服务器）</strong>：通常是一个RADIUS（Remote Authentication Dial-In User Service）服务器，负责处理来自认证器的身份验证请求，并决定是否授予访问权限。</li>
+</ul>
+<h2 id="2-如何配置802-1X？"><a href="#2-如何配置802-1X？" class="headerlink" title="2.如何配置802.1X？"></a>2.如何配置802.1X？</h2><p>​		一般我们将802.1X配置在<strong>接入层</strong>或者<strong>汇聚层</strong>，以下就是配置命令，另外告诉大家一件事，其实在很多项目中使用这一默认配置就可以了，最多根据要求做一点更改，例如最大在线人数等等。</p>
+<h3 id="1-第一种————在接入层配置"><a href="#1-第一种————在接入层配置" class="headerlink" title="(1)第一种————在接入层配置"></a>(1)第一种————在接入层配置</h3><p><img src="/img/802.1X%E6%8E%A5%E5%85%A5%E5%B1%82.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs CLI">1.配置AAA。<br># 创建并配置RADIUS服务器模板“rd1”。<br>[Switch] radius-server template rd1<br>[Switch-radius-rd1] radius-server authentication 192.168.1.30 1812<br>[Switch-radius-rd1] radius-server shared-key cipher YsHsjx_202206<br>[Switch-radius-rd1] quit<br><br># 创建AAA认证方案“abc”并配置认证方式为RADIUS。<br>[Switch] aaa<br>[Switch-aaa] authentication-scheme abc<br>[Switch-aaa-authen-abc] authentication-mode radius<br>[Switch-aaa-authen-abc] quit<br><br># 创建认证域“example.com”，并在其上绑定AAA认证方案“abc”与RADIUS服务器模板“rd1”。<br>[Switch-aaa] domain example.com<br>[Switch-aaa-domain-example.com] authentication-scheme abc<br>[Switch-aaa-domain-example.com] radius-server rd1<br>[Switch-aaa-domain-example.com] quit<br>[Switch-aaa] quit<br><br># 测试用户是否能够通过RADIUS模板的认证。（已在RADIUS服务器上配置了测试用户test，用户密码YsHsjx_2022061）<br>[Switch] test-aaa test YsHsjx_2022061 radius-template rd1<br>Info: Account test succeeded.<br><br>2.配置802.1X认证。<br># 将NAC配置模式切换成统一模式。<br># 注意：设备默认为统一模式。传统模式与统一模式相互切换后，设备会自动重启。<br>[Switch] authentication unified-mode<br><br># 配置802.1X接入模板“d1”。<br>[Switch] dot1x-access-profile name d1<br>[Switch-dot1x-access-profile-d1] dot1x authentication-method eap<br>[Switch-dot1x-access-profile-d1] dot1x timer client-timeout 30<br>[Switch-dot1x-access-profile-d1] quit<br><br># 注意：802.1X接入模板默认采用EAP中继认证方式。请确保RADIUS服务器支持EAP协议，否则无法处理802.1X认证请求。<br><br># 配置认证模板“p1”，并在其上绑定802.1X接入模板“d1”、指定认证模板下用户的强制认证域为“example.com”。<br>[Switch] authentication-profile name p1<br>[Switch-authen-profile-p1] dot1x-access-profile d1<br>[Switch-authen-profile-p1] access-domain example.com force<br>[Switch-authen-profile-p1] quit<br><br># 在接口GE1/0/2-GE1/0/n上绑定认证模板“p1”，使能802.1X认证。以接口GE1/0/2为例，其他接口配置与其类似。<br>[Switch] interface gigabitethernet 1/0/2<br>[Switch-GigabitEthernet1/0/2] authentication-profile p1<br>[Switch-GigabitEthernet1/0/2] quit<br><br>3.验证配置结果。<br>用户在终端上启动802.1X客户端，输入用户名和密码，开始认证。<br>如果用户输入的用户名和密码验证正确，客户端页面会显示认证成功信息。用户即可访问网络。<br>用户上线后，管理员可在设备上执行命令display access-user access-type dot1x查看在线802.1X用户信息。<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-第二种————在汇聚层配置"><a href="#2-第二种————在汇聚层配置" class="headerlink" title="(2)第二种————在汇聚层配置"></a>(2)第二种————在汇聚层配置</h3><p><img src="/img/802.1X%E6%B1%87%E8%81%9A%E5%B1%82.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><code class="hljs CLI">1.配置SwitchB。<br># 配置802.1X报文透传功能。<br># 下行接口（与用户连接的口GE0/0/2-GE0/0/n）以接口GE0/0/2为例，其他下行接口配置与其类似。（这些连接口下的用户都会触发认证）<br><br>由于认证交换机SwitchA与用户之间存在二层交换机SwitchB，为保证用户能够通过802.1X认证，则务必在SwitchB上配置802.1X报文透传功能。<br><br>[SwitchB] l2protocol-tunnel user-defined-protocol 802.1X protocol-mac 0180-c200-0003 group-mac 0100-0000-0002<br>[SwitchB] interface gigabitethernet 0/0/2<br>[SwitchB-GigabitEthernet0/0/2] l2protocol-tunnel user-defined-protocol 802.1X enable<br>[SwitchB-GigabitEthernet0/0/2] quit<br>[SwitchB] interface gigabitethernet 0/0/1<br>[SwitchB-GigabitEthernet0/0/1] l2protocol-tunnel user-defined-protocol 802.1X enable<br>[SwitchB-GigabitEthernet0/0/1] quit<br><br>2.配置SwitchA。<br># 配置AAA。<br>#	（1）创建并配置RADIUS服务器模板“rd1”。<br>[SwitchA] radius-server template rd1<br>[SwitchA-radius-rd1] radius-server authentication 192.168.1.30 1812<br>[SwitchA-radius-rd1] radius-server shared-key cipher YsHsjx_202206<br>[SwitchA-radius-rd1] quit<br><br>#	（2）创建AAA认证方案“abc”并配置认证方式为RADIUS。<br>[SwitchA] aaa<br>[SwitchA-aaa] authentication-scheme abc<br>[SwitchA-aaa-authen-abc] authentication-mode radius<br>[SwitchA-aaa-authen-abc] quit<br><br>#	（3）创建认证域“example.com”，并在其上绑定AAA认证方案“abc”与RADIUS服务器模板“rd1”。<br>[SwitchA-aaa] domain example.com<br>[SwitchA-aaa-domain-example.com] authentication-scheme abc<br>[SwitchA-aaa-domain-example.com] radius-server rd1<br>[SwitchA-aaa-domain-example.com] quit<br>[SwitchA-aaa] quit<br><br>#	（4）测试用户是否能够通过RADIUS模板的认证。（已在RADIUS服务器上配置了测试用户test，用户密码YsHsjx_2022061）<br>[SwitchA] test-aaa test YsHsjx_2022061 radius-template rd1<br>Info: Account test succeeded.<br><br># 配置802.1X认证。<br><br>#	(1) 将NAC配置模式切换成统一模式。<br>#	注意：设备默认为统一模式。传统模式与统一模式相互切换后，设备会自动重启。<br>[SwitchA] authentication unified-mode<br><br>#	(2) 配置802.1X接入模板“d1”。<br>#	注意：802.1X接入模板默认采用EAP认证方式。请确保RADIUS服务器支持EAP协议，否则无法处理802.1X认证请求。<br>[SwitchA] dot1x-access-profile name d1<br>[SwitchA-dot1x-access-profile-d1] dot1x authentication-method eap<br>[SwitchA-dot1x-access-profile-d1] dot1x timer client-timeout 30<br>[SwitchA-dot1x-access-profile-d1] quit<br><br>#	(3) 配置认证模板“p1”，并在其上绑定802.1X接入模板“d1”、指定认证模板下用户的强制认证域为“example.com”、指定用户接入模式为多用户单独认证接入模式、最大接入用户数为100。<br>[SwitchA] authentication-profile name p1<br>[SwitchA-authen-profile-p1] dot1x-access-profile d1<br>[SwitchA-authen-profile-p1] access-domain example.com force<br>[SwitchA-authen-profile-p1] authentication mode multi-authen max-user 100<br>[SwitchA-authen-profile-p1] quit<br><br># 	(4) 在接口GE1/0/2上绑定认证模板“p1”，使能802.1X认证。<br>[SwitchA] interface gigabitethernet 1/0/2<br>[SwitchA-GigabitEthernet1/0/2] authentication-profile p1<br>[SwitchA-GigabitEthernet1/0/2] quit<br><br>验证配置结果。<br>用户在终端上启动802.1X客户端，输入用户名和密码，开始认证。<br>如果用户输入的用户名和密码验证正确，客户端页面会显示认证成功信息。用户即可访问网络。<br>用户上线后，管理员可在设备上执行命令display access-user 查看用户在线情况<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-其他查看用户在线情况命令："><a href="#3-其他查看用户在线情况命令：" class="headerlink" title="3.其他查看用户在线情况命令："></a>3.其他查看用户在线情况命令：</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs CLI"># 查看指定接口上的802.1X统计信息<br>display dot1x statistics interface interface-type interface-number<br># 查看某接口的在线用户情况<br>display access-user [interface interface-type interface-number]<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-最后"><a href="#4-最后" class="headerlink" title="4.最后"></a>4.最后</h2><p>​		注意配置的交换机型号与类型，如果是CE交换机，配置命令会有不同，请转至</p>
+<p>华为官网文档：<a target="_blank" rel="noopener" href="https://support.huawei.com/enterprise/zh/doc/index.html">https://support.huawei.com/enterprise/zh/doc/index.html</a></p>
+<p>查看参考。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" class="category-chain-item">网络工程师</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" class="category-chain-item">交换机</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" class="print-no-link">#网络工程师</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>华为交换机配置802.1X认证</div>
+      <div>http://bote798.github.io/2025/01/09/华为交换机配置802-1X认证/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年1月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年1月16日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/01/10/docker%E7%B3%BB%E5%88%97-%E4%B8%80-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/" title="docker系列(一)————搭建自己的docker镜像仓库">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">docker系列(一)————搭建自己的docker镜像仓库</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/01/06/snmp-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E9%85%8D%E7%BD%AE/" title="snmp_服务端配置">
+                        <span class="hidden-mobile">snmp_服务端配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

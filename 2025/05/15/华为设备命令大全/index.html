@@ -1,0 +1,809 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="用户视图登陆设备后，直接进入用户模式，只能执行少量查看配置的命令 1234Info: The max number of VTY users is 10, and the number      of current VTY users on line is 1.      The current login time is 2020-04-10 12:15:00+00:00.&lt;ZD_agg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="华为设备命令大全">
+<meta property="og:url" content="http://bote798.github.io/2025/05/15/%E5%8D%8E%E4%B8%BA%E8%AE%BE%E5%A4%87%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="用户视图登陆设备后，直接进入用户模式，只能执行少量查看配置的命令 1234Info: The max number of VTY users is 10, and the number      of current VTY users on line is 1.      The current login time is 2020-04-10 12:15:00+00:00.&lt;ZD_agg">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/%E5%8D%8E%E4%B8%BAlogo.jpeg">
+<meta property="article:published_time" content="2025-05-15T07:45:15.000Z">
+<meta property="article:modified_time" content="2025-05-15T07:58:11.244Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="网络工程师">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/%E5%8D%8E%E4%B8%BAlogo.jpeg">
+  
+  
+  
+  <title>华为设备命令大全 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="华为设备命令大全"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-15 15:45" pubdate>
+          2025年5月15日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">华为设备命令大全</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="用户视图"><a href="#用户视图" class="headerlink" title="用户视图"></a>用户视图</h3><p>登陆设备后，直接进入用户模式，只能执行少量查看配置的命令</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css">Info: The max number of VTY users is <span class="hljs-number">10</span>, and the number<br>      of current VTY users on line is <span class="hljs-number">1</span>.<br>      The current login time is <span class="hljs-number">2020</span>-<span class="hljs-number">04</span>-<span class="hljs-number">10</span> <span class="hljs-number">12</span>:<span class="hljs-number">15</span>:<span class="hljs-number">00</span>+<span class="hljs-number">00</span>:<span class="hljs-number">00</span>.<br>&lt;ZD_agg_5720&gt;<br></code></pre></td></tr></table></figure>
+
+<h3 id="系统视图"><a href="#系统视图" class="headerlink" title="系统视图"></a>系统视图</h3><p>用户模式下，输入system-view命令进入视图模式，可执行设备全局配置的命令</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">&lt;ZD_agg_5720&gt;system-view <br>Enter system view, return user view with Ctrl+Z.<br><span class="hljs-selector-attr">[ZD_agg_5720]</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="局部视图"><a href="#局部视图" class="headerlink" title="局部视图"></a>局部视图</h3><p>系统视图模式下，输入局部配置命令，进入局部对像的配置视图。如interface GE 1&#x2F;0&#x2F;0，进入GE1&#x2F;0&#x2F;0端口配置模式</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css">&lt;ZD_agg_5720&gt;system-view <br>Enter system view, return user view with Ctrl+Z.<br><span class="hljs-selector-attr">[ZD_agg_5720]</span>interface GigabitEthernet <span class="hljs-number">1</span>/<span class="hljs-number">0</span>/<span class="hljs-number">1</span><br><span class="hljs-selector-attr">[ZD_agg_5720-GigabitEthernet1/0/1]</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><h3 id="命令简介"><a href="#命令简介" class="headerlink" title="命令简介"></a>命令简介</h3><table>
+<thead>
+<tr>
+<th><strong>命令</strong></th>
+<th><strong>缩写</strong></th>
+<th><strong>解释</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>display</td>
+<td>dis</td>
+<td>查看相应对象信息</td>
+</tr>
+<tr>
+<td>undo</td>
+<td></td>
+<td>撤消或反向操作对应命令</td>
+</tr>
+<tr>
+<td>system-view</td>
+<td>sy</td>
+<td>进入系统视图</td>
+</tr>
+<tr>
+<td>sysname</td>
+<td></td>
+<td>设置交换机名称</td>
+</tr>
+<tr>
+<td>quit</td>
+<td>q</td>
+<td>退出当前视图</td>
+</tr>
+<tr>
+<td>reboot</td>
+<td></td>
+<td>交换机重启</td>
+</tr>
+<tr>
+<td>reset</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>restart</td>
+<td></td>
+<td>重新启动当前接口</td>
+</tr>
+<tr>
+<td>shutdown</td>
+<td></td>
+<td>关闭当前接口</td>
+</tr>
+</tbody></table>
+<h3 id="信息查看命令"><a href="#信息查看命令" class="headerlink" title="信息查看命令"></a>信息查看命令</h3><h3 id="交换机信息查看"><a href="#交换机信息查看" class="headerlink" title="交换机信息查看"></a>交换机信息查看</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> version  查看交换机软件版本<br><span class="hljs-attribute">display</span> clock    查看交换机时钟<br></code></pre></td></tr></table></figure>
+
+<h3 id="交换机配置查看"><a href="#交换机配置查看" class="headerlink" title="交换机配置查看"></a>交换机配置查看</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> saved-configuration    显示系统保存配置<br><span class="hljs-attribute">display</span> current-configuration  显示系统当前配置<br></code></pre></td></tr></table></figure>
+
+<h3 id="当前对象信息查看"><a href="#当前对象信息查看" class="headerlink" title="当前对象信息查看"></a>当前对象信息查看</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> this                    显示当前信息。<br><span class="hljs-attribute">display</span> this include-default    显示当前接口视图下的接口信息，包括默认值。<br><span class="hljs-attribute">display</span> this interface          显示当前接口视图下的接口信息。<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看接口"><a href="#查看接口" class="headerlink" title="查看接口"></a>查看接口</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> interface               查看接口当前运行状态和接口统计信息<br><span class="hljs-attribute">display</span> interface brief         查看接口状态和配置的简要信息。<br><span class="hljs-attribute">display</span> interface description   查看指定接口的描述信息<br><span class="hljs-attribute">display</span> interface vlanif        查看VLANIF接口的状态信息、配置信息和统计信息。<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看IP相关"><a href="#查看IP相关" class="headerlink" title="查看IP相关"></a>查看IP相关</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> ip interface             查看接口与IP相关的配置和统计信息，包括接口接收和发送的报文数、字节数和组播报文数，以及接口接收、发送、转发和丢弃的广播报文数。<br><span class="hljs-attribute">display</span> ip interface brief       看接口与IP相关的简要信息，包括IP地址、子网掩码、物理链路和协议的Up/Down状态以及处于不同状态的接口数目。<br><span class="hljs-attribute">display</span> ip interface description 查看接口与IP相关的简要信息，包括IP地址、子网掩码、物理层状态、链路层协议状态，及接口描述信息和处于不同状态的接口数目。<br><span class="hljs-attribute">display</span> ip pool                                                          显示所有ip pool<br><span class="hljs-attribute">display</span> ip pool name &#123;pool name&#125; &#123;<span class="hljs-attribute">all</span>|conflict|expired|used&#125;             显示ip pool详细信息<br><span class="hljs-attribute">display</span> ip host                查看静态DNS表项<br><span class="hljs-attribute">display</span> ip socket              查看已创建的IPv4 Socket信息。<br><span class="hljs-attribute">display</span> ip statistics          显示IP流量统计信息。<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看路由"><a href="#查看路由" class="headerlink" title="查看路由"></a>查看路由</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> ip routing-<span class="hljs-selector-tag">table</span>        显示路由信息<br><span class="hljs-attribute">display</span> ospf peer               查看ospf邻接等信息<br><span class="hljs-attribute">display</span> ospf peer brief         查看ospf邻接等简要信息<br><span class="hljs-attribute">display</span> rip                     查看rip路由信息<br></code></pre></td></tr></table></figure>
+
+<h3 id="网络及流量"><a href="#网络及流量" class="headerlink" title="网络及流量"></a>网络及流量</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> network status &#123; <span class="hljs-attribute">all</span>|tcp|udp|port port-number &#125;   显示IP流量统计信息 <br><span class="hljs-attribute">display</span> tcp statistics   查看TCP流量统计信息<br><span class="hljs-attribute">display</span> udp statistics   查看UDP流量统计信息<br></code></pre></td></tr></table></figure>
+
+<h3 id="VLAN查看"><a href="#VLAN查看" class="headerlink" title="VLAN查看"></a>VLAN查看</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-attribute">display</span> vlan                              显示VLAN信息<br><span class="hljs-attribute">display</span> vlan &#123;pvid&#125; verbose               查看vlan的详细信息<br><span class="hljs-attribute">display</span> port vlan                         查看VLAN中包含的接口信息<br><span class="hljs-attribute">display</span> sub-vlan                          查看Sub-VLAN类型的VLAN表项信息<br><span class="hljs-attribute">display</span> super-vlan                        查看Super-VLAN类型的VLAN表项信息<br><span class="hljs-attribute">display</span> mac-vlan mac-<span class="hljs-selector-tag">address</span> <span class="hljs-attribute">all</span>          查看所有MAC地址划分VLAN的配置信息<br><span class="hljs-attribute">display</span> mac-vlan vlan <span class="hljs-number">2</span>                   查看vlan <span class="hljs-number">2</span> MAC地址划分VLAN的配置信息<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看ACL配置"><a href="#查看ACL配置" class="headerlink" title="查看ACL配置"></a>查看ACL配置</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">display <span class="hljs-keyword">acl</span> &#123;all <span class="hljs-operator">|</span> name <span class="hljs-operator">|</span> ipv6&#125;                         查看ACL<br>display traffic classifier user<span class="hljs-operator">-</span>defined                 查看用户定义的流分类<br>display traffic behavior user<span class="hljs-operator">-</span>defined                   查看用户定义的流行为<br>display traffic policy user<span class="hljs-operator">-</span><span class="hljs-keyword">defined</span> &#123;policy name&#125;       查看用户定义的流策略<br>display traffic<span class="hljs-operator">-</span><span class="hljs-keyword">applied</span> &#123;inbound <span class="hljs-operator">|</span> outbound <span class="hljs-operator">|</span> <span class="hljs-keyword">interface</span> <span class="hljs-operator">|</span> vlan&#125;  查看流策略应用情况<br><br>display traffic <span class="hljs-keyword">policy</span> &#123;<span class="hljs-keyword">global</span> <span class="hljs-operator">|</span> <span class="hljs-keyword">interface</span> <span class="hljs-operator">|</span> statistics <span class="hljs-operator">|</span> vlan &#125; &#123;inbound <span class="hljs-operator">|</span> outbound&#125;   查看更多流策略信息<br>display traffic policy <span class="hljs-keyword">statistics</span> &#123;<span class="hljs-keyword">global</span> <span class="hljs-operator">|</span> <span class="hljs-keyword">interface</span> <span class="hljs-operator">|</span> vlan&#125; &#123;inbound <span class="hljs-operator">|</span> outbound&#125;      查看流策略统计信息<br><br>display traffic<span class="hljs-operator">-</span>filter applied<span class="hljs-operator">-</span>record                   查看acl应用的接口<br></code></pre></td></tr></table></figure>
+
+<h3 id="查看NAT配置"><a href="#查看NAT配置" class="headerlink" title="查看NAT配置"></a>查看NAT配置</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">#路由器命令<br>display nat <span class="hljs-keyword">static</span> &#123;acl <span class="hljs-operator">|</span> <span class="hljs-keyword">global</span> <span class="hljs-operator">|</span> inside <span class="hljs-operator">|</span> <span class="hljs-keyword">interface</span>&#125;         查看静态NAT信息<br>display nat <span class="hljs-keyword">session</span> &#123;all <span class="hljs-operator">|</span> dest <span class="hljs-operator">|</span> number <span class="hljs-operator">|</span> protocol <span class="hljs-operator">|</span> source&#125;  查看动态NAT信息<br>display nat <span class="hljs-keyword">server</span> &#123;acl <span class="hljs-operator">|</span> <span class="hljs-keyword">global</span> <span class="hljs-operator">|</span> inside <span class="hljs-operator">|</span> <span class="hljs-keyword">interface</span>&#125;         查看NAT server信息<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置管理命令"><a href="#配置管理命令" class="headerlink" title="配置管理命令"></a>配置管理命令</h3><h3 id="端口管理"><a href="#端口管理" class="headerlink" title="端口管理"></a>端口管理</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">port                                               配置接口的缺省VLAN并加入该VLAN<br>port description                                   配置接口的描述信息，描述与接口相连的设备类型。<br>port gigabitethernet <span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">1</span> <span class="hljs-keyword">to</span> <span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">4</span><br>port <span class="hljs-keyword">default</span> vlan                                  配置接口的缺省VLAN并同时加入这个VLAN。<br>port link<span class="hljs-operator">-</span><span class="hljs-keyword">type</span> &#123;access <span class="hljs-operator">|</span> hybird <span class="hljs-operator">|</span> trunk&#125;           配置接口的链路类型<br>port trunk allow<span class="hljs-operator">-</span>pass <span class="hljs-keyword">vlan</span> &#123;vlanid&#125;                将trunk接口加入vlan<br></code></pre></td></tr></table></figure>
+
+<h3 id="端口配置"><a href="#端口配置" class="headerlink" title="端口配置"></a>端口配置</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">speed  &#123;<span class="hljs-number">10</span>|<span class="hljs-number">100</span>|<span class="hljs-keyword">auto</span>&#125;                             配置端口工作速率<br>duplex &#123;half|full|<span class="hljs-keyword">auto</span>&#125;                          配置端口工作状态<br></code></pre></td></tr></table></figure>
+
+<h3 id="端口组操作"><a href="#端口组操作" class="headerlink" title="端口组操作"></a>端口组操作</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs fsharp">display port<span class="hljs-operator">-</span><span class="hljs-keyword">group</span>  &#123;all&#125;                                     查看端口组<br>port<span class="hljs-operator">-</span><span class="hljs-keyword">group</span> &#123;<span class="hljs-built_in">id</span>&#125;                                               创建端口组<br>group<span class="hljs-operator">-</span><span class="hljs-keyword">member</span> gigabitethernet <span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">2</span> <span class="hljs-keyword">to</span> gigabitethernet <span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">0</span><span class="hljs-operator">/</span><span class="hljs-number">10</span>  将<span class="hljs-number">2</span>到<span class="hljs-number">10</span>端口加入端口组<br></code></pre></td></tr></table></figure>
+
+<h3 id="VLAN管理"><a href="#VLAN管理" class="headerlink" title="VLAN管理"></a>VLAN管理</h3><figure class="highlight fsharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs fsharp"><span class="hljs-keyword">vlan</span> &#123;<span class="hljs-built_in">id</span>&#125;                      创建VLAN并进入VLAN视图，如果VLAN已存在，直接进入该VLAN的视图。<br>vlan batch <span class="hljs-number">10</span> <span class="hljs-keyword">to</span> <span class="hljs-number">20</span>            批量创建VLAN<br>vlan range <span class="hljs-number">10</span> <span class="hljs-keyword">to</span> <span class="hljs-number">20</span>            创建临时VLAN组，并进入VLAN<span class="hljs-operator">-</span>Range视图<br>vlan statistics                配置VLAN的流量统计模式，即配置按包或按字节进行VLAN流量统计。<br>vlan statistics interval       配置VLAN的流量统计的时间间隔<br>ip address                     用来配置接口的IP地址。 <br></code></pre></td></tr></table></figure>
+
+<h3 id="接口管理"><a href="#接口管理" class="headerlink" title="接口管理"></a>接口管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">interface gigabitethernet <span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">1</span>     进入指定的接口或子接口视图，进入<span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">1</span>的接口<br></code></pre></td></tr></table></figure>
+
+<h3 id="DNS管理"><a href="#DNS管理" class="headerlink" title="DNS管理"></a>DNS管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs css">#查看<br><span class="hljs-attribute">display</span> dns dynamic-host       查看动态DNS表项<br><span class="hljs-attribute">display</span> dns domain             查看域名后缀的相关信息<br><span class="hljs-attribute">display</span> dns server             查看DNS服务器的相关信息<br>#设置<br>dns domain domain-name    命令用来配置域名后缀，如 dns domain com<span class="hljs-selector-class">.cn</span>。<br>dns resolve               命令用来使能动态域名解析功能<br>dns server &#123;ip&#125;           命令用来配置DNS服务器的IP地址<br>ip host &#123;domain&#125; &#123;ip&#125;     命令用来配置静态DNS表项 ip host www<span class="hljs-selector-class">.huawei</span><span class="hljs-selector-class">.com</span> <span class="hljs-number">10.10</span>.<span class="hljs-number">10.4</span>。<br></code></pre></td></tr></table></figure>
+
+<h3 id="DHCP管理"><a href="#DHCP管理" class="headerlink" title="DHCP管理"></a>DHCP管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css">dhcp enable                          命令用来开启DHCP功能。 <br>dhcp <span class="hljs-selector-tag">select</span> global                   从全局配置中获取dhcp配置<br></code></pre></td></tr></table></figure>
+
+<h3 id="ACL管理"><a href="#ACL管理" class="headerlink" title="ACL管理"></a>ACL管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs css">acl &#123;name | number | ipv6&#125;                     创建acl<br>rule <span class="hljs-selector-attr">[&#123;ruleid&#125;]</span> permit ip <span class="hljs-selector-tag">source</span> &#123;源ip&#125; &#123;反掩码&#125; <span class="hljs-selector-attr">[ destination &#123;源ip&#125; &#123;反掩码&#125; ]</span>  创建允许规则<br>rule <span class="hljs-selector-attr">[&#123;ruleid&#125;]</span> deny ip <span class="hljs-selector-tag">source</span> &#123;源ip&#125; &#123;反掩码&#125; <span class="hljs-selector-attr">[ destination &#123;源ip&#125; &#123;反掩码&#125;  ]</span>   创建拒绝规则<br><br>traffic-<span class="hljs-attribute">filter</span> &#123;inbound | outbound&#125; acl &#123;acl number&#125;              在接口上应用acl规则<br><br>#创建流分类<br>traffic classifier &#123;classifier name&#125; operator &#123; and |or &#125;<br>if-match acl &#123;acl number&#125;                     为流分类设置匹配规则<br>#创建流行为<br>traffic behavior &#123;behavior name&#125;                      <br>permit | deny | redirect                      为流行为配置动作<br>#创建流策略<br>traffic policy &#123;policy name&#125;        <br>classifier &#123;classifier name&#125; behavior &#123;behavior name&#125;             关联流分类与流行为<br>#将流策略应用到接口<br>interface g0/<span class="hljs-number">0</span>/<span class="hljs-number">1</span><br>traffic-policy &#123;policy name&#125;  &#123;inbound | outbound&#125;                 接口绑定流策略<br></code></pre></td></tr></table></figure>
+
+<h3 id="NAT管理"><a href="#NAT管理" class="headerlink" title="NAT管理"></a>NAT管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs css">#边界路由器接口上配置静态NAT<br>nat static global &#123;外部ip&#125; inside &#123;内部ip&#125;                 添加静态nat，内外部ip一对一<br>#动态NAT，使用dis nat session查看<br>nat <span class="hljs-selector-tag">address</span>-group &#123;groupid&#125; &#123;ip开始&#125; &#123;ip结束&#125;                     添加外部可用地址池<br>nat outbound &#123;acl id&#125; <span class="hljs-selector-tag">address</span>-group &#123;<span class="hljs-selector-tag">address</span>-group id&#125; no-pat    添加动态地址转换<br><span class="hljs-selector-id">#NAPT</span>，使用dis nat session查看<br>nat outbound &#123;acl id&#125; <span class="hljs-selector-attr">[address-group &#123;address-group id&#125;]</span>         添加动态端口地址转换<br><span class="hljs-selector-id">#NAT</span> server，使用dis nat server查看<br>nat server protocol tcp global &#123;外部ip&#125; &#123;外部端口&#125; inside &#123;内部ip&#125; &#123;内部端口&#125;   添加nat server转换<br></code></pre></td></tr></table></figure>
+
+<h3 id="用户管理"><a href="#用户管理" class="headerlink" title="用户管理"></a>用户管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs css">#查看本地用户<br><span class="hljs-attribute">display</span> local-user<br>#查看用户接口<br><span class="hljs-attribute">display</span> user-interface<br>#设置用户vty0为<span class="hljs-number">4</span>个并发<br>user-interface vty <span class="hljs-number">0</span> <span class="hljs-number">4</span><br>#进入用户console0接口<br>user-interface console <span class="hljs-number">0</span><br>#用户管理<br>local-user &#123;username&#125; password cipher &#123;password&#125;<br>local-user &#123;username&#125; level <span class="hljs-number">15</span><br>local-user &#123;username&#125; service-type telnet terminal ssh<br></code></pre></td></tr></table></figure>
+
+<h3 id="绑定IP与MAC"><a href="#绑定IP与MAC" class="headerlink" title="绑定IP与MAC"></a>绑定IP与MAC</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs css">user-bind ip-<span class="hljs-selector-tag">address</span> <span class="hljs-number">10.0</span>.<span class="hljs-number">0.2</span> mac-<span class="hljs-selector-tag">address</span> <span class="hljs-number">0001</span>-<span class="hljs-number">0203</span>-<span class="hljs-number">0405</span><br>user privilege level <span class="hljs-number">3</span><br></code></pre></td></tr></table></figure>
+
+<p>LEVEL 0(访问级)：可以执行用于网络诊断等功能的命令。包括ping、tracert、telnet等命令，执行该级别命令的结果不能被保存到配置文件中。<br>LEVEL 1(监控级)：可以执行用于系统维护、业务故障诊断等功能的命令。包括debugging、terminal等命令，执行该级别命令的结果不能被保存到配置文件中。<br>LEVEL 2(系统级)：可以执行用于业务配置的命令，主要包括路由等网络层次的命令，用于向用户提供网络服务。<br>LEVEL 3(管理级)：最高级，可以运行所有命令：关系到系统的基本运行、系统支撑模块功能的命令，这些命令对业务提供支撑作用。包括文件系统、FTP、TFTP、XModem下载、用户管理命令、级别设置命令等。</p>
+<h3 id="日志与统计"><a href="#日志与统计" class="headerlink" title="日志与统计"></a>日志与统计</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#打开统计</span><br>display counters               查看接口的流量统计计数<br>statistic <span class="hljs-built_in">enable</span><br>trace mac <span class="hljs-built_in">enable</span><br>trace mac aa99-6600-5600 vlan 2<br></code></pre></td></tr></table></figure>
+
+<h3 id="其它命令"><a href="#其它命令" class="headerlink" title="其它命令"></a>其它命令</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-attribute">display</span> stp                   显示生成树信息<br><span class="hljs-attribute">display</span> mac-<span class="hljs-selector-tag">address</span>           显示MAC地址表<br><span class="hljs-attribute">display</span> bridge mac-<span class="hljs-selector-tag">address</span>    查看当前桥接设备mac地址<br><span class="hljs-attribute">display</span> arp                   显示ARP信息表<br><span class="hljs-attribute">display</span> voice-vlan oui                          查看Voice VLAN的OUI及其相关属性。<br><span class="hljs-attribute">display</span> voice-vlan status                       查看当前Voice VLAN的相关信息<br><br>mac-vlan mac-<span class="hljs-selector-tag">address</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="操作实战"><a href="#操作实战" class="headerlink" title="操作实战"></a>操作实战</h3><h3 id="VLAN操作"><a href="#VLAN操作" class="headerlink" title="VLAN操作"></a>VLAN操作</h3><p>创建vlan，设置vlan的ip，并将端口加入vlan中。</p>
+<figure class="highlight vhdl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs vhdl">#进入全局配置视图<br>&lt;Huawei&gt; system-<span class="hljs-keyword">view</span><br>#新建vlan2<br>[Huawei] vlan <span class="hljs-number">2</span><br>#进入vlan2的接口视图<br>[Huawei] interface vlan <span class="hljs-number">2</span><br>#设置vlan2的三层网关路由<br>[Huawei-Vlanif2] ip address <span class="hljs-number">10.0</span>.<span class="hljs-number">0.1</span> <span class="hljs-number">255.255</span>.<span class="hljs-number">255.0</span><br>#进入<span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">1</span>接口，配置为<span class="hljs-keyword">access</span>接口并加入vlan2中<br>[Huawei] interface GigabitEthernet <span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">1</span><br>[Huawei-GigabitEthernet0/<span class="hljs-number">0</span>/<span class="hljs-number">1</span>] <span class="hljs-keyword">port</span> link-<span class="hljs-keyword">type</span> <span class="hljs-keyword">access</span><br>[Huawei-GigabitEthernet0/<span class="hljs-number">0</span>/<span class="hljs-number">1</span>] <span class="hljs-keyword">port</span> <span class="hljs-keyword">default</span> vlan <span class="hljs-number">2</span><br>#进入<span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">2</span>接口，配置为trunk接口并加入vlan2中<br>[Huawei] interface GigabitEthernet <span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">2</span><br>[Huawei-GigabitEthernet0/<span class="hljs-number">0</span>/<span class="hljs-number">2</span>] <span class="hljs-keyword">port</span> link-<span class="hljs-keyword">type</span> trunk<br>[Huawei-GigabitEthernet0/<span class="hljs-number">0</span>/<span class="hljs-number">2</span>] <span class="hljs-keyword">port</span> trunk allow-pass vlan <span class="hljs-number">2</span><br>#查看端口配置的信息<br>[Huawei-GigabitEthernet0/<span class="hljs-number">0</span>/<span class="hljs-number">2</span>] dis this<br>#进入vlan2，将<span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">2</span>到<span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">5</span>端口加入到vlan2中（<span class="hljs-keyword">port</span> link-<span class="hljs-keyword">type</span>需要是<span class="hljs-keyword">access</span>类型）<br>[Huawei] vlan <span class="hljs-number">2</span><br>[Huawei-vlan2] <span class="hljs-keyword">port</span> GigabitEthernet <span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">2</span> <span class="hljs-keyword">to</span> <span class="hljs-number">0</span>/<span class="hljs-number">0</span>/<span class="hljs-number">5</span> <br></code></pre></td></tr></table></figure>
+
+<h3 id="端口组操作-1"><a href="#端口组操作-1" class="headerlink" title="端口组操作"></a>端口组操作</h3><p>需要对多个端口进行相同操作时，可以创建端口组进行批量操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs CLI">#创建端口组1，进行批量端口操作<br>[Huawei] port-group 1<br>#将6到10端口加入端口组<br>[Huawei-port-group-1] group-member gigabitethernet 0/0/6 to gigabitethernet 0/0/10<br>#批量将2~10端口修改为access模式<br>[Huawei-port-group-1] port link-type access<br>#批量将6~10端口加入到vlan 2中<br>[Huawei-port-group-1] port default vlan 2<br></code></pre></td></tr></table></figure>
+
+<h3 id="IP-POOL操作"><a href="#IP-POOL操作" class="headerlink" title="IP POOL操作"></a>IP POOL操作</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs csharp">&lt;Huawei&gt; system-view<br><span class="hljs-meta">#进入ip pool中</span><br>[<span class="hljs-meta">Huawei</span>] ip pool vlan10<br><span class="hljs-meta">#在ip pool中添加dns server</span><br>[<span class="hljs-meta">Huawei-ip-pool-vlan10</span>] dns-list <span class="hljs-number">8.8</span><span class="hljs-number">.8</span><span class="hljs-number">.8</span><br><span class="hljs-meta">#设置网关</span><br>[<span class="hljs-meta">Huawei-ip-pool-vlan10</span>] gateway-list <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><br><span class="hljs-meta">#设置ip pool的ip段和池，需要与vlanif接口配置匹配，否则ip分配不了</span><br>[<span class="hljs-meta">Huawei-ip-pool-vlan10</span>] network <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> mask <span class="hljs-number">255.255</span><span class="hljs-number">.255</span><span class="hljs-number">.0</span><br><span class="hljs-meta">#过期时间</span><br>[<span class="hljs-meta">Huawei-ip-pool-vlan10</span>] lease day <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="DHCP操作"><a href="#DHCP操作" class="headerlink" title="DHCP操作"></a>DHCP操作</h3><figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs perl">&lt;Huawei&gt; <span class="hljs-keyword">system</span>-view<br><span class="hljs-comment">#全局打开DHCP服务</span><br>[Huawei] dhcp enable<br><span class="hljs-comment">#进入vlan的接口视图</span><br>[Huawei] interface vlanif <span class="hljs-number">2</span><br><span class="hljs-comment">#设置vlan2的三层网关路由</span><br>[Huawei-Vlanif2] ip address <span class="hljs-number">10.0</span>.<span class="hljs-number">0</span>.<span class="hljs-number">1</span> <span class="hljs-number">255.255</span><span class="hljs-number">.255</span>.<span class="hljs-number">0</span><br><span class="hljs-comment">#从全局配置中获取dhcp配置</span><br>[Huawei-Vlanif2] dhcp <span class="hljs-keyword">select</span> global<br></code></pre></td></tr></table></figure>
+
+<h3 id="静态添加路由"><a href="#静态添加路由" class="headerlink" title="静态添加路由"></a>静态添加路由</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs csharp">&lt;Huawei&gt; system-view<br>&lt;Huawei&gt; display ip routing-table<br><span class="hljs-meta">#ip route-static 目的ip  目标地址掩码  下一跳ip</span><br>[<span class="hljs-meta">Huawei</span>] ip route-<span class="hljs-keyword">static</span> <span class="hljs-number">10.0</span><span class="hljs-number">.1</span><span class="hljs-number">.0</span> <span class="hljs-number">255.255</span><span class="hljs-number">.255</span><span class="hljs-number">.0</span> <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><br><span class="hljs-meta">#删除路由</span><br>[<span class="hljs-meta">Huawei</span>] undo ip route-<span class="hljs-keyword">static</span> <span class="hljs-number">10.0</span><span class="hljs-number">.1</span><span class="hljs-number">.0</span> <span class="hljs-number">255.255</span><span class="hljs-number">.255</span><span class="hljs-number">.0</span> <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="RIP路由管理"><a href="#RIP路由管理" class="headerlink" title="RIP路由管理"></a>RIP路由管理</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs csharp">&lt;Huawei&gt; system-view<br><span class="hljs-meta">#修改loopback0地址</span><br>[<span class="hljs-meta">Huawei</span>] <span class="hljs-built_in">int</span> LoopBack <span class="hljs-number">0</span><br>[<span class="hljs-meta">Huawei-LoopBack0</span>] ip address <span class="hljs-number">1.1</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span> <span class="hljs-number">0</span><br><span class="hljs-meta">#创建rip进程</span><br>[<span class="hljs-meta">Huawei</span>] rip <span class="hljs-number">1</span><br><span class="hljs-meta">#启动版本2</span><br>[<span class="hljs-meta">Huawei-rip-1</span>] version <span class="hljs-number">2</span><br><span class="hljs-meta">#宣告网段</span><br>[<span class="hljs-meta">Huawei</span>] network <span class="hljs-number">10.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><br>[<span class="hljs-meta">Huawei</span>] network <span class="hljs-number">1.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="OSPF路由管理"><a href="#OSPF路由管理" class="headerlink" title="OSPF路由管理"></a>OSPF路由管理</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs csharp">&lt;Huawei&gt; system-view<br><span class="hljs-meta">#创建ospf</span><br>[<span class="hljs-meta">Huawei</span>] ospf <span class="hljs-number">1</span> router-id <span class="hljs-number">1.1</span><span class="hljs-number">.1</span><span class="hljs-number">.1</span><br><span class="hljs-meta">#创建area0区域</span><br>[<span class="hljs-meta">Huawei-ospf-1</span>] area <span class="hljs-number">0</span><br><span class="hljs-meta">#加入192.168.0.0/24子网</span><br>[<span class="hljs-meta">Huawei-ospf-1-area-0.0.0.0</span>] network <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.255</span><br>[<span class="hljs-meta">Huawei-ospf-1-area-0.0.0.0</span>]dis <span class="hljs-keyword">this</span><br><span class="hljs-meta">#</span><br> area <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><br>  network <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.255</span><br><span class="hljs-meta">#</span><br>[<span class="hljs-meta">Huawei-ospf-1-area-0.0.0.0</span>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="ACL管理-1"><a href="#ACL管理-1" class="headerlink" title="ACL管理"></a>ACL管理</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs css">&lt;Huawei&gt; system-view<br>#配置acl<br><span class="hljs-selector-attr">[Huawei]</span> acl <span class="hljs-number">3000</span><br><span class="hljs-selector-attr">[Huawei-acl-adv-3000]</span> rule permit ip <span class="hljs-selector-tag">source</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">1.0</span> <span class="hljs-number">0.0</span>.<span class="hljs-number">0.255</span> destination <span class="hljs-number">192.168</span>.<span class="hljs-number">2.0</span> <span class="hljs-number">0.0</span>.<span class="hljs-number">0.255</span><br><span class="hljs-selector-attr">[Huawei-acl-adv-3000]</span> rule permit ip <span class="hljs-selector-tag">source</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">2.0</span> <span class="hljs-number">0.0</span>.<span class="hljs-number">0.255</span><br><span class="hljs-selector-attr">[Huawei-acl-adv-3000]</span> quit<br>#配置流分类，匹配acl<br><span class="hljs-selector-attr">[Huawei]</span> traffic classifier c0 operator or <br><span class="hljs-selector-attr">[Huawei-classifier-c0]</span> if-match acl <span class="hljs-number">3000</span><br><span class="hljs-selector-attr">[Huawei-classifier-c0]</span> quit<br>#配置流行为,设置动作<br><span class="hljs-selector-attr">[Huawei-behavior-b0]</span> traffic behavior b0<br><span class="hljs-selector-attr">[Huawei-behavior-b0]</span> permit<br><span class="hljs-selector-attr">[Huawei-behavior-b0]</span> quit<br>#配置流策略，关联流分类c0与流行为b0<br><span class="hljs-selector-attr">[Huawei]</span> traffic policy p0<br><span class="hljs-selector-attr">[Huawei-trafficpolicy-p1]</span> classifier c0 behavior b0<br><span class="hljs-selector-attr">[Huawei-trafficpolicy-p1]</span> quit<br>#配置流策略应用到接口<br><span class="hljs-selector-attr">[Huawei]</span> interface  g0/<span class="hljs-number">0</span>/<span class="hljs-number">1</span><br><span class="hljs-selector-attr">[Huawei-GigabitEthernet0/0/1]</span> traffic-policy p0 inbound<br><span class="hljs-selector-attr">[Huawei-GigabitEthernet0/0/1]</span> return<br></code></pre></td></tr></table></figure>
+
+<h3 id="用户管理-1"><a href="#用户管理-1" class="headerlink" title="用户管理"></a>用户管理</h3><figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-meta">#查看本地用户</span><br>&lt;Huawei&gt; display local-user<br>&lt;Huawei&gt; system-view<br><span class="hljs-meta">#进入aaa配置模式</span><br>[<span class="hljs-meta">Huawei</span>] aaa<br><span class="hljs-meta">#配置本地用户账号密码</span><br>[<span class="hljs-meta">Huawei-aaa</span>] loca-user user1 password cipher <span class="hljs-number">123456</span><br><span class="hljs-meta">#用户服务类型为telnet，使用telnet登陆</span><br>[<span class="hljs-meta">Huawei-aaa</span>] local-user user1 service-type telnet<br><span class="hljs-meta">#配置用户特权等级15</span><br>[<span class="hljs-meta">Huawei-aaa</span>] local-user user1 privilege level <span class="hljs-number">15</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" class="category-chain-item">网络工程师</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" class="category-chain-item">交换机</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B%E5%B8%88/" class="print-no-link">#网络工程师</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>华为设备命令大全</div>
+      <div>http://bote798.github.io/2025/05/15/华为设备命令大全/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年5月15日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/05/15/nginx%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/" title="nginx负载均衡">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">nginx负载均衡</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/15/shell%E5%91%BD%E4%BB%A4/" title="shell命令、BASH">
+                        <span class="hidden-mobile">shell命令、BASH</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

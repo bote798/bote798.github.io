@@ -1,0 +1,732 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="zabbix安装（Ubuntu、mysql）若系统或数据库不同，可转至官网点击相应配置，查看配套安装教程 Download and install Zabbix 7.4 for Ubuntu 24.04 Noble(amd64, arm64), MySQL, Nginx  一、安装Zabbix仓库12345678# 拉取zabbix包wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zab">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zabbix安装(ubuntu系统)">
+<meta property="og:url" content="http://bote798.github.io/2025/01/14/zabbix/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="zabbix安装（Ubuntu、mysql）若系统或数据库不同，可转至官网点击相应配置，查看配套安装教程 Download and install Zabbix 7.4 for Ubuntu 24.04 Noble(amd64, arm64), MySQL, Nginx  一、安装Zabbix仓库12345678# 拉取zabbix包wget https:&#x2F;&#x2F;repo.zabbix.com&#x2F;zab">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/zabbix/zabbix.png">
+<meta property="article:published_time" content="2025-01-14T11:55:29.000Z">
+<meta property="article:modified_time" content="2025-12-13T11:20:25.436Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="ubuntu">
+<meta property="article:tag" content="zabbix">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/zabbix/zabbix.png">
+  
+  
+  
+  <title>zabbix安装(ubuntu系统) - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="zabbix安装(ubuntu系统)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-01-14 19:55" pubdate>
+          2025年1月14日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          735 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">zabbix安装(ubuntu系统)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="zabbix安装（Ubuntu、mysql）"><a href="#zabbix安装（Ubuntu、mysql）" class="headerlink" title="zabbix安装（Ubuntu、mysql）"></a>zabbix安装（Ubuntu、mysql）</h2><p>若系统或数据库不同，可转至官网点击相应配置，查看配套安装教程</p>
+<p><a target="_blank" rel="noopener" href="https://www.zabbix.com/download?zabbix=7.4&os_distribution=ubuntu&os_version=24.04&components=server_frontend_agent&db=mysql&ws=nginx">Download and install Zabbix 7.4 for Ubuntu 24.04 Noble(amd64, arm64), MySQL, Nginx</a></p>
+<p><img src="C:\Users\bote798\Desktop\zabbix_1.png" srcset="/img/loading.gif" lazyload alt="zabbix"></p>
+<h3 id="一、安装Zabbix仓库"><a href="#一、安装Zabbix仓库" class="headerlink" title="一、安装Zabbix仓库"></a>一、安装Zabbix仓库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 拉取zabbix包</span><br>wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu24.04_all.deb<br><br><span class="hljs-comment"># 安装zabbix包</span><br>dpkg -i zabbix-release_latest_7.4+ubuntu24.04_all.deb<br><br><span class="hljs-comment"># 更新（读取）软件包列表</span><br>apt-get update<br></code></pre></td></tr></table></figure>
+
+<h3 id="二、安装Zabbix服务器、前端、代理"><a href="#二、安装Zabbix服务器、前端、代理" class="headerlink" title="二、安装Zabbix服务器、前端、代理"></a>二、安装Zabbix服务器、前端、代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">apt install zabbix-server-mysql zabbix-frontend-php zabbix-nginx-conf zabbix-sql-scripts zabbix-agent<br></code></pre></td></tr></table></figure>
+
+<h3 id="三、安装mysql-server"><a href="#三、安装mysql-server" class="headerlink" title="三、安装mysql-server"></a>三、安装mysql-server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">apt-get install mysql-server<br></code></pre></td></tr></table></figure>
+
+<h3 id="四、创建zabbix数据库"><a href="#四、创建zabbix数据库" class="headerlink" title="四、创建zabbix数据库"></a>四、创建zabbix数据库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql -uroot -p<br>password<br><span class="hljs-comment"># 修改root默认密码</span><br>mysql&gt; ALTER USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;123456&#x27;</span>;<br><span class="hljs-comment"># 刷新缓存</span><br>mysql&gt; flush privileges;<br><span class="hljs-comment"># 创建名为 zabbix 的数据库，设置字符集为 utf8mb4,排序规则为utf8mb4_bin（区分大小写敏感）</span><br>mysql&gt; create database zabbix character <span class="hljs-built_in">set</span> utf8mb4 collate utf8mb4_bin;<br><span class="hljs-comment"># 创建用户</span><br>mysql&gt; create user zabbix@localhost identified by <span class="hljs-string">&#x27;password&#x27;</span>;<br><span class="hljs-comment"># 授权</span><br>mysql&gt; grant all privileges on zabbix.* to zabbix@localhost;<br><span class="hljs-comment"># 设置全局变量，开启log_bin_trust_function_creators</span><br><span class="hljs-comment"># 设置效果：</span><br><span class="hljs-comment"># = 1：允许创建存储函数而不检查其确定性</span><br><span class="hljs-comment"># = 0（默认）：严格模式，要求函数声明为DETERMINISTIC、NO SQL或READS SQL DATA</span><br>mysql&gt; <span class="hljs-built_in">set</span> global log_bin_trust_function_creators = 1;<br>mysql&gt; quit;<br></code></pre></td></tr></table></figure>
+
+<h3 id="五、导入默认数据"><a href="#五、导入默认数据" class="headerlink" title="五、导入默认数据"></a>五、导入默认数据</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 执行此命令后等待一段时间</span><br>zcat /usr/share/zabbix/sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 -uzabbix -p zabbix<br></code></pre></td></tr></table></figure>
+
+<h3 id="六、关闭log-bin-trust-function-creators选项"><a href="#六、关闭log-bin-trust-function-creators选项" class="headerlink" title="六、关闭log_bin_trust_function_creators选项"></a>六、关闭log_bin_trust_function_creators选项</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">mysql -uroot -p<br>password（mysql默认密码）<br>mysql&gt; <span class="hljs-built_in">set</span> global log_bin_trust_function_creators = 0;<br>mysql&gt; quit;<br></code></pre></td></tr></table></figure>
+
+<h3 id="七、修改Zabbix默认密码"><a href="#七、修改Zabbix默认密码" class="headerlink" title="七、修改Zabbix默认密码"></a>七、修改Zabbix默认密码</h3><p>修改 &#x2F;etc&#x2F;zabbix&#x2F;zabbix_server.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">DBPassword=password<br></code></pre></td></tr></table></figure>
+
+<h3 id="八、为Zabbix前端配置PHP"><a href="#八、为Zabbix前端配置PHP" class="headerlink" title="八、为Zabbix前端配置PHP"></a>八、为Zabbix前端配置PHP</h3><p>修改 &#x2F;etc&#x2F;zabbix&#x2F;nginx.conf</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">将以下两条注释去掉<br><span class="hljs-comment"># listen 8080;</span><br><span class="hljs-comment"># server_name example.com;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="九、重启zabbix和代理进程"><a href="#九、重启zabbix和代理进程" class="headerlink" title="九、重启zabbix和代理进程"></a>九、重启zabbix和代理进程</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 重启</span><br>systemctl restart zabbix-server zabbix-agent nginx php8.3-fpm<br><span class="hljs-comment"># 开机自启</span><br>systemctl <span class="hljs-built_in">enable</span> zabbix-server zabbix-agent nginx php8.3-fpm  <br></code></pre></td></tr></table></figure>
+
+<h3 id="十、打开Zabbix-UI网页"><a href="#十、打开Zabbix-UI网页" class="headerlink" title="十、打开Zabbix UI网页"></a>十、打开Zabbix UI网页</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装机ip:8080</span><br><span class="hljs-comment"># 例：</span><br>192.168.135.144:8080<br><br>密码如果和自己设置不对，就试试zabbix<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="Mysql允许远程连接"><a href="#Mysql允许远程连接" class="headerlink" title="Mysql允许远程连接"></a>Mysql允许远程连接</h3><p>MySQL版本：MySQL8.0</p>
+<h4 id="一、修改-MySQL-配置文件"><a href="#一、修改-MySQL-配置文件" class="headerlink" title="一、修改 MySQL 配置文件"></a>一、修改 MySQL 配置文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">1.找到并打开MySQL的配置文件，通常位于<br><br>/etc/mysql/mysql.conf.d/mysqld.cnf 或 /etc/mysql/my.cnf<br><br><span class="hljs-built_in">sudo</span> vim mysqld.cnf<br><br>2.找到“bind-address=127.0.0.1”并将其改为“0.0.0.0”，表示允许所有 IP 地址连接<br></code></pre></td></tr></table></figure>
+
+<h4 id="二、创建远程用户并授予权限"><a href="#二、创建远程用户并授予权限" class="headerlink" title="二、创建远程用户并授予权限"></a>二、创建远程用户并授予权限</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs bash">1.登录MySQL（以root用户确保有足够的权限）<br><br><span class="hljs-built_in">sudo</span> mysql -u root -p<br><br>2.创建新的远程 root 用户：<br><br>CREATE USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED BY <span class="hljs-string">&#x27;新密码&#x27;</span>;<br><br>3.授予权限：<br><br>GRANT ALL PRIVILEGES ON  *.*  TO <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> WITH GRANT OPTION;<br><br>4.刷新权限：<br><br>FLUSH PRIVILEGES;<br><br>保留本地 root 用户：这样可以确保本地的 root@localhost 用户仍然存在，不会影响本地服务和脚本。<br><br>明确的远程访问：新创建的 root@<span class="hljs-string">&#x27;%&#x27;</span> 用户专门用于远程连接，权限明确。<br><br>5.重启MySQL服务<br><br><span class="hljs-built_in">sudo</span> systemctl restart mysql<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="三、配置防火墙"><a href="#三、配置防火墙" class="headerlink" title="三、配置防火墙"></a>三、配置防火墙</h4><p>1.确保防火墙允许 MySQL 的默认端口（通常是 3306）的流量。可以使用以下命令开放端口：</p>
+<p>sudo ufw allow 3306&#x2F;tcp</p>
+<h4 id="四、阿里云或其他云设置入站规则"><a href="#四、阿里云或其他云设置入站规则" class="headerlink" title="四、阿里云或其他云设置入站规则"></a>四、阿里云或其他云设置入站规则</h4><p>如果你使用的是阿里这种云服务器，还需要设置其入站规则，开放3306端口</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">删除用户：<br>DROP USER <span class="hljs-string">&#x27;username&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span>;<br>查询用户表<br>SELECT User, Host FROM mysql.user;<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/ubuntu/" class="category-chain-item">ubuntu</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/ubuntu/zabbix/" class="category-chain-item">zabbix</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/ubuntu/" class="print-no-link">#ubuntu</a>
+      
+        <a href="/tags/zabbix/" class="print-no-link">#zabbix</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>zabbix安装(ubuntu系统)</div>
+      <div>http://bote798.github.io/2025/01/14/zabbix/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年1月14日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年12月13日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/01/14/ubuntu%E5%AE%89%E8%A3%85docker/" title="ubuntu安装docker">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ubuntu安装docker</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/01/10/docker%E7%B3%BB%E5%88%97-%E4%BA%8C-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85docker%E4%B8%8E%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" title="docker系列(二)————安装docker与基础命令">
+                        <span class="hidden-mobile">docker系列(二)————安装docker与基础命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1.物理卷   物理磁盘 分区 每个分区大小    Sdb sdb1 10G    sdb2 10G   Sdc sdc1 10G    sdc2 10G   Sdd sdd1 10G    sdd2 10G   三个新添加磁盘先分为6个主分区，每个10G，以下命令重复即可 1234567891011121314151617181920212223242526272829303132333435[">
+<meta property="og:type" content="article">
+<meta property="og:title" content="物理卷、卷组、逻辑卷配置">
+<meta property="og:url" content="http://bote798.github.io/2025/04/02/%E7%89%A9%E7%90%86%E5%8D%B7%E3%80%81%E5%8D%B7%E7%BB%84%E3%80%81%E9%80%BB%E8%BE%91%E5%8D%B7%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="1.物理卷   物理磁盘 分区 每个分区大小    Sdb sdb1 10G    sdb2 10G   Sdc sdc1 10G    sdc2 10G   Sdd sdd1 10G    sdd2 10G   三个新添加磁盘先分为6个主分区，每个10G，以下命令重复即可 1234567891011121314151617181920212223242526272829303132333435[">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
+<meta property="article:published_time" content="2025-04-02T06:42:20.000Z">
+<meta property="article:modified_time" content="2025-04-02T06:45:58.580Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
+  
+  
+  
+  <title>物理卷、卷组、逻辑卷配置 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="物理卷、卷组、逻辑卷配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-02 14:42" pubdate>
+          2025年4月2日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">物理卷、卷组、逻辑卷配置</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-物理卷"><a href="#1-物理卷" class="headerlink" title="1.物理卷"></a>1.物理卷</h2><table>
+<thead>
+<tr>
+<th align="center">物理磁盘</th>
+<th>分区</th>
+<th>每个分区大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Sdb</td>
+<td>sdb1</td>
+<td>10G</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>sdb2</td>
+<td>10G</td>
+</tr>
+<tr>
+<td align="center">Sdc</td>
+<td>sdc1</td>
+<td>10G</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>sdc2</td>
+<td>10G</td>
+</tr>
+<tr>
+<td align="center">Sdd</td>
+<td>sdd1</td>
+<td>10G</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td>sdd2</td>
+<td>10G</td>
+</tr>
+</tbody></table>
+<p>三个新添加磁盘先分为6个主分区，每个10G，以下命令重复即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@localhost ~]# fdisk /dev/sdd<br><br>欢迎使用 fdisk (util-linux 2.35.2)。<br>更改将停留在内存中，直到您决定将更改写入磁盘。<br>使用写入命令前请三思。<br><br>设备不包含可识别的分区表。<br>创建了一个磁盘标识符为 0xdf4b2c2d 的新 DOS 磁盘标签。<br><br>命令(输入 m 获取帮助)：n<br>分区类型<br>   p   主分区 (0 primary, 0 extended, 4 free)<br>   e   扩展分区 (逻辑分区容器)<br>选择 (默认 p)：p<br>分区号 (1-4, 默认  1): <br>第一个扇区 (2048-41943039, 默认 2048): <br>最后一个扇区，+/-sectors 或 +size&#123;K,M,G,T,P&#125; (2048-41943039, 默认 41943039): +10G<br><br>创建了一个新分区 1，类型为“Linux”，大小为 10 GiB。<br><br>命令(输入 m 获取帮助)：n<br>分区类型<br>   p   主分区 (1 primary, 0 extended, 3 free)<br>   e   扩展分区 (逻辑分区容器)<br>选择 (默认 p)：p<br>分区号 (2-4, 默认  2): <br>第一个扇区 (20973568-41943039, 默认 20973568): <br>最后一个扇区，+/-sectors 或 +size&#123;K,M,G,T,P&#125; (20973568-41943039, 默认 41943039): <br><br>创建了一个新分区 2，类型为“Linux”，大小为 10 GiB。<br><br>命令(输入 m 获取帮助)：w<br>分区表已调整。<br>将调用 ioctl() 来重新读分区表。<br>正在同步磁盘。<br></code></pre></td></tr></table></figure>
+
+<p>然后将6个主分区全部设为物理卷</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@localhost ~]# pvcreate /dev/sdb1<br>  Physical volume <span class="hljs-string">&quot;/dev/sdb1&quot;</span> successfully created.<br>[root@localhost ~]# pvcreate /dev/sdb2<br>  Physical volume <span class="hljs-string">&quot;/dev/sdb2&quot;</span> successfully created.<br>[root@localhost ~]# pvcreate /dev/sdc1<br>  Physical volume <span class="hljs-string">&quot;/dev/sdc1&quot;</span> successfully created.<br>[root@localhost ~]# pvcreate /dev/sdc2<br>  Physical volume <span class="hljs-string">&quot;/dev/sdc2&quot;</span> successfully created.<br>[root@localhost ~]# pvcreate /dev/sdd1<br>  Physical volume <span class="hljs-string">&quot;/dev/sdd1&quot;</span> successfully created.<br>[root@localhost ~]# pvcreate /dev/sdd2<br>  Physical volume <span class="hljs-string">&quot;/dev/sdd2&quot;</span> successfully created.<br></code></pre></td></tr></table></figure>
+
+<h2 id="2-卷组"><a href="#2-卷组" class="headerlink" title="2.卷组"></a>2.卷组</h2><p>创建两个卷组</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@localhost ~]# vgcreate vg_1 /dev/sdb1 /dev/sdc1<br>  Volume group <span class="hljs-string">&quot;vg_1&quot;</span> successfully created<br>[root@localhost ~]# vgcreate vg_2 /dev/sdb2 /dev/sdc2 /dev/sdd1 /dev/sdd2<br>  Volume group <span class="hljs-string">&quot;vg_2&quot;</span> successfully created<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-逻辑卷"><a href="#3-逻辑卷" class="headerlink" title="3.逻辑卷"></a>3.逻辑卷</h2><p>创建两个逻辑卷</p>
+<table>
+<thead>
+<tr>
+<th>lv_name</th>
+<th>卷组来源</th>
+<th>大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lv_vg_1</td>
+<td>vg_1</td>
+<td>5G</td>
+</tr>
+<tr>
+<td>lv_vg_2</td>
+<td>vg_2</td>
+<td>10G</td>
+</tr>
+</tbody></table>
+<h2 id="4-检查命令"><a href="#4-检查命令" class="headerlink" title="4.检查命令"></a>4.检查命令</h2><p>参数说明：<br>  -l 是按PE的数量计算大小，也就是物理块数量，一个卷组有多少个块可以划分，可以在vgdisplay的Free PE一项中查看；<br>  -L 是按照Size的大小划分，也就是K、M、G、T等<br>  -n 是要创建的逻辑卷的名称；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@localhost ~]# lvcreate -n lv_vg_1 -L 5G vg_1<br>  Logical volume <span class="hljs-string">&quot;lv_vg_1&quot;</span> created.<br>[root@localhost ~]# lvcreate -n lv_vg_2 -L 10G vg_2<br>  Logical volume <span class="hljs-string">&quot;lv_vg_2&quot;</span> created.<br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs bash">查看命令：<br>[root@localhost ~]# pvs<br>  PV         VG   Fmt  Attr PSize   PFree  <br>  /dev/sda2  uos  lvm2 a--  &lt;39.00g      0 <br>  /dev/sdb1  vg_1 lvm2 a--  &lt;10.00g  &lt;5.00g<br>  /dev/sdb2  vg_2 lvm2 a--  &lt;10.00g      0 <br>  /dev/sdc1  vg_1 lvm2 a--  &lt;10.00g &lt;10.00g<br>  /dev/sdc2  vg_2 lvm2 a--  &lt;10.00g   9.99g<br>  /dev/sdd1  vg_2 lvm2 a--  &lt;10.00g &lt;10.00g<br>  /dev/sdd2  vg_2 lvm2 a--  &lt;10.00g &lt;10.00g<br><br>[root@localhost ~]# vgs<br>  VG   <span class="hljs-comment">#PV #LV #SN Attr   VSize   VFree </span><br>  uos    1   2   0 wz--n- &lt;39.00g     0 <br>  vg_1   2   1   0 wz--n-  19.99g 14.99g<br>  vg_2   4   1   0 wz--n-  39.98g 29.98g<br><br>[root@localhost ~]# lvs<br>  LV      VG   Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert<br>  root    uos  -wi-ao---- &lt;35.00g                                                   <br>  swap    uos  -wi-ao----   4.00g                                                   <br>  lv_vg_1 vg_1 -wi-a-----   5.00g                                                   <br>  lv_vg_2 vg_2 -wi-a-----  10.00g   <br><br>单个查询：<br>pvdisplay /dev/sdb1<br>lvdisplay /dev/vg_name1/lv_name1<br><br>此处需要注意的是，如何找到自己创建的逻辑卷名。<br>                传统名称：/dev/卷组名/逻辑卷名<br>                内核映射：/dev/mapper/卷组名-逻辑卷名<br>                <br>lsblk:查看层级结构<br>NAME             MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT<br>sda                8:0    0   40G  0 disk <br>├─sda1             8:1    0    1G  0 part /boot<br>└─sda2             8:2    0   39G  0 part <br>  ├─uos-root     253:0    0   35G  0 lvm  /<br>  └─uos-swap     253:1    0    4G  0 lvm  [SWAP]<br>sdb                8:16   0   20G  0 disk <br>├─sdb1             8:17   0   10G  0 part <br>│ └─vg_1-lv_vg_1 253:2    0    5G  0 lvm  /mnt/vg_1_data<br>└─sdb2             8:18   0   10G  0 part <br>  └─vg_2-lv_vg_2 253:3    0   10G  0 lvm  /mnt/vg_2_data<br>sdc                8:32   0   20G  0 disk <br>├─sdc1             8:33   0   10G  0 part <br>└─sdc2             8:34   0   10G  0 part <br>  └─vg_2-lv_vg_2 253:3    0   10G  0 lvm  /mnt/vg_2_data<br>sdd                8:48   0   20G  0 disk <br>├─sdd1             8:49   0   10G  0 part <br>└─sdd2             8:50   0   10G  0 part <br>sr0               11:0    1  7.4G  0 rom <br></code></pre></td></tr></table></figure>
+
+<h2 id="5-创建文件系统并挂载文件"><a href="#5-创建文件系统并挂载文件" class="headerlink" title="5.创建文件系统并挂载文件"></a>5.创建文件系统并挂载文件</h2><h3 id="5-1格式化"><a href="#5-1格式化" class="headerlink" title="5.1格式化"></a>5.1格式化</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@localhost ~]# mkfs.xfs /dev/vg_1/lv_vg_1<br>meta-data=/dev/vg_1/lv_vg_1      isize=512    agcount=4, agsize=327680 blks<br>         =                       sectsz=512   attr=2, projid32bit=1<br>         =                       crc=1        finobt=1, sparse=1, rmapbt=0<br>         =                       reflink=1<br>data     =                       bsize=4096   blocks=1310720, imaxpct=25<br>         =                       sunit=0      swidth=0 blks<br>naming   =version 2              bsize=4096   ascii-ci=0, ftype=1<br><span class="hljs-built_in">log</span>      =internal <span class="hljs-built_in">log</span>           bsize=4096   blocks=2560, version=2<br>         =                       sectsz=512   sunit=0 blks, lazy-count=1<br>realtime =none                   extsz=4096   blocks=0, rtextents=0<br>[root@localhost ~]# mkfs.xfs /dev/vg_2/lv_vg_2<br>meta-data=/dev/vg_2/lv_vg_2      isize=512    agcount=4, agsize=655360 blks<br>         =                       sectsz=512   attr=2, projid32bit=1<br>         =                       crc=1        finobt=1, sparse=1, rmapbt=0<br>         =                       reflink=1<br>data     =                       bsize=4096   blocks=2621440, imaxpct=25<br>         =                       sunit=0      swidth=0 blks<br>naming   =version 2              bsize=4096   ascii-ci=0, ftype=1<br><span class="hljs-built_in">log</span>      =internal <span class="hljs-built_in">log</span>           bsize=4096   blocks=2560, version=2<br>         =                       sectsz=512   sunit=0 blks, lazy-count=1<br>realtime =none                   extsz=4096   blocks=0, rtextents=0<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2创建挂载点目录"><a href="#5-2创建挂载点目录" class="headerlink" title="5.2创建挂载点目录"></a>5.2创建挂载点目录</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@192 /]# <span class="hljs-built_in">mkdir</span> -p /mnt/vg_1_data<br>[root@192 /]# <span class="hljs-built_in">mkdir</span> -p /mnt/vg_2_data<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3将挂载信息写入配置（永久挂载）"><a href="#5-3将挂载信息写入配置（永久挂载）" class="headerlink" title="5.3将挂载信息写入配置（永久挂载）"></a>5.3将挂载信息写入配置（永久挂载）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@192 /]# vim /etc/fstab<br>将这两行写进去<br>/dev/vg_1/lv_vg_1 /mnt/vg_1_data xfs defaults 0 0<br>/dev/vg_2/lv_vg_2 /mnt/vg_2_data xfs defaults 0 0<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4挂载全部"><a href="#5-4挂载全部" class="headerlink" title="5.4挂载全部"></a>5.4挂载全部</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@192 /]# mount -a<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-5查看是否成功"><a href="#5-5查看是否成功" class="headerlink" title="5.5查看是否成功"></a>5.5查看是否成功</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@192 /]# <span class="hljs-built_in">df</span> -h<br>文件系统                  容量  已用  可用 已用% 挂载点<br>devtmpfs                  3.8G     0  3.8G    0% /dev<br>tmpfs                     3.9G   12K  3.9G    1% /dev/shm<br>tmpfs                     3.9G   17M  3.8G    1% /run<br>tmpfs                     3.9G     0  3.9G    0% /sys/fs/cgroup<br>/dev/mapper/uos-root       35G  4.6G   31G   14% /<br>tmpfs                     3.9G   16K  3.9G    1% /tmp<br>/dev/sda1                1014M  238M  777M   24% /boot<br>tmpfs                     779M     0  779M    0% /run/user/0<br>/dev/mapper/vg_1-lv_vg_1  5.0G   68M  5.0G    2% /mnt/vg_1_data<br>/dev/mapper/vg_2-lv_vg_2   10G  104M  9.9G    2% /mnt/vg_2_data<br></code></pre></td></tr></table></figure>
+
+<p>后续会在本文章内继续更新扩展卷组等内容</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>物理卷、卷组、逻辑卷配置</div>
+      <div>http://bote798.github.io/2025/04/02/物理卷、卷组、逻辑卷配置/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/03/%E7%BD%91%E7%BB%9C%E7%AE%A1%E7%90%86/" title="网络管理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网络管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/02/%E8%BD%AFRaid%E9%85%8D%E7%BD%AE/" title="软Raid配置">
+                        <span class="hidden-mobile">软Raid配置</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

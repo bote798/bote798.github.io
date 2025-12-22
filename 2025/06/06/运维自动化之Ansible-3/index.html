@@ -1,0 +1,739 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="三、playbook（初识）1.playbook简介与图解​	playbook是由一个或多个”play”组成的列表。 ​	play的主要功能在于将预定义的一组主机，装扮成事先通过ansible中的task定义好的角色。 ​	Task实际是调用ansible的一个module，将多个play组织在一个playbook中，即可以让它们联合起来，按事先编排的机制执行预定义的动作，Playbook采用YA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="运维自动化之Ansible-3">
+<meta property="og:url" content="http://bote798.github.io/2025/06/06/%E8%BF%90%E7%BB%B4%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B9%8BAnsible-3/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="三、playbook（初识）1.playbook简介与图解​	playbook是由一个或多个”play”组成的列表。 ​	play的主要功能在于将预定义的一组主机，装扮成事先通过ansible中的task定义好的角色。 ​	Task实际是调用ansible的一个module，将多个play组织在一个playbook中，即可以让它们联合起来，按事先编排的机制执行预定义的动作，Playbook采用YA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
+<meta property="article:published_time" content="2025-06-06T15:26:38.000Z">
+<meta property="article:modified_time" content="2025-06-06T15:30:48.185Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="Ansible">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
+  
+  
+  
+  <title>运维自动化之Ansible-3 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="运维自动化之Ansible-3"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-06 23:26" pubdate>
+          2025年6月6日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">运维自动化之Ansible-3</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="三、playbook（初识）"><a href="#三、playbook（初识）" class="headerlink" title="三、playbook（初识）"></a>三、playbook（初识）</h1><h2 id="1-playbook简介与图解"><a href="#1-playbook简介与图解" class="headerlink" title="1.playbook简介与图解"></a>1.playbook简介与图解</h2><p>​	playbook是由一个或多个”play”组成的列表。</p>
+<p>​	play的主要功能在于将预定义的一组主机，装扮成事先通过ansible中的task定义好的角色。</p>
+<p>​	Task实际是调用ansible的一个module，将多个play组织在一个playbook中，即可以让它们联合起来，按事先编排的机制执行预定义的动作，Playbook采用YAML语言编写。</p>
+<p><img src="/img/ansible/12.png" srcset="/img/loading.gif" lazyload alt="image">  </p>
+<p>用户通过ansible命令直接调用 yml 语言写好的 playbook , playbook 由多条play组成，每条play都有一个任务(task)相对应的操作,然后调用模块modules，应用在主机清单上,通过ssh远程连接，从而控制远程主机或者网络设备。</p>
+<h2 id="2-YAML文件"><a href="#2-YAML文件" class="headerlink" title="2.YAML文件"></a>2.YAML文件</h2><h3 id="2-1-YAML简介"><a href="#2-1-YAML简介" class="headerlink" title="2.1 YAML简介"></a>2.1 YAML简介</h3><p>YAML是一个可读性高的用来表达资料序列的格式。</p>
+<p>YAML参考了其他多种语言，包括：XML、C语言、Python、Perl以及电子邮件格式RFC2822等。</p>
+<p>Clark Evans在2001年在首次发表了这种语言，另外Ingy döt Net与Oren Ben-Kiki也是这语言的共同设计者</p>
+<p>YAML Ain’t Markup Language，即YAML不是XML。<br>不过，在开发的这种语言时，YAML的意思其实是：”Yet Another Markup Language”（仍是一种标记语言）</p>
+<h5 id="特性"><a href="#特性" class="headerlink" title="特性:"></a><em><strong>特性:</strong></em></h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">YAML的可读性好<br>YAML和脚本语言的交互性好<br>YAML使用实现语言的数据类型<br>YAML有一个一致的信息模型<br>YAML易于实现<br>YAML可以基于流来处理<br>YAML表达能力强，扩展性好<br></code></pre></td></tr></table></figure>
+
+<p>更多的内容及规范参见：<a target="_blank" rel="noopener" href="http://www.yaml.org/">http://www.yaml.org</a></p>
+<h3 id="2-2-YAML语法格式"><a href="#2-2-YAML语法格式" class="headerlink" title="2.2 YAML语法格式"></a>2.2 YAML语法格式</h3><ol>
+<li>在单一档案中，可用连续三个连字号(———)区分多个档案。</li>
+<li>另外，还有选择性的连续三个点号( … )用来表示档案结尾</li>
+<li>次行开始正常写Playbook的内容，一般建议写明该Playbook的功能</li>
+<li>使用#号注释代码</li>
+<li>缩进必须是统一的，不能空格和tab混用</li>
+<li>缩进的级别也必须是一致的，同样的缩进代表同样的级别，程序判别配置的级别是通过缩进结合换行来实现的</li>
+<li>YAML文件内容是区别大小写的，k&#x2F;v的值均需大小写敏感</li>
+<li>多个k&#x2F;v可同行写也可换行写，同行使用:分隔</li>
+<li>v可是个字符串，也可是另一个列表[]</li>
+<li>一个完整的代码块功能需最少元素需包括 name 和 task</li>
+<li>一个name只能包括一个task</li>
+<li>YAML文件扩展名通常为yml或yaml</li>
+</ol>
+<h3 id="2-3-YAML语法简介"><a href="#2-3-YAML语法简介" class="headerlink" title="2.3 YAML语法简介"></a>2.3 YAML语法简介</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">List：列表，其所有元素均使用“-”打头</span><br>      <span class="hljs-string">列表代表同一类型的元素</span><br><span class="hljs-string">示例：</span><br><span class="hljs-comment"># A list of tasty fruits</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">Apple</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">Orange</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">Strawberry</span><br><span class="hljs-bullet">-</span> <span class="hljs-string">Mango</span><br><br><span class="hljs-string">Dictionary：字典，通常由多个key与value构成</span> <span class="hljs-string">键值对</span><br><span class="hljs-string">示例：</span><br><span class="hljs-meta">---</span><br><span class="hljs-comment"># An employee record</span><br><span class="hljs-attr">name:</span> <span class="hljs-string">Example</span> <span class="hljs-string">Developer</span><br><span class="hljs-attr">job:</span> <span class="hljs-string">Developer</span><br><span class="hljs-attr">skill:</span> <span class="hljs-string">Elite</span><br><br><span class="hljs-string">也可以将key:value放置于&#123;&#125;中进行表示，用,分隔多个key:value</span><br><span class="hljs-string">示例：</span><br><span class="hljs-meta">---</span><br><span class="hljs-comment"># An employee record</span><br>&#123;<span class="hljs-attr">name:</span> <span class="hljs-string">Example</span> <span class="hljs-string">Developer</span>, <span class="hljs-attr">job:</span> <span class="hljs-string">Developer</span>, <span class="hljs-attr">skill:</span> <span class="hljs-string">Elite</span>&#125;  <span class="hljs-string">有空格</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-YAML语法实际书写"><a href="#2-4-YAML语法实际书写" class="headerlink" title="2.4 YAML语法实际书写"></a>2.4 YAML语法实际书写</h3><figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs nix">YAML的语法和其他高阶语言类似，并且可以简单表达清单、散列表、标量等数据结构。<br>其结构（Structure）通过空格来展示，序列（Sequence）里的项用<span class="hljs-string">&quot;-&quot;</span>来代表，Map里的键值对用<span class="hljs-string">&quot;:&quot;</span>分隔<br>示例<br>    <span class="hljs-params">name:</span> John Smith<br>    <span class="hljs-params">age:</span> <span class="hljs-number">41</span><br>    <span class="hljs-params">gender:</span> Male<br>    <span class="hljs-params">spouse:</span><br>      <span class="hljs-params">name:</span> Jane Smith<br>      <span class="hljs-params">age:</span> <span class="hljs-number">37</span><br>      <span class="hljs-params">gender:</span> Female<br>    <span class="hljs-params">children:</span><br>      <span class="hljs-operator">-</span> <span class="hljs-params">name:</span> Jimmy Smith<br>        <span class="hljs-params">age:</span> <span class="hljs-number">17</span><br>        <span class="hljs-params">gender:</span> Male<br>      <span class="hljs-operator">-</span> <span class="hljs-params">name:</span> Jenny Smith<br>        age <span class="hljs-number">13</span><br>        <span class="hljs-params">gender:</span> Female<br></code></pre></td></tr></table></figure>
+
+<h5 id="三种常见的数据交换格式"><a href="#三种常见的数据交换格式" class="headerlink" title="三种常见的数据交换格式"></a>三种常见的数据交换格式</h5><p><img src="/img/ansible/13.png" srcset="/img/loading.gif" lazyload alt="image"></p>
+<h2 id="3-playbook核心元素"><a href="#3-playbook核心元素" class="headerlink" title="3.playbook核心元素"></a>3.playbook核心元素</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">Hosts          执行的远程主机列表(应用在哪些主机上)<br><br>Tasks          任务集<br><br>Variables      内置变量或自定义变量在playbook中调用<br><br>Templates模板  可替换模板文件中的变量并实现一些简单逻辑的文件<br><br>Handlers和notify结合使用，由特定条件触发的操作，满足条件方才执行，否则不执行<br><br>tags标签       指定某条任务执行，用于选择运行playbook中的部分代码。<br>                ansible具有幂等性，因此会自动跳过没有变化的部分，<br>                即便如此，有些代码为测试其确实没有发生变化的时间依然会非常地长。<br>                此时，如果确信其没有变化，就可以通过tags跳过此些代码片断<br>                ansible-playbook -t tagsname useradd.yml<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-playbook基础组件"><a href="#4-playbook基础组件" class="headerlink" title="4.playbook基础组件"></a>4.playbook基础组件</h2><h3 id="4-1-Hosts"><a href="#4-1-Hosts" class="headerlink" title="4.1 Hosts"></a>4.1 Hosts</h3><p><strong>Hosts：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">Hosts：<br><br>playbook中的每一个play的目的都是为了让特定主机以某个指定的用户身份执行任务。<br>      hosts用于指定要执行指定任务的主机，须事先定义在主机清单中<br><br>可以是如下形式：<br>        one.example.com<br>        one.example.com:two.example.com<br>        192.168.1.50<br>        192.168.1.*<br>    &gt; Websrvs:dbsrvs       或者，两个组的并集<br>    &gt; Websrvs:&amp;dbsrvs      与，两个组的交集<br>    &gt; webservers:!phoenix  在websrvs组，但不在dbsrvs组<br>    示例: - hosts: websrvs：dbsrvs<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-remote-user"><a href="#4-2-remote-user" class="headerlink" title="4.2 remote_user:"></a>4.2 remote_user:</h3><p><strong>remote_user:</strong> </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">remote_user: <br>    可用于Host和task中。<br>    也可以通过指定其通过<span class="hljs-built_in">sudo</span>的方式在远程主机上执行任务，其可用于play全局或某任务；<br>    此外，甚至可以在<span class="hljs-built_in">sudo</span>时使用sudo_user指定<span class="hljs-built_in">sudo</span>时切换的用户<br><br>  -	hosts: websrvs<br>    remote_user: root   (可省略,默认为root)  以root身份连接<br>    tasks:	指定任务<br>	 - name: <span class="hljs-built_in">test</span> connection<br>       ping:<br>         remote_user: magedu<br>         <span class="hljs-built_in">sudo</span>: <span class="hljs-built_in">yes</span>           默认<span class="hljs-built_in">sudo</span>为root<br>         sudo_user:wang      <span class="hljs-built_in">sudo</span>为wang<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-task列表和action"><a href="#4-3-task列表和action" class="headerlink" title="4.3 task列表和action"></a>4.3 task列表和action</h3><p><strong>task列表和action</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">task列表和action<br>    任务列表task:由多个动作,多个任务组合起来的,每个任务都调用的模块,一个模块一个模块执行<br>    1&gt; play的主体部分是task list，task list中的各任务按次序逐个在hosts中指定的所有主机上执行，<br>       即在所有主机上完成第一个任务后，再开始第二个任务<br><br>    2&gt; task的目的是使用指定的参数执行模块，而在模块参数中可以使用变量。<br>       模块执行是幂等的，这意味着多次执行是安全的，因为其结果均一致<br><br>    3&gt; 每个task都应该有其name，用于playbook的执行结果输出，建议其内容能清晰地描述任务执行步骤。<br>       如果未提供name，则action的结果将用于输出<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-tasks"><a href="#4-4-tasks" class="headerlink" title="4.4 tasks"></a>4.4 tasks</h3><p><strong>tasks : 任务列表</strong></p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs nix">tasks：任务列表<br>两种格式：<br>    (<span class="hljs-number">1</span>) <span class="hljs-params">action:</span> module arguments<br>    (<span class="hljs-number">2</span>) <span class="hljs-params">module:</span> arguments 建议使用  模块: 参数<br>    注意：shell和command模块后面跟命令，而非key<span class="hljs-operator">=</span>value<br><br>某任务的状态在运行后为changed时，可通过<span class="hljs-string">&quot;notify&quot;</span>通知给相应的handlers<br><br>任务可以通过<span class="hljs-string">&quot;tags&quot;</span>打标签，可在ansible-playbook命令上使用-t指定进行调用<br>示例：<br><span class="hljs-params">tasks:</span><br>  <span class="hljs-operator">-</span> <span class="hljs-params">name:</span> disable selinux   描述<br>    <span class="hljs-params">command:</span> <span class="hljs-symbol">/sbin/setenforce</span> <span class="hljs-number">0</span>   模块名: 模块对应的参数<br><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs nix">如果命令或脚本的退出码不为零，可以使用如下方式替代<br><span class="hljs-params">tasks:</span><br>  <span class="hljs-operator">-</span> <span class="hljs-params">name:</span> run this command and ignore the result<br>    <span class="hljs-params">shell:</span> <span class="hljs-symbol">/usr/bin/somecommand</span> <span class="hljs-operator">||</span> <span class="hljs-symbol">/bin/true</span>  <br>    转错为正  如果命令失败则执行 <span class="hljs-literal">true</span><br><br>或者使用ignore_errors来忽略错误信息<br><span class="hljs-params">tasks:</span><br>  <span class="hljs-operator">-</span> <span class="hljs-params">name:</span> run this command and ignore the result<br>    <span class="hljs-params">shell:</span> <span class="hljs-symbol">/usr/bin/somecommand</span><br>    <span class="hljs-params">ignore_errors:</span> True  忽略错误<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-运行playbook"><a href="#5-运行playbook" class="headerlink" title="5.运行playbook"></a>5.运行playbook</h2><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs scss">运行playbook的方式<br>    ansible-playbook &lt;filename<span class="hljs-selector-class">.yml</span>&gt; ... <span class="hljs-selector-attr">[options]</span><br><br>常见选项<br>    <span class="hljs-attr">--check</span> -C       只检测可能会发生的改变，但不真正执行操作 <br>                     (只检查语法,如果执行过程中出现问题,-C无法检测出来)<br>                     (执行playbook生成的文件不存在,后面的程序如果依赖这些文件,也会导致检测失败)<br>    <span class="hljs-attr">--list-hosts</span>     列出运行任务的主机<br>    <span class="hljs-attr">--list-tags</span>      列出tag  (列出标签)<br>    <span class="hljs-attr">--list-tasks</span>     列出task (列出任务)<br>    <span class="hljs-attr">--limit</span> 主机列表 只针对主机列表中的主机执行<br>    -v -vv -vvv      显示过程<br><br>示例<br>    ansible-playbook hello<span class="hljs-selector-class">.yml</span> <span class="hljs-attr">--check</span> 只检测<br>    ansible-playbook hello<span class="hljs-selector-class">.yml</span> <span class="hljs-attr">--list-hosts</span>  显示运行任务的主机<br>    ansible-playbook hello<span class="hljs-selector-class">.yml</span> <span class="hljs-attr">--limit</span> websrvs  限制主机<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/%E8%87%AA%E5%8A%A8%E5%8C%96/" class="category-chain-item">自动化</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/%E8%87%AA%E5%8A%A8%E5%8C%96/Ansible/" class="category-chain-item">Ansible</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/Ansible/" class="print-no-link">#Ansible</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>运维自动化之Ansible-3</div>
+      <div>http://bote798.github.io/2025/06/06/运维自动化之Ansible-3/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2025年6月6日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/04/Euler%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip/" title="Euler配置静态ip">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Euler配置静态ip</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/04/docker%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93%E6%8D%A2%E6%BA%90%E4%B8%8E%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" title="docker镜像仓库换源与问题解决">
+                        <span class="hidden-mobile">docker镜像仓库换源与问题解决</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
