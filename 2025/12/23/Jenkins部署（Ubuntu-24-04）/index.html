@@ -19,24 +19,25 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="华为Euler系统配置静态IP1.修改配置文件1vim &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens32  1234567891011121314151617181920# 修改如下类似TYPE&#x3D;EthernetPROXY_METHOD&#x3D;noneBROWSER_ONLY&#x3D;noBOOTPROTO&#x3D;noneDEFROUTE&#x3D;yesIPV4_FAILURE_FATAL">
+    <meta name="description" content="步骤一：安装Java环境Jenkins需要Java 17或Java 11作为运行环境。Ubuntu 24.04仓库通常包含较新版本的OpenJDK，建议安装Java 17： 12sudo apt updatesudo apt install openjdk-17-jdk -y  安装后，可以通过 java -version 验证。 步骤二：添加Jenkins仓库（新方法）因为原来的wegt拉取密钥">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Euler配置静态ip">
-<meta property="og:url" content="http://bote798.github.io/2025/07/04/Euler%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip/index.html">
+<meta property="og:title" content="Jenkins部署（Ubuntu 24.04）">
+<meta property="og:url" content="http://bote798.github.io/2025/12/23/Jenkins%E9%83%A8%E7%BD%B2%EF%BC%88Ubuntu-24-04%EF%BC%89/index.html">
 <meta property="og:site_name" content="bote798&#39;s Blog">
-<meta property="og:description" content="华为Euler系统配置静态IP1.修改配置文件1vim &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens32  1234567891011121314151617181920# 修改如下类似TYPE&#x3D;EthernetPROXY_METHOD&#x3D;noneBROWSER_ONLY&#x3D;noBOOTPROTO&#x3D;noneDEFROUTE&#x3D;yesIPV4_FAILURE_FATAL">
+<meta property="og:description" content="步骤一：安装Java环境Jenkins需要Java 17或Java 11作为运行环境。Ubuntu 24.04仓库通常包含较新版本的OpenJDK，建议安装Java 17： 12sudo apt updatesudo apt install openjdk-17-jdk -y  安装后，可以通过 java -version 验证。 步骤二：添加Jenkins仓库（新方法）因为原来的wegt拉取密钥">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
-<meta property="article:published_time" content="2025-07-04T14:19:00.000Z">
-<meta property="article:modified_time" content="2025-07-04T14:20:20.630Z">
+<meta property="og:image" content="http://bote798.github.io/img/jenkins/jenkins.png">
+<meta property="article:published_time" content="2025-12-23T13:37:53.000Z">
+<meta property="article:modified_time" content="2025-12-23T13:55:51.257Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="linux">
+<meta property="article:tag" content="jenkins">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
+<meta name="twitter:image" content="http://bote798.github.io/img/jenkins/jenkins.png">
   
   
   
-  <title>Euler配置静态ip - bote798&#39;s Blog</title>
+  <title>Jenkins部署（Ubuntu 24.04） - bote798&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Euler配置静态ip"></span>
+            <span id="subtitle" data-typed-text="Jenkins部署（Ubuntu 24.04）"></span>
           
         </div>
 
@@ -213,8 +214,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-07-04 22:19" pubdate>
-          2025年7月4日 晚上
+        <time datetime="2025-12-23 21:37" pubdate>
+          2025年12月23日 晚上
         </time>
       </span>
     
@@ -225,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          73 字
+          668 字
         
       </span>
     
@@ -236,7 +237,7 @@
         
         
         
-          1 分钟
+          6 分钟
         
       </span>
     
@@ -277,37 +278,73 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Euler配置静态ip</h1>
+            <h1 id="seo-header">Jenkins部署（Ubuntu 24.04）</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="华为Euler系统配置静态IP"><a href="#华为Euler系统配置静态IP" class="headerlink" title="华为Euler系统配置静态IP"></a>华为Euler系统配置静态IP</h1><h4 id="1-修改配置文件"><a href="#1-修改配置文件" class="headerlink" title="1.修改配置文件"></a>1.修改配置文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">vim /etc/sysconfig/network-scripts/ifcfg-ens32<br></code></pre></td></tr></table></figure>
+                <h3 id="步骤一：安装Java环境"><a href="#步骤一：安装Java环境" class="headerlink" title="步骤一：安装Java环境"></a><strong>步骤一：安装Java环境</strong></h3><p>Jenkins需要Java 17或Java 11作为运行环境。Ubuntu 24.04仓库通常包含较新版本的OpenJDK，建议安装Java 17：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install openjdk-17-jdk -y<br></code></pre></td></tr></table></figure>
 
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 修改如下类似</span><br>TYPE=Ethernet<br>PROXY_METHOD=none<br>BROWSER_ONLY=no<br>BOOTPROTO=none<br>DEFROUTE=<span class="hljs-built_in">yes</span><br>IPV4_FAILURE_FATAL=no<br>IPV6INIT=<span class="hljs-built_in">yes</span><br>IPV6_AUTOCONF=<span class="hljs-built_in">yes</span><br>IPV6_DEFROUTE=<span class="hljs-built_in">yes</span><br>IPV6_FAILURE_FATAL=no<br>IPV6_ADDR_GEN_MODE=eui64<br>NAME=ens32<br>UUID=1463fd5d-c6cb-4260-8079-8fc7a7375c1c<br>DEVICE=ens32<br>ONBOOT=<span class="hljs-built_in">yes</span><br>IPADDR=192.168.135.140<br>NETMASK=255.255.255.0<br>GATEWAY=192.168.135.2<br>DNS1=8.8.8.8<br></code></pre></td></tr></table></figure>
+<p>安装后，可以通过 <code>java -version</code> 验证。</p>
+<h3 id="步骤二：添加Jenkins仓库（新方法）"><a href="#步骤二：添加Jenkins仓库（新方法）" class="headerlink" title="步骤二：添加Jenkins仓库（新方法）"></a><strong>步骤二：添加Jenkins仓库（新方法）</strong></h3><p>因为原来的wegt拉取密钥方法已经被遗弃，所以采用新方法：</p>
+<p>这是替换旧方法的核心步骤，请按顺序执行：</p>
+<ol>
+<li><p><strong>下载仓库密钥</strong>，并使用<code>gpg</code>工具进行解码，然后将其存放在系统信任的密钥目录中：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 没有就创建，有的就不用了</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /usr/share/keyrings<br><span class="hljs-comment">#</span><br>curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | <span class="hljs-built_in">sudo</span> gpg --dearmor -o /usr/share/keyrings/jenkins.gpg<br></code></pre></td></tr></table></figure>
 
-<h4 id="2-重启网络管理服务"><a href="#2-重启网络管理服务" class="headerlink" title="2.重启网络管理服务"></a>2.重启网络管理服务</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">nmcli connection reload <br>nmcli connection up ens32<br>systemctl restart NetworkManager<br></code></pre></td></tr></table></figure>
+<ul>
+<li><code>curl -fsSL</code>：安全地下载密钥文件。</li>
+<li><code>gpg --dearmor</code>：将密钥转换为APT可以识别的格式。</li>
+<li><code>-o /usr/share/keyrings/jenkins.gpg</code>：输出到指定的密钥环目录，这是现在推荐的位置。</li>
+</ul>
+</li>
+<li><p><strong>添加软件源列表</strong>。注意，源地址现在需要指向 <code>https</code>，并且要在行尾明确指定已导入的密钥环文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;deb [signed-by=/usr/share/keyrings/jenkins.gpg] https://pkg.jenkins.io/debian-stable binary/&quot;</span> | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/apt/sources.list.d/jenkins.list &gt; /dev/null<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>[signed-by=...]</code>：指明这个仓库使用我们刚才导入的特定密钥文件进行验证。</li>
+</ul>
+</li>
+</ol>
+<h3 id="步骤三：安装并启动Jenkins"><a href="#步骤三：安装并启动Jenkins" class="headerlink" title="步骤三：安装并启动Jenkins"></a><strong>步骤三：安装并启动Jenkins</strong></h3><p>更新包列表并安装Jenkins的LTS（长期支持）版本，这是生产环境的推荐选择。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update<br><span class="hljs-built_in">sudo</span> apt install jenkins -y<br></code></pre></td></tr></table></figure>
 
 
 
+<p>安装完成后，启动服务并设置开机自启：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl start jenkins<br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> jenkins<br></code></pre></td></tr></table></figure>
 
 
 
+<p>你可以使用 <code>sudo systemctl status jenkins</code> 来确认服务是否正常运行。</p>
+<h3 id="Q-A"><a href="#Q-A" class="headerlink" title="Q&#x2F;A"></a>Q&#x2F;A</h3><ol>
+<li><h5 id="Java环境问题（最常见）"><a href="#Java环境问题（最常见）" class="headerlink" title="Java环境问题（最常见）"></a><strong>Java环境问题</strong>（最常见）</h5><p> Jenkins需要正确版本的Java。请确认已安装Java 11或17，并且<code>JAVA_HOME</code>已设置。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查Java版本</span><br>java -version<br><span class="hljs-comment"># 检查JAVA_HOME（通常安装JDK后会自动设置，但有时需要手动）</span><br><span class="hljs-built_in">echo</span> <span class="hljs-variable">$JAVA_HOME</span><br></code></pre></td></tr></table></figure>
 
+<p> <strong>如果没有输出</strong>，可能需要手动设置。首先找到Java安装路径：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> update-alternatives --config java<br></code></pre></td></tr></table></figure>
 
+<p> 然后编辑Jenkins配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vi /etc/default/jenkins<br></code></pre></td></tr></table></figure>
 
+<p> 找到 <code>JAVA_HOME=</code> 这一行，取消注释并设置为上一步得到的路径（例如 <code>/usr/lib/jvm/java-17-openjdk-amd64</code>）。</p>
+<p> 若没有则在JAVA部分加上即可。</p>
+</li>
+<li><h5 id="端口冲突"><a href="#端口冲突" class="headerlink" title="端口冲突"></a><strong>端口冲突</strong></h5><p> 默认情况下，Jenkins使用8080端口。检查是否有其他程序（如其他Java应用、某些Docker容器）占用了该端口：</p>
+</li>
+</ol>
+<p>可以使用以下两条命令查看错误信息</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl status jenkins.service<br>journalctl -xeu jenkins.service --no-pager | <span class="hljs-built_in">tail</span> -30<br></code></pre></td></tr></table></figure>
+<p>一般是因为8080端口冲突了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看8080是谁在占用</span><br>ss -tlnp | grep :8080<br></code></pre></td></tr></table></figure>
 
-
-
-
-
-
-
-
-
-
-
-
+<pre><code class="hljs">如果端口被占用，你可以在 `/etc/default/jenkins` 中修改 `HTTP_PORT` 为其他值（如8081）。
+</code></pre>
+<ol start="3">
+<li><h5 id="权限问题"><a href="#权限问题" class="headerlink" title="权限问题"></a><strong>权限问题</strong></h5>  确保Jenkins对其工作目录有正确的访问权限：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chown</span> -R jenkins:jenkins /var/lib/jenkins<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> -R 755 /var/lib/jenkins<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -331,7 +368,7 @@
   
     <span>></span>
     
-  <a href="/categories/linux/%E7%B3%BB%E7%BB%9F%E8%BF%90%E7%BB%B4/" class="category-chain-item">系统运维</a>
+  <a href="/categories/linux/jenkins/" class="category-chain-item">jenkins</a>
   
   
 
@@ -350,6 +387,8 @@
       
         <a href="/tags/linux/" class="print-no-link">#linux</a>
       
+        <a href="/tags/jenkins/" class="print-no-link">#jenkins</a>
+      
     </div>
   
 </div>
@@ -360,8 +399,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Euler配置静态ip</div>
-      <div>http://bote798.github.io/2025/07/04/Euler配置静态ip/</div>
+      <div>Jenkins部署（Ubuntu 24.04）</div>
+      <div>http://bote798.github.io/2025/12/23/Jenkins部署（Ubuntu-24-04）/</div>
     </div>
     <div class="license-meta">
       
@@ -373,13 +412,13 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年7月4日</div>
+          <div>2025年12月23日</div>
         </div>
       
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年7月4日</div>
+          <div>2025年12月23日</div>
         </div>
       
       
@@ -410,18 +449,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/12/23/Jenkins%E9%83%A8%E7%BD%B2%EF%BC%88Ubuntu-24-04%EF%BC%89/" title="Jenkins部署（Ubuntu 24.04）">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Jenkins部署（Ubuntu 24.04）</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/06/06/%E8%BF%90%E7%BB%B4%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B9%8BAnsible-3/" title="运维自动化之Ansible-3">
-                        <span class="hidden-mobile">运维自动化之Ansible-3</span>
+                      <a href="/2025/07/04/Euler%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip/" title="Euler配置静态ip">
+                        <span class="hidden-mobile">Euler配置静态ip</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
