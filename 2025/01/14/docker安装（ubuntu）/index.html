@@ -22,13 +22,13 @@
     <meta name="description" content="Ubuntu 25.04 安装docker一、卸载旧版本1sudo apt-get remove docker docker-engine docker.io containerd runc    二、获取软件最新源1sudo apt-get update    三、安装 apt 依赖包用于通过HTTPS来获取仓库 1sudo apt-get -y install apt-transport-ht">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ubuntu安装docker">
-<meta property="og:url" content="http://bote798.github.io/2025/01/14/ubuntu%E5%AE%89%E8%A3%85docker/index.html">
+<meta property="og:url" content="http://bote798.github.io/2025/01/14/docker%E5%AE%89%E8%A3%85%EF%BC%88ubuntu%EF%BC%89/index.html">
 <meta property="og:site_name" content="bote798&#39;s Blog">
 <meta property="og:description" content="Ubuntu 25.04 安装docker一、卸载旧版本1sudo apt-get remove docker docker-engine docker.io containerd runc    二、获取软件最新源1sudo apt-get update    三、安装 apt 依赖包用于通过HTTPS来获取仓库 1sudo apt-get -y install apt-transport-ht">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://bote798.github.io/img/docker.jpeg">
 <meta property="article:published_time" content="2025-01-14T11:55:29.000Z">
-<meta property="article:modified_time" content="2025-12-22T09:19:09.689Z">
+<meta property="article:modified_time" content="2025-12-24T13:43:07.541Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="linux">
 <meta property="article:tag" content="ubuntu">
@@ -325,6 +325,7 @@
 
 <h2 id="💡-预防重复配置的建议"><a href="#💡-预防重复配置的建议" class="headerlink" title="💡 预防重复配置的建议"></a>💡 预防重复配置的建议</h2><p><strong>在添加新源前检查现有配置</strong>：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">ls</span> -la /etc/apt/sources.list.d/ | grep docker<br>docker info<br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
@@ -347,15 +348,8 @@
   
     <span>></span>
     
-  <a href="/categories/linux/ubuntu/" class="category-chain-item">ubuntu</a>
+  <a href="/categories/linux/docker/" class="category-chain-item">docker</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/linux/ubuntu/docker/" class="category-chain-item">docker</a>
-  
-  
-
   
 
   
@@ -388,7 +382,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>ubuntu安装docker</div>
-      <div>http://bote798.github.io/2025/01/14/ubuntu安装docker/</div>
+      <div>http://bote798.github.io/2025/01/14/docker安装（ubuntu）/</div>
     </div>
     <div class="license-meta">
       
@@ -406,7 +400,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2025年12月22日</div>
+          <div>2025年12月24日</div>
         </div>
       
       
@@ -437,9 +431,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/01/14/zabbix/" title="zabbix安装(ubuntu系统)">
+                      <a href="/2025/01/14/Ubuntu%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" title="ubuntu网络配置">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">zabbix安装(ubuntu系统)</span>
+                        <span class="hidden-mobile">ubuntu网络配置</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -447,8 +441,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/01/10/docker%E7%B3%BB%E5%88%97-%E4%BA%8C-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E5%AE%89%E8%A3%85docker%E4%B8%8E%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4/" title="docker系列(二)————安装docker与基础命令">
-                        <span class="hidden-mobile">docker系列(二)————安装docker与基础命令</span>
+                      <a href="/2025/01/14/docker%E7%B3%BB%E5%88%97-%E4%B8%89-%E2%80%94%E2%80%94%E2%80%94%E2%80%94%E7%BB%83%E6%89%8B%EF%BC%9A%E9%83%A8%E7%BD%B2nginx/" title="docker系列(三)————练手：部署nginx">
+                        <span class="hidden-mobile">docker系列(三)————练手：部署nginx</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
