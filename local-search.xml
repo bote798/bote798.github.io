@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>WSL2网络模式nat更改为桥接</title>
+    <link href="/2026/03/31/WSL2%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8Fnat%E6%9B%B4%E6%94%B9%E4%B8%BA%E6%A1%A5%E6%8E%A5/"/>
+    <url>/2026/03/31/WSL2%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8Fnat%E6%9B%B4%E6%94%B9%E4%B8%BA%E6%A1%A5%E6%8E%A5/</url>
+    
+    <content type="html"><![CDATA[<h1 id="WSL2网络模式nat更改为桥接"><a href="#WSL2网络模式nat更改为桥接" class="headerlink" title="WSL2网络模式nat更改为桥接"></a>WSL2网络模式nat更改为桥接</h1><h3 id="方案一：推荐-——-使用-Mirrored-模式（镜像网络，最简单）"><a href="#方案一：推荐-——-使用-Mirrored-模式（镜像网络，最简单）" class="headerlink" title="方案一：推荐 —— 使用 Mirrored 模式（镜像网络，最简单）"></a>方案一：推荐 —— 使用 Mirrored 模式（镜像网络，最简单）</h3><p>这个模式会把 Windows 的网络接口“镜像”到 WSL 中，WSL 会获得与主机相似的网络行为。</p><ol><li><p>在 Windows 中创建或编辑配置文件（以普通用户身份）：</p><ul><li><p>按 Win + R，输入 %USERPROFILE%，回车。</p></li><li><p>在用户文件夹下新建文本文件，命名为 .wslconfig（注意前面有点号）。</p></li><li><p>用记事本打开，加入以下内容并保存：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[wsl2]<br>networkingMode=mirrored<br>dnsTunneling=<span class="hljs-literal">true</span><br>autoProxy=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure></li></ul></li><li><p>重启 WSL（在 PowerShell 或 CMD 中以管理员身份运行）：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">wsl --shutdown<br>wsl -d （machine-name）<br></code></pre></td></tr></table></figure></li><li><p>重新打开 Rocky Linux 终端，检查网络：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">ip addr show eth0（网卡名称）          <span class="hljs-comment"># 或 ip addr</span><br>ping 8.8.8.8<br>curl ifconfig.me           <span class="hljs-comment"># 查看公网 IP 是否正常</span><br></code></pre></td></tr></table></figure></li></ol><p><strong>优点</strong>：配置简单，无需 Hyper-V 手动创建交换机；支持从局域网直接访问 WSL 服务。</p><h3 id="方案二：传统-Bridged-模式（如果-mirrored-不满足需求）"><a href="#方案二：传统-Bridged-模式（如果-mirrored-不满足需求）" class="headerlink" title="方案二：传统 Bridged 模式（如果 mirrored 不满足需求）"></a>方案二：传统 Bridged 模式（如果 mirrored 不满足需求）</h3><p>这个模式需要手动创建 Hyper-V 虚拟交换机。</p><ol><li><p><strong>启用 Hyper-V</strong>（如果未启用）：</p><ul><li>控制面板 → 程序和功能 → 启用或关闭 Windows 功能 → 勾选 “Hyper-V” → 重启电脑。</li></ul></li><li><p><strong>创建外部虚拟交换机</strong>（以管理员身份打开 <strong>Hyper-V 管理器</strong>）：</p><ul><li>右侧点击 “虚拟交换机管理器”。</li><li>选择 “新建虚拟网络交换机” → “外部” → 创建。</li><li>给它起个名字（如 WSL-Bridge）。</li><li>在 “外部网络” 下拉菜单中选择你当前正在使用的网卡（Wi-Fi 或 以太网），勾选 “允许管理操作系统共享此网络适配器”。</li><li>点击应用 → 确定（可能会短暂断网）。</li></ul></li><li><p>创建 .wslconfig 文件（同方案一位置）：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">[wsl2]<br>networkingMode=bridged<br>vmSwitch=WSL-Bridge        <span class="hljs-comment"># 改成你刚才创建的交换机名称</span><br>ipv6=<span class="hljs-literal">true</span>                  <span class="hljs-comment"># 可选</span><br></code></pre></td></tr></table></figure></li><li><p>重启 WSL：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">wsl --shutdown<br>wsl -d （machine-name）<br></code></pre></td></tr></table></figure></li><li><p>在 Rocky Linux 中手动配置 IP（桥接后默认可能需要手动设）：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前网卡（通常是 eth0）</span><br>ip addr<br><br><span class="hljs-comment"># 示例：假设你的局域网是 192.168.1.0/24，网关是 192.168.1.1，给 WSL 分配一个空闲 IP（如 192.168.1.150）</span><br><span class="hljs-built_in">sudo</span> ip addr flush dev eth0<br><span class="hljs-built_in">sudo</span> ip addr add 192.168.1.150/24 dev eth0<br><span class="hljs-built_in">sudo</span> ip route add default via 192.168.1.1 dev eth0<br></code></pre></td></tr></table></figure><p>想用 DHCP 自动获取 IP（推荐）：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> dhclient eth0<br></code></pre></td></tr></table></figure></li><li><p>修复 DNS（防止解析问题）： 在 &#x2F;etc&#x2F;wsl.conf 中加入（如果没有就创建）：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">[network]<br>generateResolvConf = <span class="hljs-literal">false</span><br></code></pre></td></tr></table></figure><p>然后手动编辑 &#x2F;etc&#x2F;resolv.conf：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">nameserver 8.8.8.8<br>nameserver 114.114.114.114<br></code></pre></td></tr></table></figure></li></ol><h3 id="验证是否成功"><a href="#验证是否成功" class="headerlink" title="验证是否成功"></a>验证是否成功</h3><p>在 Rocky Linux 中运行：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">ip addr show<br>hostname -I          <span class="hljs-comment"># 查看 WSL 的 IP，应该和主机同网段</span><br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>linux</category>
+      
+      <category>WSL2</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>linux</tag>
+      
+      <tag>WSL2</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>RedHat_9.3 安装 MySQL8.4</title>
     <link href="/2026/02/20/RedHat-9-3-%E5%AE%89%E8%A3%85-MySQL8-4/"/>
     <url>/2026/02/20/RedHat-9-3-%E5%AE%89%E8%A3%85-MySQL8-4/</url>
