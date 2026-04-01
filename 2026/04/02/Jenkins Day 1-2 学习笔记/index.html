@@ -1,0 +1,859 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Jenkins Day 1-2 学习笔记核心概念与初始配置 一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins Day 1-2 学习笔记">
+<meta property="og:url" content="http://bote798.github.io/2026/04/02/Jenkins%20Day%201-2%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="Jenkins Day 1-2 学习笔记核心概念与初始配置 一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
+<meta property="article:published_time" content="2026-04-01T16:02:00.000Z">
+<meta property="article:modified_time" content="2026-04-01T16:12:53.163Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="Jenkins">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
+  
+  
+  
+  <title>Jenkins Day 1-2 学习笔记 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jenkins Day 1-2 学习笔记"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-02 00:02" pubdate>
+          2026年4月2日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Jenkins Day 1-2 学习笔记</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Jenkins-Day-1-2-学习笔记"><a href="#Jenkins-Day-1-2-学习笔记" class="headerlink" title="Jenkins Day 1-2 学习笔记"></a>Jenkins Day 1-2 学习笔记</h1><h2 id="核心概念与初始配置"><a href="#核心概念与初始配置" class="headerlink" title="核心概念与初始配置"></a>核心概念与初始配置</h2><hr>
+<h2 id="一、在开始之前：理解-CI-CD"><a href="#一、在开始之前：理解-CI-CD" class="headerlink" title="一、在开始之前：理解 CI&#x2F;CD"></a>一、在开始之前：理解 CI&#x2F;CD</h2><h3 id="1-1-什么是-CI-CD"><a href="#1-1-什么是-CI-CD" class="headerlink" title="1.1 什么是 CI&#x2F;CD"></a>1.1 什么是 CI&#x2F;CD</h3><p>在没有 CI&#x2F;CD 的时代，软件发布是这样的：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">传统发布流程（手动地狱）：<br><br>开发者写完代码<br>    │<br>    ▼<br>压缩代码包，通过 QQ/邮件/FTP 发给测试<br>    │<br>    ▼<br>测试手动部署到服务器<br>    │<br>    ▼<br>发现问题，反馈给开发者<br>    │<br>    ▼<br>开发者修改，重新打包，再发一次...<br>    │<br>    ▼<br>重复 N 次后，终于没问题了<br>    │<br>    ▼<br>运维手动登录生产服务器，替换文件<br>    │<br>    ▼<br>祈祷别出问题 🙏<br></code></pre></td></tr></table></figure>
+
+<p>这个过程的问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">❌ 重复劳动 —— 每次发布都要手动打包、上传、部署<br>❌ 容易出错 —— 人手动操作，总有疏忽的时候<br>❌ 反馈慢   —— 可能几天后才发现代码有问题<br>❌ 难以追溯 —— 谁发布的？什么时候发布的？改了什么？<br>❌ 发布恐惧 —— 每次上线都提心吊胆<br></code></pre></td></tr></table></figure>
+
+<p><strong>CI&#x2F;CD 就是用自动化来解决这些问题。</strong></p>
+<h3 id="1-2-CI-—-持续集成（Continuous-Integration）"><a href="#1-2-CI-—-持续集成（Continuous-Integration）" class="headerlink" title="1.2 CI — 持续集成（Continuous Integration）"></a>1.2 CI — 持续集成（Continuous Integration）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">CI 的核心思想：<br>每次开发者提交代码后，自动触发一次<span class="hljs-string">&quot;验证流程&quot;</span><br>确保新代码和已有代码能正确地组合在一起<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">CI 自动化流程：<br><br>开发者 git push<br>    │<br>    ▼ 自动触发<br>┌────────────────────────────────┐<br>│          Jenkins（CI 服务器）    │<br>│                                │<br>│  1. 拉取最新代码                 │<br>│  2. 编译代码（检查语法错误）       │<br>│  3. 运行单元测试（检查逻辑错误）    │<br>│  4. 代码质量扫描（检查规范问题）    │<br>│  5. 生成构建产物(jar/war/静态文件) │<br>│                                │<br>└────────────────────────────────┘<br>    │<br>    ▼<br>自动通知结果（成功 ✅ / 失败 ❌）<br></code></pre></td></tr></table></figure>
+
+<p><strong>CI 解决的问题：</strong></p>
+<ul>
+<li>代码一提交就能知道有没有问题</li>
+<li>不用等到测试阶段才发现 bug</li>
+<li>多人协作时，尽早发现代码冲突</li>
+</ul>
+<h3 id="1-3-CD-—-持续交付-持续部署"><a href="#1-3-CD-—-持续交付-持续部署" class="headerlink" title="1.3 CD — 持续交付 &#x2F; 持续部署"></a>1.3 CD — 持续交付 &#x2F; 持续部署</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">CD 有两个含义，别搞混：<br><br>持续交付（Continuous Delivery）<br>├── 自动构建 + 自动测试<br>├── 部署到生产环境需要人工确认（点一个按钮）<br>└──（金融、医疗）<br><br>持续部署（Continuous Deployment）<br>├── 自动构建 + 自动测试 + 自动部署<br>├──    适合：对稳定性要求高的场景<br>├── 全程无需人工干预<br>└──    适合：成熟的 DevOps 团队、互联网公司<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">完整 CI/CD 流水线：<br><br>代码提交 → 自动构建 → 自动测试 → 自动打包 → 自动部署到测试环境<br>                                                    │<br>                                          人工确认（可选）<br>                                                    │<br>                                                    ▼<br>                                          自动部署到生产环境<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-4-为什么选择-Jenkins"><a href="#1-4-为什么选择-Jenkins" class="headerlink" title="1.4 为什么选择 Jenkins"></a>1.4 为什么选择 Jenkins</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash">CI/CD 工具对比：<br><br>工具            特点                        适用场景<br>─────────────────────────────────────────────────────<br>Jenkins        开源免费，插件丰富，可定制     企业首选，灵活度最高<br>GitHub Actions 与 GitHub 深度集成          GitHub 项目<br>GitLab CI      与 GitLab 深度集成          GitLab 项目<br>Circle CI      云原生，配置简单             中小团队<br>ArgoCD         Kubernetes 原生            K8s 环境<br><br>Jenkins 的优势：<br>├── 完全开源免费<br>├── 1800+ 插件，几乎能集成任何工具<br>├── 社区庞大，遇到问题容易找到解决方案<br>├── 可以部署在自己的服务器上，数据安全<br>└── 企业使用率最高，找工作必备技能<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、Jenkins-架构理解"><a href="#二、Jenkins-架构理解" class="headerlink" title="二、Jenkins 架构理解"></a>二、Jenkins 架构理解</h2><h3 id="2-1-核心架构"><a href="#2-1-核心架构" class="headerlink" title="2.1 核心架构"></a>2.1 核心架构</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs bash">Jenkins 架构图：<br><br>                    ┌───────────────────────────────────┐<br>                    │          Jenkins Master           │<br>                    │                                   │<br>                    │  ┌──────────────┐                 │<br>                    │  │   Web UI     │  ← 你用浏览器    │<br>                    │  │   (端口 8080) │    访问这里     │<br>                    │  └──────┬───────┘                 │<br>                    │         │                         │<br>                    │  ┌──────▼───────┐                 │<br>                    │  │  调度引擎      │  ← 决定任务      │<br>                    │  │              │    分配给谁       │<br>                    │  └──────┬───────┘                 │<br>                    │         │                         │<br>                    │  ┌──────▼───────┐                 │<br>                    │  │  任务队列      │  ← 等待执行的    │<br>                    │  │              │    构建任务       │<br>                    │  └──────────────┘                 │<br>                    │                                   │<br>                    └──────────────────┬────────────────┘<br>                                       │<br>                      ┌────────────────┼────────────────┐<br>                      │                │                │<br>                      ▼				   ▼				▼<br>             ┌──────────────┐   ┌──────────────┐ ┌──────────────┐<br>             │   Agent 1    |   │	Agent 2	   | |	Agent 3 	│<br>             │              │   │              │ │              │<br>             │	执行构建任务  │    │  执行构建任务  │ │  执行构建任务  │<br>             │  (实际干活的)  │   │  (实际干活的)  │ │  (实际干活的)  │<br>             └──────────────┘   └──────────────┘ └──────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-Master-和-Agent-的职责"><a href="#2-2-Master-和-Agent-的职责" class="headerlink" title="2.2 Master 和 Agent 的职责"></a>2.2 Master 和 Agent 的职责</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">Master（主节点）的职责：<br>├── 提供 Web 界面（你操作 Jenkins 的入口）<br>├── 管理配置（全局配置、项目配置）<br>├── 调度构建任务（决定哪个 Agent 执行什么）<br>├── 存储构建历史和日志<br>└── 管理插件和凭据<br><br>Agent（代理节点/从节点）的职责：<br>├── 实际执行构建任务（编译、测试、打包）<br>├── 可以是物理机、虚拟机、Docker 容器<br>├── 可以有多个 Agent 并行工作<br>└── Agent 挂了不影响 Master（任务可以重新分配）<br><br>重要概念：<br>├── 默认情况下，Master 也充当 Agent（小规模够用）<br>├── 企业环境中，Master 只做调度，不执行构建<br>└── Agent 可以按标签分组（比如 <span class="hljs-string">&quot;java&quot;</span>、<span class="hljs-string">&quot;nodejs&quot;</span>、<span class="hljs-string">&quot;docker&quot;</span>）<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-Jenkins-工作原理"><a href="#2-3-Jenkins-工作原理" class="headerlink" title="2.3 Jenkins 工作原理"></a>2.3 Jenkins 工作原理</h3><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">一个构建任务的完整生命周期：<br><br><span class="hljs-number">1</span>. 触发（Trigger）<br>   ├── 手动点击<span class="hljs-string">&quot;立即构建&quot;</span><br>   ├── 定时触发（每天早上 <span class="hljs-number">8</span> 点）<br>   ├── 代码推送触发（Git Webhook）<br>   └── 其他构建完成后触发<br><br><span class="hljs-number">2</span>. 排队（Queued）<br>   ├── 任务进入构建队列<br>   └── Jenkins 找一个空闲的 Agent<br><br><span class="hljs-number">3</span>. 分配（Assigned）<br>   ├── <span class="hljs-keyword">Master</span> <span class="hljs-title">把任务分配给某个 Agent</span><br>   └── Agent 准备工作空间（Workspace）<br><br><span class="hljs-number">4</span>. 执行（Building）<br>   ├── Agent 按照配置的步骤依次执行<br>   ├── 每一步的输出实时传回 <span class="hljs-keyword">Master</span><br>   <span class="hljs-title">└── 你在 Web</span> 界面上能看到实时日志<br><br><span class="hljs-number">5</span>. 完成（Completed）<br>   ├── 构建成功（SUCCESS）✅<br>   ├── 构建不稳定（UNSTABLE）⚠️ （测试失败但编译成功）<br>   ├── 构建失败（FAILURE）❌<br>   └── 构建被中止（ABORTED）🚫<br><br><span class="hljs-number">6</span>. 后处理（Post Actions）<br>   ├── 发送邮件通知<br>   ├── 归档构建产物<br>   ├── 部署到服务器<br>   └── 清理工作空间<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、Jenkins-初始配置（实操）"><a href="#三、Jenkins-初始配置（实操）" class="headerlink" title="三、Jenkins 初始配置（实操）"></a>三、Jenkins 初始配置（实操）</h2><h3 id="3-1-确认-Jenkins-已安装并运行"><a href="#3-1-确认-Jenkins-已安装并运行" class="headerlink" title="3.1 确认 Jenkins 已安装并运行"></a>3.1 确认 Jenkins 已安装并运行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第一步：检查 Jenkins 服务状态</span><br><span class="hljs-built_in">sudo</span> systemctl status jenkins<br></code></pre></td></tr></table></figure>
+
+<p>你应该看到类似这样的输出：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs nix">● jenkins.service <span class="hljs-operator">-</span> Jenkins Continuous Integration Server<br>     <span class="hljs-params">Loaded:</span> loaded (<span class="hljs-symbol">/lib/systemd/system/jenkins.service</span>; enabled)<br>     <span class="hljs-params">Active:</span> active (running) since Mon <span class="hljs-number">202</span>5-xx-xx xx:xx:xx CST<br>       <span class="hljs-params">Docs:</span> https:<span class="hljs-operator">//</span>jenkins.io<span class="hljs-operator">/</span>doc<span class="hljs-symbol">/</span><br>   Main <span class="hljs-params">PID:</span> <span class="hljs-number">12345</span> (java)<br>      <span class="hljs-params">Tasks:</span> <span class="hljs-number">44</span> (<span class="hljs-params">limit:</span> <span class="hljs-number">4618</span>)<br>     <span class="hljs-params">Memory:</span> <span class="hljs-number">356.0</span>M<br>        <span class="hljs-params">CPU:</span> <span class="hljs-number">12.345</span>s<br>     <span class="hljs-params">CGroup:</span> <span class="hljs-symbol">/system.slice/jenkins.service</span><br>             └─<span class="hljs-number">12345</span> <span class="hljs-symbol">/usr/bin/java</span> <span class="hljs-operator">-</span>jar <span class="hljs-symbol">/usr/share/java/jenkins.war</span> ...<br></code></pre></td></tr></table></figure>
+
+<p>**关键看 <code>Active: active (running)</code>**，如果 Jenkins 没有运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 启动 Jenkins</span><br><span class="hljs-built_in">sudo</span> systemctl start jenkins<br><br><span class="hljs-comment"># 设置开机自启</span><br><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">enable</span> jenkins<br><br><span class="hljs-comment"># 如果启动失败，查看错误日志</span><br><span class="hljs-built_in">sudo</span> journalctl -u jenkins -f<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第二步：确认端口已监听</span><br><span class="hljs-built_in">sudo</span> ss -tlnp | grep 8080<br></code></pre></td></tr></table></figure>
+
+<p>输出应该类似：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">LISTEN 0      50        *:8080        *:*    <span class="hljs-built_in">users</span>:((&quot;java&quot;,pid=<span class="hljs-number">11122</span>,fd=<span class="hljs-number">9</span>))     <br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第三步：获取初始管理员密码</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">cat</span> /var/lib/jenkins/secrets/initialAdminPassword<br></code></pre></td></tr></table></figure>
+
+<p>输出是一串密码，类似：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>把这个密码复制下来，下一步要用。如果这个文件不存在，说明 Jenkins 可能已经完成过初始化。</strong></p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 第四步：检查防火墙（如果虚拟机开启了防火墙）</span><br><span class="hljs-comment"># Ubuntu/Debian</span><br><span class="hljs-built_in">sudo</span> ufw status<br><span class="hljs-built_in">sudo</span> ufw allow 8080/tcp<br><br><span class="hljs-comment"># CentOS/RHEL</span><br><span class="hljs-built_in">sudo</span> firewall-cmd --list-ports<br><span class="hljs-built_in">sudo</span> firewall-cmd --permanent --add-port=8080/tcp<br><span class="hljs-built_in">sudo</span> firewall-cmd --reload<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-浏览器访问-Jenkins"><a href="#3-2-浏览器访问-Jenkins" class="headerlink" title="3.2 浏览器访问 Jenkins"></a>3.2 浏览器访问 Jenkins</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">打开你的浏览器，访问：<br><br>http://&lt;虚拟机IP地址&gt;:8080<br><br>如何查看虚拟机 IP：<br>├── 在虚拟机中执行：ip addr  或  ifconfig<br>├── 找到类似 192.168.x.x 或 10.x.x.x 的地址<br>└── 如果是 NAT 模式，可能需要配置端口转发<br></code></pre></td></tr></table></figure>
+
+<p>你会看到解锁 Jenkins 的页面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────┐<br>│                                         │<br>│           🔓 Unlock Jenkins             │<br>│                                         │<br>│  Jenkins 自动创建了一个初始密码，         │<br>│  请复制下面的密码并粘贴到此处。            │<br>│                                         │<br>│  密码文件路径：                           │<br>│  /var/lib/jenkins/secrets/               │<br>│  initialAdminPassword                    │<br>│                                         │<br>│  ┌─────────────────────────────────┐    │<br>│  │                                 │    │<br>│  └─────────────────────────────────┘    │<br>│                                         │<br>│           [ Continue ]                  │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>把刚才获取的密码粘贴进去，点击 <strong>Continue</strong>。</p>
+<h3 id="3-3-安装插件"><a href="#3-3-安装插件" class="headerlink" title="3.3 安装插件"></a>3.3 安装插件</h3><p>接下来你会看到插件安装页面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────┐<br>│                                         │<br>│         Customize Jenkins               │<br>│                                         │<br>│   安装建议的插件，或者选择特定的插件。     │<br>│                                         │<br>│  ┌───────────────────┐                  │<br>│  │  Install suggested │  ← 推荐选这个   │<br>│  │  plugins           │                  │<br>│  └───────────────────┘                  │<br>│                                         │<br>│  ┌───────────────────┐                  │<br>│  │  Select plugins    │  ← 高级用户     │<br>│  │  to install        │    可以自选     │<br>│  └───────────────────┘                  │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p><strong>选择 <code>Install suggested plugins</code>（安装推荐插件）。</strong></p>
+<blockquote>
+<p>推荐插件包括了 Git、Pipeline、SSH 等常用功能，后续可以随时再安装其他插件。</p>
+</blockquote>
+<p>安装过程页面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────┐<br>│                                         │<br>│         Getting Started                 │<br>│                                         │<br>│  Installing Plugins...                  │<br>│                                         │<br>│  ████████████████░░░░░░░░  67%          │<br>│                                         │<br>│  ✅ Git                                 │<br>│  ✅ Pipeline                            │<br>│  ✅ Credentials                         │<br>│  ⏳ SSH Build Agents                    │<br>│  ⏳ Mailer                              │<br>│  ⏳ Workspace Cleanup                   │<br>│  ○  LDAP                                │<br>│  ○  ...                                 │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>耐心等待所有插件安装完成（通常需要 3-10 分钟，取决于网络速度）。</p>
+<p><strong>如果有些插件安装失败：</strong></p>
+<ul>
+<li>不用担心，可以后续手动安装</li>
+<li>点击 Continue 即可跳过</li>
+</ul>
+<h3 id="3-4-创建管理员账号"><a href="#3-4-创建管理员账号" class="headerlink" title="3.4 创建管理员账号"></a>3.4 创建管理员账号</h3><p>插件安装完成后，进入创建管理员页面：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────┐<br>│                                         │<br>│         Create First Admin User         │<br>│                                         │<br>│  Username:    [                    ]    │<br>│                                         │<br>│  Password:    [                    ]    │<br>│                                         │<br>│  Confirm      [                    ]    │<br>│  Password:                             │<br>│                                         │<br>│  Full Name:   [                    ]    │<br>│                                         │<br>│  E-mail:      [                    ]    │<br>│  Address:                              │<br>│                                         │<br>│           [ Save and Continue ]         │<br>│                                         │<br>│  ── 或者跳过，使用 admin 账户 ──         │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p><strong>强烈建议创建自己的管理员账号</strong>，填写示例：</p>
+<figure class="highlight nestedtext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs nestedtext"><span class="hljs-attribute">Username</span><span class="hljs-punctuation">:</span> <span class="hljs-string">    admin          （或你喜欢的用户名）</span><br><span class="hljs-attribute">Password</span><span class="hljs-punctuation">:</span> <span class="hljs-string">    YourStr0ngP@ss （设置一个强密码）</span><br><span class="hljs-attribute">Confirm</span><span class="hljs-punctuation">:</span> <span class="hljs-string">     YourStr0ngP@ss</span><br><span class="hljs-attribute">Full Name</span><span class="hljs-punctuation">:</span> <span class="hljs-string">   Administrator</span><br><span class="hljs-attribute">E-mail</span><span class="hljs-punctuation">:</span> <span class="hljs-string">      admin@example.com</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>记住这个密码！</strong> 这是你以后登录 Jenkins 的凭据。</p>
+</blockquote>
+<h3 id="3-5-配置实例-URL"><a href="#3-5-配置实例-URL" class="headerlink" title="3.5 配置实例 URL"></a>3.5 配置实例 URL</h3><p>接下来是配置 Jenkins URL：</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">┌─────────────────────────────────────────┐<br>│                                         │<br>│         Instance Configuration          │<br>│                                         │<br>│  Jenkins <span class="hljs-built_in">URL</span>:                           │<br>│  ┌─────────────────────────────────┐    │<br>│  │ <span class="hljs-keyword">http</span>://<span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.100</span>:<span class="hljs-number">8080</span>/      │    │<br>│  └─────────────────────────────────┘    │<br>│                                         │<br>│  这个 <span class="hljs-built_in">URL</span> 将用于：                       │<br>│  - 邮件通知中的链接                      │<br>│  - Webhook 回调地址                     │<br>│  - 构建日志的访问链接                    │<br>│                                         │<br>│           [ Save <span class="hljs-keyword">and</span> Finish ]           │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p><strong>把 URL 中的地址改成你虚拟机的实际 IP 地址：</strong></p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">http:</span><span class="hljs-comment">//&lt;你的虚拟机IP&gt;:8080/</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>不要用 <code>localhost</code>，因为后续 Git Webhook 等外部服务需要通过 IP 访问 Jenkins。</p>
+</blockquote>
+<p>点击 <strong>Save and Finish</strong>。</p>
+<h3 id="3-6-Jenkins-就绪"><a href="#3-6-Jenkins-就绪" class="headerlink" title="3.6 Jenkins 就绪"></a>3.6 Jenkins 就绪</h3><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">┌─────────────────────────────────────────┐<br>│                                         │<br>│       🎉 <span class="hljs-keyword">Jenkins </span>is ready!              │<br>│                                         │<br>│  <span class="hljs-keyword">Jenkins </span>已经准备就绪。                   │<br>│                                         │<br>│           [ Start using <span class="hljs-keyword">Jenkins </span>]       │<br>│                                         │<br>└─────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<p>点击 <strong>Start using Jenkins</strong>，进入 Jenkins 主界面。</p>
+<hr>
+<h2 id="四、Jenkins-Web-UI-界面详解"><a href="#四、Jenkins-Web-UI-界面详解" class="headerlink" title="四、Jenkins Web UI 界面详解"></a>四、Jenkins Web UI 界面详解</h2><h3 id="4-1-主界面（Dashboard）"><a href="#4-1-主界面（Dashboard）" class="headerlink" title="4.1 主界面（Dashboard）"></a>4.1 主界面（Dashboard）</h3><p>进入后你会看到 Jenkins 的主界面（Dashboard）：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">┌──────────────────────────────────────────────────────────────────┐<br>│ 🔵 <span class="hljs-keyword">Jenkins </span>                                         admin ▼     │<br>├──────────────────────────────────────────────────────────────────┤<br>│                                                                  │<br>│  ┌──────────┐                                                   │<br>│  │ <span class="hljs-keyword">Jenkins </span> │  ← 左上角是 <span class="hljs-keyword">Jenkins </span>logo，点击回到主页             │<br>│  └──────────┘                                                   │<br>│                                                                  │<br>│  ┌─────────────────────────────────────────────────────────┐    │<br>│  │                                                         │    │<br>│  │  Welcome to <span class="hljs-keyword">Jenkins! </span>                                   │    │<br>│  │                                                         │    │<br>│  │  初始页面是空的，因为还没有创建任何项目                     │    │<br>│  │                                                         │    │<br>│  └─────────────────────────────────────────────────────────┘    │<br>│                                                                  │<br>│  左侧导航栏：                                                     │<br>│  ├── 📋 New Item        — 创建新项目                             │<br>│  ├── 📊 People          — 查看用户列表                           │<br>│  ├── 📂 <span class="hljs-keyword">Build </span>History   — 查看构建历史                           │<br>│  ├── 🔍 My Views        — 我的视图                               │<br>│  ├── ⚙️ Manage <span class="hljs-keyword">Jenkins </span> — 管理 <span class="hljs-keyword">Jenkins（最重要的管理入口） </span>       │<br>│  └── 📚 My Views        — 自定义视图                             │<br>│                                                                  │<br>└──────────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-左侧导航栏各功能详解"><a href="#4-2-左侧导航栏各功能详解" class="headerlink" title="4.2 左侧导航栏各功能详解"></a>4.2 左侧导航栏各功能详解</h3><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-literal">New</span> Item（新建项目）<br>├── 创建一个新的构建任务<br>├── 支持多种项目类型（后面详细介绍）<br>└── 快捷键：N<br><br>People（用户）<br>├── 查看所有 Jenkins 用户<br>├── 查看用户权限<br>└── 管理用户信息<br><br>Build History（构建历史）<br>├── 显示最近的构建记录<br>├── 可以查看构建状态（成功/失败）<br>└── 点击进入具体构建详情<br><br>Manage Jenkins（管理 Jenkins） ⭐ 最重要<br>├── 系统配置<br>├── 安全配置<br>├── 插件管理<br>├── 工具配置<br>├── 节点管理<br>└── <span class="hljs-params">...</span>（所有管理功能都在这里）<br><br>My Views（我的视图）<br>├── 自定义项目分组视图<br>└── 可以按项目、团队、环境等维度组织<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-Manage-Jenkins（管理页面）详解"><a href="#4-3-Manage-Jenkins（管理页面）详解" class="headerlink" title="4.3 Manage Jenkins（管理页面）详解"></a>4.3 Manage Jenkins（管理页面）详解</h3><p>点击 <strong>Manage Jenkins</strong>，这是你以后最常访问的管理页面：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">┌─────────────────────────────────────────────────────────────────┐<br>│                                                                 │<br>│  Manage Jenkins                                                 │<br>│                                                                 │<br>│  <span class="hljs-keyword">System</span>（系统）                                                   │<br>│  ├── ⚙️ <span class="hljs-keyword">System</span>              — 全局系统配置                       │<br>│  ├── 🔧 Tools               — 全局工具配置（JDK、Maven、Node等） │<br>│  ├── 🔌 Plugins             — 插件管理                           │<br>│  ├── 👤 Users               — 用户管理                           │<br>│  └── 📋 About               — Jenkins 版本信息                   │<br>│                                                                 │<br>│  <span class="hljs-keyword">Security</span>（安全）                                                 │<br>│  ├── 🔒 Configure <span class="hljs-keyword">Global</span> <span class="hljs-keyword">Security</span> — 全局安全配置                 │<br>│  ├── 🔑 Manage Credentials        — 凭据管理（密码、密钥等）     │<br>│  ├── 👥 Configure <span class="hljs-keyword">Global</span> <span class="hljs-keyword">Security</span> — 权限矩阵                    │<br>│  └── 📜 <span class="hljs-keyword">Security</span>                   — 安全相关设置                 │<br>│                                                                 │<br>│  Status Information（状态信息）                                    │<br>│  ├── 📊 <span class="hljs-keyword">System</span> Information    — 系统信息（Java 版本、OS 等）     │<br>│  ├── 📊 <span class="hljs-keyword">System</span> <span class="hljs-keyword">Log</span>            — 系统日志                        │<br>│  └── 📊 <span class="hljs-keyword">Load</span> <span class="hljs-keyword">Statistics</span>       — 负载统计                        │<br>│                                                                 │<br>│  Tools <span class="hljs-keyword">and</span> Actions（工具和操作）                                   │<br>│  ├── 🖥️ Nodes                — 节点管理（Agent 管理）            │<br>│  ├── 📂 Manage <span class="hljs-built_in">Old</span> Data      — 管理旧数据                       │<br>│  ├── 🔄 Reload <span class="hljs-keyword">Configuration</span> — 重新加载配置                      │<br>│  └── 🗑️ <span class="hljs-keyword">Prepare</span> Shutdown     — 准备关闭                         │<br>│                                                                 │<br>└─────────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-重点模块逐一讲解"><a href="#4-4-重点模块逐一讲解" class="headerlink" title="4.4 重点模块逐一讲解"></a>4.4 重点模块逐一讲解</h3><h4 id="4-4-1-System（全局系统配置）"><a href="#4-4-1-System（全局系统配置）" class="headerlink" title="4.4.1 System（全局系统配置）"></a>4.4.1 System（全局系统配置）</h4><p>路径：<code>Manage Jenkins → System</code></p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs gauss">全局系统配置中你需要关注的设置：<br><br>Jenkins Location（Jenkins 位置）<br>├── Jenkins URL：http:<span class="hljs-comment">//192.168.1.100:8080/</span><br>├── <span class="hljs-keyword">System</span> Admin e-mail Address：管理员邮箱<br>└── 这个 URL 会用于邮件通知中的链接<br><br>GitHub（如果安装了 GitHub 插件）<br>├── GitHub Server 配置<br>└── API Rate Limiting<br><br>邮件通知（Email Notification）<br>├── SMTP 服务器配置<br>├── 发件人地址<br>└── 测试邮件发送<br><br>Extended E-mail Notification（如果安装了 Email Extension 插件）<br>├── 更丰富的邮件模板配置<br>└── 支持 HTML 邮件<br><br><span class="hljs-built_in">Shell</span>（<span class="hljs-built_in">Shell</span> 执行器）<br>├── 默认 <span class="hljs-built_in">Shell</span>：/bin/bash<br>└── 可以根据需要修改<br></code></pre></td></tr></table></figure>
+
+<p><strong>现在先不要修改任何配置，只是浏览一下，了解有哪些选项。</strong></p>
+<h4 id="4-4-2-Tools（全局工具配置）"><a href="#4-4-2-Tools（全局工具配置）" class="headerlink" title="4.4.2 Tools（全局工具配置）"></a>4.4.2 Tools（全局工具配置）</h4><p>路径：<code>Manage Jenkins → Tools</code></p>
+<figure class="highlight xl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs xl">全局工具配置中需要关注：<br><br>JDK 安装<br>├── 可以自动安装（Jenkins 会自动下载）<br>├── 或者指定已有 JDK 的路径<br>└── 可以配置多个 JDK 版本（JDK8、JDK11、JDK17）<br><br>Git 安装<br>├── 通常系统已有 Git<br>├── 可以指定路径：/usr/bin/git<br>└── 或让 Jenkins 自动安装<br><br>Maven 安装<br>├── 指定 Maven 安装路径<br>└── 或自动安装<br><br><span class="hljs-built_in">NodeJS</span> 安装（如果安装了 <span class="hljs-built_in">NodeJS</span> 插件）<br>├── 指定 Node.js 版本<br>└── 自动安装<br></code></pre></td></tr></table></figure>
+
+<p><strong>验证你的系统中已安装的工具：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 检查 Java 版本</span><br>java -version<br><br><span class="hljs-comment"># 检查 Git 版本</span><br>git --version<br><br><span class="hljs-comment"># 检查 Maven 版本（如果有）</span><br>mvn --version<br><br><span class="hljs-comment"># 检查 Node.js 版本（如果有）</span><br>node --version<br></code></pre></td></tr></table></figure>
+
+<p>把查到的路径记录下来，后面配置时要用。</p>
+<h4 id="4-4-3-Plugins（插件管理）"><a href="#4-4-3-Plugins（插件管理）" class="headerlink" title="4.4.3 Plugins（插件管理）"></a>4.4.3 Plugins（插件管理）</h4><p>路径：<code>Manage Jenkins → Plugins</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs bash">插件管理界面包含四个标签页：<br><br>Updates（更新）<br>├── 显示有更新可用的插件<br>└── 可以选择性更新<br><br>Available plugins（可用插件）<br>├── 浏览和搜索可安装的插件<br>├── 搜索框可以快速查找<br>└── 勾选后点击 Install 即可<br><br>Installed plugins（已安装插件）<br>├── 查看所有已安装的插件<br>├── 可以禁用或卸载插件<br>└── 查看插件版本<br><br>Advanced settings（高级设置）<br>├── 手动上传 .hpi 插件文件<br>├── 配置代理（如果需要翻墙下载插件）<br>└── 更新站点 URL<br></code></pre></td></tr></table></figure>
+
+<h4 id="4-4-4-Credentials（凭据管理）"><a href="#4-4-4-Credentials（凭据管理）" class="headerlink" title="4.4.4 Credentials（凭据管理）"></a>4.4.4 Credentials（凭据管理）</h4><p>路径：<code>Manage Jenkins → Credentials</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs bash">凭据管理是 Jenkins 安全体系的核心：<br><br>凭据类型：<br>├── Username with password — 用户名密码<br>│   用于：Git 仓库登录、数据库连接、API 调用<br>│<br>├── SSH Username with private key — SSH 密钥<br>│   用于：SSH 登录服务器、Git SSH 克隆<br>│<br>├── Secret file — 秘密文件<br>│   用于：证书文件、配置文件<br>│<br>├── Secret text — 秘密文本<br>│   用于：API Token、密钥字符串<br>│<br>└── Certificate — 证书<br>    用于：HTTPS 客户端证书<br><br>凭据作用域（Scope）：<br>├── Global（全局）— 所有项目都可以使用<br>└── System（系统）— 仅 Jenkins 系统内部使用<br></code></pre></td></tr></table></figure>
+
+<p><strong>现在先了解概念，后面 Day 3-4 会实际配置。</strong></p>
+<h4 id="4-4-5-Nodes（节点管理）"><a href="#4-4-5-Nodes（节点管理）" class="headerlink" title="4.4.5 Nodes（节点管理）"></a>4.4.5 Nodes（节点管理）</h4><p>路径：<code>Manage Jenkins → Nodes</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash">节点管理界面：<br><br>你会看到一个名为 <span class="hljs-string">&quot;Built-In Node&quot;</span> 的节点<br>├── 这是 Jenkins 的内置节点（Master 本身）<br>├── 默认情况下，所有构建都在这个节点上执行<br>└── 后续可以添加更多 Agent 节点<br><br>每个节点显示：<br>├── 节点名称<br>├── 状态（在线/离线）<br>├── 磁盘剩余空间<br>├── 响应时间<br>└── 当前正在执行的任务数<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、理解-Jenkins-项目类型"><a href="#五、理解-Jenkins-项目类型" class="headerlink" title="五、理解 Jenkins 项目类型"></a>五、理解 Jenkins 项目类型</h2><h3 id="5-1-创建新项目"><a href="#5-1-创建新项目" class="headerlink" title="5.1 创建新项目"></a>5.1 创建新项目</h3><p>点击左侧 <strong>New Item</strong>，你会看到 Jenkins 支持的项目类型：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs bash">┌─────────────────────────────────────────────────────────────────┐<br>│                                                                 │<br>│  New Item                                                       │<br>│                                                                 │<br>│  Enter an item name: [                    ]                     │<br>│                                                                 │<br>│  选择项目类型：                                                   │<br>│                                                                 │<br>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │<br>│  │ Freestyle   │  │ Pipeline    │  │ Multi-      │             │<br>│  │ project     │  │             │  │ config      │             │<br>│  │             │  │ 最灵活的项目 │  │ project      │             │<br>│  │ 最简单的     │   │ 类型，用     │  │             │             │<br>│  │ 项目类型，    │  │ 代码定义     │  │ 参数化构建    │             │<br>│  │ 用 UI 配置   │  │ 流水线       │  │ 矩阵         │             │<br>│  └─────────────┘  └─────────────┘  └─────────────┘             │<br>│                                                                 │<br>│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐             │<br>│  │ Folder      │  │ Multibranch │  │ Organization│             │<br>│  │             │  │ Pipeline    │  │ Folder      │             │<br>│  │ 文件夹，      │  │            │  │             │             │<br>│  │ 用于组织      │  │ 多分支       │  │ 组织级别    │             │<br>│  │ 项目         │  │ 流水线       │  │ 项目扫描    │             │<br>│  └─────────────┘  └─────────────┘  └─────────────┘             │<br>│                                                                 │<br>└─────────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-三种最重要的项目类型"><a href="#5-2-三种最重要的项目类型" class="headerlink" title="5.2 三种最重要的项目类型"></a>5.2 三种最重要的项目类型</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> Freestyle Project（自由风格项目）<br>   ├── 最基础的项目类型<br>   ├── 通过 Web UI 点点点来配置<br>   ├── 适合：初学者入门、简单任务<br>   ├── 优点：简单直观<br>   ├── 缺点：配置无法版本化管理，复杂流程难以表达<br>   └── 我们 Day 3-4 会用这个来入门<br><br><span class="hljs-bullet">2.</span> Pipeline（流水线项目）<br>   ├── 用代码（Jenkinsfile）定义整个构建流程<br>   ├── Jenkinsfile 存放在 Git 仓库中<br>   ├── 适合：所有正式项目<br>   ├── 优点：可版本化、可复用、可 Code Review<br>   ├── 缺点：需要学习 Groovy 语法<br>   └── 这是我们重点学习的目标<br><br><span class="hljs-bullet">3.</span> Multibranch Pipeline（多分支流水线）<br>   ├── 自动扫描 Git 仓库的所有分支<br>   ├── 每个分支自动创建对应的 Pipeline<br>   ├── 适合：有多个分支的团队项目<br>   ├── 优点：分支管理自动化<br>   └── Week 3 会详细讲解<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、动手实操-—-创建你的第一个项目"><a href="#六、动手实操-—-创建你的第一个项目" class="headerlink" title="六、动手实操 — 创建你的第一个项目"></a>六、动手实操 — 创建你的第一个项目</h2><h3 id="6-1-创建一个-Freestyle-项目"><a href="#6-1-创建一个-Freestyle-项目" class="headerlink" title="6.1 创建一个 Freestyle 项目"></a>6.1 创建一个 Freestyle 项目</h3><p><strong>Step 1：</strong> 点击左侧 <strong>New Item</strong></p>
+<p><strong>Step 2：</strong> 输入项目名称 <code>hello-jenkins</code>，选择 <strong>Freestyle project</strong>，点击 <strong>OK</strong></p>
+<p><strong>Step 3：</strong> 在项目配置页面，做以下配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs bash">General（常规）<br>├── Description: 我的第一个 Jenkins 项目<br>└── 其他保持默认<br><br>Source Code Management（源码管理）<br>└── 选择 None（暂时不关联代码仓库）<br><br>Build Triggers（构建触发器）<br>└── 暂时不配置任何触发器<br><br>Build Environment（构建环境）<br>└── 暂时不配置<br><br>Build Steps（构建步骤）<br>├── 点击 <span class="hljs-string">&quot;Add build step&quot;</span><br>├── 选择 <span class="hljs-string">&quot;Execute shell&quot;</span><br>└── 在命令框中输入：<br><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;========================================&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;  这是我的第一个 Jenkins 构建！&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;  构建时间: <span class="hljs-subst">$(date)</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;  构建号: <span class="hljs-variable">$&#123;BUILD_NUMBER&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;  工作空间: <span class="hljs-variable">$&#123;WORKSPACE&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;  执行节点: <span class="hljs-variable">$&#123;NODE_NAME&#125;</span>&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;========================================&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br>    <span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;Hello, Jenkins! 🎉&quot;</span><br><br>Post-build Actions（构建后操作）<br>└── 暂时不配置<br><br>最后点击 [ Save ]<br></code></pre></td></tr></table></figure>
+
+<p><strong>Step 4：</strong> 点击左侧 <strong>Build Now</strong>（立即构建）</p>
+<p><strong>Step 5：</strong> 在 <strong>Build History</strong> 中看到一个构建记录，点击它，然后点击 <strong>Console Output</strong>（控制台输出）</p>
+<p>你应该看到类似这样的输出：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">Started by user admin<br>Running as SYSTEM<br>Building in /var/lib/jenkins/workspace/hello-jenkins<br>[hello-jenkins] $ /bin/bash /tmp/jenkins1234567890.sh<br>========================================<br>  这是我的第一个 Jenkins 构建！<br>  构建时间: Mon Jul 14 10:30:00 CST 2025<br>  构建号: 1<br>  工作空间: /var/lib/jenkins/workspace/hello-jenkins<br>  执行节点: built-in<br>========================================<br><br>Hello, Jenkins! 🎉<br>Finished: SUCCESS<br></code></pre></td></tr></table></figure>
+
+<p><strong>恭喜！你已经成功完成了第一个 Jenkins 构建！</strong></p>
+<h3 id="6-2-理解构建过程中发生了什么"><a href="#6-2-理解构建过程中发生了什么" class="headerlink" title="6.2 理解构建过程中发生了什么"></a>6.2 理解构建过程中发生了什么</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs markdown">当你点击 &quot;Build Now&quot; 时：<br><br><span class="hljs-bullet">1.</span> Jenkins 创建一个构建任务，编号为 #1<br><span class="hljs-bullet">2.</span> 任务进入队列<br><span class="hljs-bullet">3.</span> Jenkins 找到一个空闲的 Agent（这里就是 Master 本身）<br><span class="hljs-bullet">4.</span> Agent 创建一个工作空间目录：<br>   /var/lib/jenkins/workspace/hello-jenkins/<br><span class="hljs-bullet">5.</span> Agent 执行你配置的 Shell 命令<br><span class="hljs-bullet">6.</span> 所有输出实时传回 Jenkins<br><span class="hljs-bullet">7.</span> 命令执行完毕，构建状态设为 SUCCESS<br><span class="hljs-bullet">8.</span> 构建记录保存到 Jenkins 数据目录<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-查看-Jenkins-的工作空间"><a href="#6-3-查看-Jenkins-的工作空间" class="headerlink" title="6.3 查看 Jenkins 的工作空间"></a>6.3 查看 Jenkins 的工作空间</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在虚拟机中查看 Jenkins 的工作空间</span><br><span class="hljs-built_in">ls</span> -la /var/lib/jenkins/workspace/<br><br><span class="hljs-comment"># 你会看到</span><br><span class="hljs-comment"># drwxr-xr-x 2 jenkins jenkins 4096 ... hello-jenkins</span><br><br><span class="hljs-comment"># 查看工作空间内容</span><br><span class="hljs-built_in">ls</span> -la /var/lib/jenkins/workspace/hello-jenkins/<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-4-再次构建，观察变化"><a href="#6-4-再次构建，观察变化" class="headerlink" title="6.4 再次构建，观察变化"></a>6.4 再次构建，观察变化</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs markdown">再次点击 &quot;Build Now&quot;，你会发现：<br><br><span class="hljs-bullet">1.</span> 构建号变成了 #2<br><span class="hljs-bullet">2.</span> 工作空间路径不变<br><span class="hljs-bullet">3.</span> 每次构建会覆盖之前的工作空间内容（默认行为）<br><span class="hljs-bullet">4.</span> 构建历史中显示两个构建记录<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、关键环境变量"><a href="#七、关键环境变量" class="headerlink" title="七、关键环境变量"></a>七、关键环境变量</h2><p>Jenkins 在构建过程中会自动注入很多环境变量，这些变量在编写构建脚本时非常有用：</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">常用环境变量：<br><br>构建信息<br>├── <span class="hljs-keyword">BUILD_NUMBER </span>     — 构建号（<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>...）<br>├── <span class="hljs-keyword">BUILD_ID </span>         — 构建 ID（时间戳格式）<br>├── <span class="hljs-keyword">BUILD_DISPLAY_NAME </span>— 构建显示名称（<span class="hljs-comment">#1, #2...）</span><br>├── <span class="hljs-keyword">BUILD_URL </span>        — 构建页面 URL<br>└── <span class="hljs-keyword">BUILD_TAG </span>        — 构建标签（<span class="hljs-keyword">jenkins-jobname-1）</span><br><span class="hljs-keyword"></span><br>项目信息<br>├── <span class="hljs-keyword">JOB_NAME </span>         — 项目名称<br>├── <span class="hljs-keyword">JOB_URL </span>          — 项目 URL<br>└── <span class="hljs-keyword">JOB_BASE_NAME </span>    — 项目短名称<br><br>节点信息<br>├── NODE_NAME         — 执行构建的节点名称<br>├── NODE_LABELS       — 节点标签<br>└── WORKSPACE         — 工作空间路径<br><br>Git 信息（如果配置了 Git）<br>├── GIT_BRANCH        — 当前分支<br>├── GIT_COMMIT        — 当前提交 <span class="hljs-keyword">SHA</span><br><span class="hljs-keyword"></span>├── GIT_PREVIOUS_COMMIT — 上一次提交 <span class="hljs-keyword">SHA</span><br><span class="hljs-keyword"></span>└── GIT_URL           — Git 仓库 URL<br></code></pre></td></tr></table></figure>
+
+<p><strong>验证这些变量 — 修改你的 Shell 脚本：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;========== 构建信息 ==========&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;构建号:     <span class="hljs-variable">$&#123;BUILD_NUMBER&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;构建 ID:    <span class="hljs-variable">$&#123;BUILD_ID&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;项目名称:   <span class="hljs-variable">$&#123;JOB_NAME&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;工作空间:   <span class="hljs-variable">$&#123;WORKSPACE&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;节点名称:   <span class="hljs-variable">$&#123;NODE_NAME&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;构建 URL:   <span class="hljs-variable">$&#123;BUILD_URL&#125;</span>&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;==============================&quot;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、Day-1-2-自检清单"><a href="#八、Day-1-2-自检清单" class="headerlink" title="八、Day 1-2 自检清单"></a>八、Day 1-2 自检清单</h2><p>完成以下所有项目，确认你已经掌握了 Day 1-2 的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash">环境验证<br>├── [/] Jenkins 服务正常运行（systemctl status jenkins）<br>├── [/] 能通过浏览器访问 Jenkins（http://IP:8080）<br>├── [/] 已完成初始解锁和管理员账号创建<br>└── [/] 推荐插件已安装完成<br><br>界面熟悉<br>├── [/] 能找到 Dashboard（主界面）<br>├── [/] 能找到 Manage Jenkins（管理页面）<br>├── [/] 能找到 System Configuration（系统配置）<br>├── [/] 能找到 Tools Configuration（工具配置）<br>├── [/] 能找到 Plugins（插件管理）<br>├── [/] 能找到 Credentials（凭据管理）<br>├── [/] 能找到 Nodes（节点管理）<br>└── [/] 能找到 Build History（构建历史）<br><br>概念理解<br>├── [ ] 能用自己的话解释 CI/CD 是什么<br>├── [/] 理解 Master 和 Agent 的区别<br>├── [/] 理解构建的生命周期（触发→排队→执行→完成）<br>├── [ ] 知道 Jenkins 支持哪些项目类型<br>├── [ ] 知道至少 5 个 Jenkins 环境变量<br><br>实操完成<br>├── [/] 成功创建了 hello-jenkins 项目<br>├── [/] 成功执行了第一次构建<br>├── [/] 能查看控制台输出<br>├── [/] 理解工作空间（Workspace）的概念<br>└── [/] 能找到 Jenkins 的数据目录（/var/lib/jenkins/）<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="九、常见问题排查"><a href="#九、常见问题排查" class="headerlink" title="九、常见问题排查"></a>九、常见问题排查</h2><h3 id="Q1：浏览器打不开-Jenkins-页面"><a href="#Q1：浏览器打不开-Jenkins-页面" class="headerlink" title="Q1：浏览器打不开 Jenkins 页面"></a>Q1：浏览器打不开 Jenkins 页面</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 确认 Jenkins 运行中</span><br><span class="hljs-built_in">sudo</span> systemctl status jenkins<br><br><span class="hljs-comment"># 2. 确认端口已监听</span><br><span class="hljs-built_in">sudo</span> ss -tlnp | grep 8080<br><br><span class="hljs-comment"># 3. 确认防火墙放行</span><br><span class="hljs-built_in">sudo</span> ufw allow 8080/tcp    <span class="hljs-comment"># Ubuntu</span><br><span class="hljs-comment"># 或</span><br><span class="hljs-built_in">sudo</span> firewall-cmd --permanent --add-port=8080/tcp &amp;&amp; <span class="hljs-built_in">sudo</span> firewall-cmd --reload  <span class="hljs-comment"># CentOS</span><br><br><span class="hljs-comment"># 4. 确认虚拟机网络模式</span><br><span class="hljs-comment"># NAT 模式需要配置端口转发</span><br><span class="hljs-comment"># 桥接模式直接用虚拟机 IP 访问</span><br><span class="hljs-comment"># Host-Only 模式只能宿主机访问</span><br><br><span class="hljs-comment"># 5. 查看 Jenkins 日志</span><br><span class="hljs-built_in">sudo</span> journalctl -u jenkins -f<br></code></pre></td></tr></table></figure>
+
+<h3 id="Q2：初始密码文件不存在"><a href="#Q2：初始密码文件不存在" class="headerlink" title="Q2：初始密码文件不存在"></a>Q2：初始密码文件不存在</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 可能 Jenkins 已经初始化过了</span><br><span class="hljs-comment"># 查看 Jenkins 是否已经配置过</span><br><span class="hljs-built_in">ls</span> -la /var/lib/jenkins/config.xml<br><br><span class="hljs-comment"># 如果存在，说明已经初始化过</span><br><span class="hljs-comment"># 可以尝试默认用户名 admin，或者重置密码</span><br><br><span class="hljs-comment"># 重置密码方法：</span><br><span class="hljs-comment"># 1. 编辑配置文件，禁用安全</span><br><span class="hljs-built_in">sudo</span> sed -i <span class="hljs-string">&#x27;s/&lt;useSecurity&gt;true/&lt;useSecurity&gt;false/&#x27;</span> /var/lib/jenkins/config.xml<br><span class="hljs-comment"># 2. 重启 Jenkins</span><br><span class="hljs-built_in">sudo</span> systemctl restart jenkins<br><span class="hljs-comment"># 3. 无需密码即可进入，然后重新配置安全</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Q3：插件安装失败"><a href="#Q3：插件安装失败" class="headerlink" title="Q3：插件安装失败"></a>Q3：插件安装失败</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方法一：更换插件更新源</span><br><span class="hljs-comment"># Manage Jenkins → Plugins → Advanced settings</span><br><span class="hljs-comment"># Update Site URL 改为国内镜像：</span><br><span class="hljs-comment"># https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</span><br><br><span class="hljs-comment"># 方法二：手动下载安装</span><br><span class="hljs-comment"># 访问 https://plugins.jenkins.io/ 搜索插件</span><br><span class="hljs-comment"># 下载 .hpi 文件</span><br><span class="hljs-comment"># Manage Jenkins → Plugins → Advanced → Upload Plugin</span><br><span class="hljs-comment"># 上传 .hpi 文件</span><br><br><span class="hljs-comment"># 方法三：命令行安装</span><br><span class="hljs-comment"># 下载 jenkins-plugin-manager.jar</span><br>wget https://github.com/jenkinsci/plugin-management-cli/releases/latest/download/jenkins-plugin-manager.jar<br>java -jar jenkins-plugin-manager.jar \<br>    --war /usr/share/java/jenkins.war \<br>    --plugin-download-directory /var/lib/jenkins/plugins/ \<br>    --plugins git pipeline workflow-aggregator<br><span class="hljs-built_in">sudo</span> systemctl restart jenkins<br></code></pre></td></tr></table></figure>
+
+<h3 id="Q4：Jenkins-内存不足"><a href="#Q4：Jenkins-内存不足" class="headerlink" title="Q4：Jenkins 内存不足"></a>Q4：Jenkins 内存不足</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 Jenkins 进程内存使用</span><br>ps aux | grep jenkins<br><br><span class="hljs-comment"># 修改 JVM 内存参数</span><br><span class="hljs-built_in">sudo</span> vim /etc/default/jenkins    <span class="hljs-comment"># Debian/Ubuntu</span><br><span class="hljs-comment"># 或</span><br><span class="hljs-built_in">sudo</span> vim /etc/sysconfig/jenkins  <span class="hljs-comment"># CentOS/RHEL</span><br><br><span class="hljs-comment"># 找到 JAVA_OPTS 行，修改为：</span><br>JAVA_OPTS=<span class="hljs-string">&quot;-Xms512m -Xmx1024m&quot;</span><br><br><span class="hljs-comment"># 重启 Jenkins</span><br><span class="hljs-built_in">sudo</span> systemctl restart jenkins<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="十、下一步预告"><a href="#十、下一步预告" class="headerlink" title="十、下一步预告"></a>十、下一步预告</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">Day 3-4 学习内容预告：<br><br>├── 准备一个本地 Git 仓库作为练习项目<br>├── 创建第一个 Freestyle 项目并关联 Git<br>├── 配置构建触发器（手动、定时、轮询）<br>├── 配置构建后操作（归档产物、邮件通知）<br>├── 实际体验完整的<span class="hljs-string">&quot;拉取代码→构建→测试&quot;</span>流程<br>└── 为 Week 2 的 Pipeline 学习打下基础<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/Jenkins/" class="category-chain-item">Jenkins</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/Jenkins/" class="print-no-link">#Jenkins</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Jenkins Day 1-2 学习笔记</div>
+      <div>http://bote798.github.io/2026/04/02/Jenkins Day 1-2 学习笔记/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/04/02/Jenkins%20Day%203-4%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Jenkins Day 3-4 学习笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Jenkins Day 3-4 学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/03/31/WSL2%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%BC%8Fnat%E6%9B%B4%E6%94%B9%E4%B8%BA%E6%A1%A5%E6%8E%A5/" title="WSL2网络模式nat更改为桥接">
+                        <span class="hidden-mobile">WSL2网络模式nat更改为桥接</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

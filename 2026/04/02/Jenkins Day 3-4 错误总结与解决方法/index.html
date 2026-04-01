@@ -1,0 +1,726 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Jenkins Day 3-4 错误总结与解决方案 问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, w">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins Day 3-4 错误总结与解决方案">
+<meta property="og:url" content="http://bote798.github.io/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="Jenkins Day 3-4 错误总结与解决方案 问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, w">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
+<meta property="article:published_time" content="2026-04-01T16:02:28.000Z">
+<meta property="article:modified_time" content="2026-04-01T16:10:11.464Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="Jenkins">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
+  
+  
+  
+  <title>Jenkins Day 3-4 错误总结与解决方案 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Jenkins Day 3-4 错误总结与解决方案"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-04-02 00:02" pubdate>
+          2026年4月2日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Jenkins Day 3-4 错误总结与解决方案</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Jenkins-Day-3-4-错误总结与解决方案"><a href="#Jenkins-Day-3-4-错误总结与解决方案" class="headerlink" title="Jenkins Day 3-4 错误总结与解决方案"></a>Jenkins Day 3-4 错误总结与解决方案</h1><hr>
+<h2 id="问题一：本地-file-仓库检出被阻止"><a href="#问题一：本地-file-仓库检出被阻止" class="headerlink" title="问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止"></a>问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止</h2><h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ERROR: Checkout of Git remote <span class="hljs-string">&#x27;file:///home/LX/jenkins_demo/demo-java-app&#x27;</span><br>aborted because it references a <span class="hljs-built_in">local</span> directory, <span class="hljs-built_in">which</span> may be insecure.<br>You can allow <span class="hljs-built_in">local</span> checkouts anyway by setting the system property<br><span class="hljs-string">&#x27;hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT&#x27;</span> to <span class="hljs-literal">true</span>.<br></code></pre></td></tr></table></figure>
+
+<h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">Jenkins 的 Git 插件从某个版本开始，默认禁止从本地 file:// 路径检出代码。<br>这是出于安全考虑 —— 如果 Jenkins 被攻击者控制，<br>攻击者可能通过配置 file:// 路径读取服务器上的任意文件。<br></code></pre></td></tr></table></figure>
+
+<h3 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h3><p><strong>第一步：找到 Jenkins 的 systemd 服务文件</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep -rn <span class="hljs-string">&quot;JAVA_OPTS\|JENKINS_JAVA&quot;</span> \<br>    /etc/sysconfig/jenkins \<br>    /etc/default/jenkins \<br>    /usr/lib/systemd/system/jenkins.service \<br>    /etc/systemd/system/jenkins.service \<br>    2&gt;/dev/null<br></code></pre></td></tr></table></figure>
+
+<p><strong>第二步：创建 override 文件（不要直接编辑系统文件）</strong></p>
+<p>直接编辑系统文件，更新时会被覆盖</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mkdir</span> -p /etc/systemd/system/jenkins.service.d/<br><br><span class="hljs-built_in">cat</span> &lt;&lt; <span class="hljs-string">&#x27;EOF&#x27;</span> | <span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/systemd/system/jenkins.service.d/override.conf<br>[Service]<br>Environment=<span class="hljs-string">&quot;JAVA_OPTS=-Djava.awt.headless=true -Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true&quot;</span><br>EOF<br></code></pre></td></tr></table></figure>
+
+<p><strong>第三步：重启 Jenkins</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl daemon-reload<br><span class="hljs-built_in">sudo</span> systemctl restart jenkins<br></code></pre></td></tr></table></figure>
+
+<p><strong>第四步：验证参数已生效</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ps aux | grep jenkins | grep ALLOW_LOCAL_CHECKOUT<br></code></pre></td></tr></table></figure>
+
+<p>看到输出中包含 <code>-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true</code> 即成功。</p>
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">├── 仅在学习环境使用此方案（用本地 Git 仓库）<br>├── 企业环境应使用 Git 服务（Gitea/GitLab/GitHub），通过 HTTP/SSH 协议访问<br>├── 不要直接编辑 /usr/lib/systemd/system/jenkins.service<br>│   （系统更新时会被覆盖）<br>└── 使用 override.conf 才是正确的做法<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="问题二：jenkins-用户无权访问-home-目录"><a href="#问题二：jenkins-用户无权访问-home-目录" class="headerlink" title="问题二：jenkins 用户无权访问 home 目录"></a>问题二：jenkins 用户无权访问 home 目录</h2><h3 id="错误日志-1"><a href="#错误日志-1" class="headerlink" title="错误日志"></a>错误日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">ERROR: Error cloning remote repo <span class="hljs-string">&#x27;origin&#x27;</span><br>stderr: 致命错误：<span class="hljs-string">&#x27;/home/LX/jenkins_demo/demo-java-app&#x27;</span><br>does not appear to be a git repository<br>致命错误：无法读取远程仓库。<br>请确认您有正确的访问权限并且仓库存在。<br></code></pre></td></tr></table></figure>
+
+<h3 id="原因分析-1"><a href="#原因分析-1" class="headerlink" title="原因分析"></a>原因分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">Jenkins 以 jenkins 系统用户身份运行。<br>Linux 中 /home/LX/ 目录默认权限是 700（仅 LX 用户可访问），<br>jenkins 用户无法<span class="hljs-string">&quot;穿越&quot;</span>这个目录，所以报错说找不到仓库。<br></code></pre></td></tr></table></figure>
+
+<h3 id="解决方案-1"><a href="#解决方案-1" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前权限</span><br><span class="hljs-built_in">ls</span> -ld /home/LX/<br><span class="hljs-comment"># 输出类似：drwx------  ... /home/LX/    ← 700，其他用户无法进入</span><br><br><span class="hljs-comment"># 给 home 目录添加执行权限（让其他用户能穿越目录）</span><br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> 755 /home/LX/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> 755 /home/LX/jenkins_demo/<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> -R 755 /home/LX/jenkins_demo/demo-java-app/<br><br><span class="hljs-comment"># 验证：用 jenkins 用户尝试访问</span><br><span class="hljs-built_in">sudo</span> -u jenkins <span class="hljs-built_in">ls</span> /home/LX/jenkins_demo/demo-java-app/<br></code></pre></td></tr></table></figure>
+
+<p>看到文件列表即成功。</p>
+<h3 id="权限说明"><a href="#权限说明" class="headerlink" title="权限说明"></a>权限说明</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">chmod</span> 755 的含义：<br><br>  7 (rwx) — 所有者（LX）：可读、可写、可进入<br>  5 (r-x) — 同组用户：可读、可进入<br>  5 (r-x) — 其他用户：可读、可进入<br><br>目录的执行权限（x）= <span class="hljs-string">&quot;可以进入这个目录&quot;</span><br>├── 没有 x 权限 → 即使有 r 权限也无法 <span class="hljs-built_in">cd</span> 进去<br>├── 有 x 权限 → 可以穿越（<span class="hljs-built_in">cd</span>）这个目录<br>└── 700 → 只有所有者能进入，jenkins 用户被挡在外面<br></code></pre></td></tr></table></figure>
+
+<h3 id="注意事项-1"><a href="#注意事项-1" class="headerlink" title="注意事项"></a>注意事项</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">├── 学习环境：<span class="hljs-built_in">chmod</span> 755 简单有效<br>├── 生产环境：不建议开放 home 目录权限<br>│   更好的做法是把仓库放到 Jenkins 有权限的目录<br>│   比如：/var/lib/jenkins/repos/demo-java-app<br>└── 最佳实践：使用 Git 服务（Gitea/GitLab），通过 HTTP 协议访问<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="问题三：Git-safe-directory-所有权检查"><a href="#问题三：Git-safe-directory-所有权检查" class="headerlink" title="问题三：Git safe.directory 所有权检查"></a>问题三：Git safe.directory 所有权检查</h2><h3 id="错误日志-2"><a href="#错误日志-2" class="headerlink" title="错误日志"></a>错误日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">stderr: 致命错误：在 <span class="hljs-string">&#x27;/home/LX/jenkins_demo/demo-java-app/.git&#x27;</span><br>检测到可疑的仓库所有权<br>要为本仓库创建特例，请运行：<br><br>   git config --global --add safe.directory /home/LX/jenkins_demo/demo-java-app/.git<br><br>致命错误：无法读取远程仓库。<br></code></pre></td></tr></table></figure>
+
+<h3 id="原因分析-2"><a href="#原因分析-2" class="headerlink" title="原因分析"></a>原因分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">Git 从 2.35.2 版本开始引入了 safe.directory 安全机制。<br><br>原理：<br>├── Git 检测仓库目录的所有者<br>├── 如果仓库所有者（LX）≠ 当前执行 Git 的用户（jenkins）<br>├── Git 拒绝操作，认为<span class="hljs-string">&quot;可能是恶意仓库&quot;</span><br>└── 这是为了防止在多用户系统中，一个用户篡改另一个用户的仓库<br><br>为什么 --global 没生效：<br>├── Jenkins 执行 Git 时可能没有读取 jenkins 用户的 ~/.gitconfig<br>├── 或者 Jenkins 的 Git 插件以不同方式调用 Git<br>└── 使用 --system 级别配置更可靠（写入 /etc/gitconfig）<br></code></pre></td></tr></table></figure>
+
+<h3 id="解决方案-2"><a href="#解决方案-2" class="headerlink" title="解决方案"></a>解决方案</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 用通配符 * 允许所有目录（学习环境最省事）</span><br><span class="hljs-built_in">sudo</span> git config --system --add safe.directory <span class="hljs-string">&#x27;*&#x27;</span><br><br><span class="hljs-comment"># 验证</span><br><span class="hljs-built_in">sudo</span> git config --system --list | grep safe.directory<br><span class="hljs-comment"># 输出：safe.directory=*</span><br></code></pre></td></tr></table></figure>
+
+<p>如果只想允许特定目录（更安全）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> git config --system --add safe.directory /home/LX/jenkins_demo/demo-java-app<br></code></pre></td></tr></table></figure>
+
+<h3 id="配置级别对比"><a href="#配置级别对比" class="headerlink" title="配置级别对比"></a>配置级别对比</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash">配置级别          配置文件位置                    影响范围<br>─────────────────────────────────────────────────────────<br>--<span class="hljs-built_in">local</span>          仓库内 .git/config               仅当前仓库<br>--global         ~/.gitconfig                    仅当前用户<br>--system         /etc/gitconfig                  所有用户 ⭐<br><br>Jenkins 场景下推荐 --system：<br>├── Jenkins 的 Git 插件可能不读取 jenkins 用户的 home 目录<br>├── --system 对所有用户生效，最可靠<br>└── 生产环境中应只添加具体路径，不要用 <span class="hljs-string">&#x27;*&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三个问题的关联关系"><a href="#三个问题的关联关系" class="headerlink" title="三个问题的关联关系"></a>三个问题的关联关系</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash">Jenkins 用本地 Git 仓库构建时，需要同时满足三个条件：<br><br>条件 1：Jenkins 允许 file:// 协议<br>        → 解决：-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=<span class="hljs-literal">true</span><br><br>条件 2：jenkins 用户能访问仓库目录<br>        → 解决：<span class="hljs-built_in">chmod</span> 755 目录路径<br><br>条件 3：Git 信任该仓库的所有权<br>        → 解决：git config --system safe.directory <span class="hljs-string">&#x27;*&#x27;</span><br><br>三个条件缺一不可，所以需要逐步排查，逐一解决。<br></code></pre></td></tr></table></figure>
+
+<h2 id="企业环境最佳实践"><a href="#企业环境最佳实践" class="headerlink" title="企业环境最佳实践"></a>企业环境最佳实践</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">学习环境              				企业环境（推荐）<br>────────────────────────────────────────────────────<br>本地 file:// 仓库                  Gitea / GitLab / GitHub<br><span class="hljs-built_in">chmod</span> 755 开放目录权限              HTTP/SSH 协议访问<br>safe.directory <span class="hljs-string">&#x27;*&#x27;</span>               不需要（远程仓库无此问题）<br>手动复制代码到服务器                 Webhook 自动触发<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/linux/Jenkins/" class="category-chain-item">Jenkins</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+        <a href="/tags/Jenkins/" class="print-no-link">#Jenkins</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Jenkins Day 3-4 错误总结与解决方案</div>
+      <div>http://bote798.github.io/2026/04/02/Jenkins Day 3-4 错误总结与解决方法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年4月2日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/02/Jenkins%20Day%203-4%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="Jenkins Day 3-4 学习笔记">
+                        <span class="hidden-mobile">Jenkins Day 3-4 学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
