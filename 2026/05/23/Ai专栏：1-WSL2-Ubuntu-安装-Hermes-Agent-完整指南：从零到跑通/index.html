@@ -1,0 +1,878 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通 一篇来自一线 IT 运维的实际安装记录，不是翻译官方文档。   Hermes Agent 是什么Hermes Agent 是 Nous Research 在 2026 年 2 月发布的开源自主 AI 智能体框架，MIT 协议。两个月内 GitHub 斩获 6.4 万星，到 5 月全球 Token 消耗量已经超过了同赛道的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通">
+<meta property="og:url" content="http://bote798.github.io/2026/05/23/Ai%E4%B8%93%E6%A0%8F%EF%BC%9A1-WSL2-Ubuntu-%E5%AE%89%E8%A3%85-Hermes-Agent-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%88%B0%E8%B7%91%E9%80%9A/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通 一篇来自一线 IT 运维的实际安装记录，不是翻译官方文档。   Hermes Agent 是什么Hermes Agent 是 Nous Research 在 2026 年 2 月发布的开源自主 AI 智能体框架，MIT 协议。两个月内 GitHub 斩获 6.4 万星，到 5 月全球 Token 消耗量已经超过了同赛道的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/Ai/hermes-agent/hermes-agent.logo.jpg">
+<meta property="article:published_time" content="2026-05-23T03:50:42.000Z">
+<meta property="article:modified_time" content="2026-05-23T04:02:33.714Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="Ai">
+<meta property="article:tag" content="Hermes-Agent">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/Ai/hermes-agent/hermes-agent.logo.jpg">
+  
+  
+  
+  <title>Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-05-23 11:50" pubdate>
+          2026年5月23日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="WSL2-Ubuntu-安装-Hermes-Agent-完整指南：从零到跑通"><a href="#WSL2-Ubuntu-安装-Hermes-Agent-完整指南：从零到跑通" class="headerlink" title="WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通"></a>WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通</h1><blockquote>
+<p>一篇来自一线 IT 运维的实际安装记录，不是翻译官方文档。</p>
+</blockquote>
+<hr>
+<h2 id="Hermes-Agent-是什么"><a href="#Hermes-Agent-是什么" class="headerlink" title="Hermes Agent 是什么"></a>Hermes Agent 是什么</h2><p>Hermes Agent 是 Nous Research 在 2026 年 2 月发布的开源自主 AI 智能体框架，MIT 协议。两个月内 GitHub 斩获 6.4 万星，到 5 月全球 Token 消耗量已经超过了同赛道的 OpenClaw。</p>
+<p>它不是一个套壳聊天机器人，也不是绑在 IDE 上的代码补全工具。它住在你的服务器上，有持久记忆、会自动写技能文档、能接微信&#x2F;飞书&#x2F;钉钉&#x2F;Telegram 等 15+ 个消息平台，还内置了定时任务调度和浏览器自动化。你用得越久，它就越了解你的工作习惯。</p>
+<p>核心能力清单：</p>
+<ul>
+<li><strong>持久记忆</strong>：跨会话记住你的偏好、项目、环境，不用每次重讲一遍</li>
+<li><strong>自动技能创建</strong>：解决一个难题后自己写 SKILL.md，下次遇到同类问题直接复用</li>
+<li><strong>多平台消息网关</strong>：一个网关进程通吃 CLI、Telegram、Discord、Slack、WhatsApp、微信、飞书、钉钉</li>
+<li><strong>定时自动化</strong>：内置 cron 调度器，日报、备份、巡检全都可以无人值守</li>
+<li><strong>并行子智能体</strong>：隔离的子进程，独立对话和终端，多任务并行</li>
+<li><strong>完整浏览器控制</strong>：导航、点击、输入、截图、视觉分析</li>
+</ul>
+<p>对于做运维和开发的人来说，它就像雇了一个 7x24 小时值班的初级同事，不抱怨、不请假、越干越熟练。</p>
+<hr>
+<h2 id="为什么选-WSL2-Ubuntu"><a href="#为什么选-WSL2-Ubuntu" class="headerlink" title="为什么选 WSL2 + Ubuntu"></a>为什么选 WSL2 + Ubuntu</h2><p>先说结论：<strong>Windows 用户最稳的玩法就是 WSL2 里跑 Ubuntu，然后装 Hermes。</strong></p>
+<p>三个原因：</p>
+<ol>
+<li><p><strong>兼容性最好</strong>。Hermes 的安装脚本对 Debian 系（Ubuntu&#x2F;Debian）支持最完善，<code>apt</code> 装依赖零摩擦。原生 Windows PowerShell 也能装，但那是实验性的，浏览器自动化、终端交互等高级功能在 WSL2 下表现更稳定。</p>
+</li>
+<li><p><strong>国内镜像加速</strong>。中文社区提供了 <code>res1.hermesagent.org.cn</code> 镜像安装脚本，优先走国内可直连的下载链路，不用折腾代理。</p>
+</li>
+<li><p><strong>运维友好</strong>。WSL2 里跑的东西可以直接用 <code>systemd</code> 管（Win11 已原生支持），也能用 Windows 端的任务计划程序做兜底，灵活性拉满。</p>
+</li>
+</ol>
+<p>我一开始想过用 Rocky Linux 10.1，毕竟 CentOS 停更后 Rocky 是 RHEL 生态的接班人。但 Hermes 安装脚本对 <code>dnf</code> 的支持不如 <code>apt</code> 成熟，加上 Rocky 默认开 SELinux，要多绕几道弯，没必要跟自己过不去。实战选了 Ubuntu，一路绿灯。</p>
+<hr>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><h3 id="WSL2-装-Ubuntu"><a href="#WSL2-装-Ubuntu" class="headerlink" title="WSL2 装 Ubuntu"></a>WSL2 装 Ubuntu</h3><p>如果你的 Windows 还没装 WSL2，PowerShell 管理员模式一条命令搞定：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs powershell">wsl <span class="hljs-literal">--install</span> <span class="hljs-literal">-d</span> Ubuntu<br></code></pre></td></tr></table></figure>
+
+<p>装完重启，开始菜单会多一个 Ubuntu 图标，点开设置用户名密码即可。</p>
+<p>确认是 WSL2 版本：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">wsl -l -v<br><span class="hljs-comment"># NAME      STATE           VERSION</span><br><span class="hljs-comment"># Ubuntu    Running         2</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Ubuntu-基础依赖"><a href="#Ubuntu-基础依赖" class="headerlink" title="Ubuntu 基础依赖"></a>Ubuntu 基础依赖</h3><p>进 Ubuntu 终端，先把系统更新了再加上必备工具：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt update &amp;&amp; <span class="hljs-built_in">sudo</span> apt upgrade -y<br><span class="hljs-built_in">sudo</span> apt install -y curl git build-essential python3 python3-full<br></code></pre></td></tr></table></figure>
+
+<p>Ubuntu 26.04 自带的 Python 3.14 完全满足 Hermes 的 3.11+ 要求，不用额外折腾 Python 版本。</p>
+<hr>
+<h2 id="安装-Hermes-Agent"><a href="#安装-Hermes-Agent" class="headerlink" title="安装 Hermes Agent"></a>安装 Hermes Agent</h2><h3 id="一条命令安装"><a href="#一条命令安装" class="headerlink" title="一条命令安装"></a>一条命令安装</h3><p>国内网络直接用中文社区镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -fsSL https://res1.hermesagent.org.cn/install.sh | bash<br></code></pre></td></tr></table></figure>
+
+<p>如果你网络环境能直连 GitHub，也可以用官方源：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash<br></code></pre></td></tr></table></figure>
+
+<p>安装脚本自动干的事：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>做了什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>检测 OS</td>
+<td>识别为 Linux &#x2F; Ubuntu，走 <code>apt</code> 路线装系统级依赖</td>
+</tr>
+<tr>
+<td>安装 uv</td>
+<td>Python 包管理器，替代 pip，速度快一个数量级</td>
+</tr>
+<tr>
+<td>安装 Python 3.11</td>
+<td>通过 uv 自动拉取，不污染系统已有的 Python</td>
+</tr>
+<tr>
+<td>克隆仓库</td>
+<td>代码放到 <code>~/.hermes/hermes-agent/</code></td>
+</tr>
+<tr>
+<td>创建虚拟环境</td>
+<td><code>venv</code> 隔离依赖</td>
+</tr>
+<tr>
+<td>安装 Python 依赖</td>
+<td>核心包 + 可选组件</td>
+</tr>
+<tr>
+<td>配置 PATH</td>
+<td>创建 <code>~/.local/bin/hermes</code> 软链接，全局可用</td>
+</tr>
+<tr>
+<td>下载 Node.js</td>
+<td>为浏览器自动化准备运行时</td>
+</tr>
+</tbody></table>
+<p>整个过程 3 到 5 分钟，取决于网络。</p>
+<p>装完后重载 shell 环境：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.bashrc<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="配置向导详解"><a href="#配置向导详解" class="headerlink" title="配置向导详解"></a>配置向导详解</h2><p>执行 <code>hermes setup</code> 进入交互式配置向导。几个关键步骤逐一说明。</p>
+<h3 id="1-选择模型提供商"><a href="#1-选择模型提供商" class="headerlink" title="1. 选择模型提供商"></a>1. 选择模型提供商</h3><p>支持 40+ 个提供商，从 OpenAI 到国产大模型全覆盖。光标上下移动，空格选中，回车确认。</p>
+<p>国内用户推荐这几个：</p>
+<table>
+<thead>
+<tr>
+<th>提供商</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>DeepSeek</strong></td>
+<td>便宜量足，API 直连无额外层，注册即用</td>
+</tr>
+<tr>
+<td><strong>Qwen Cloud &#x2F; DashScope Coding</strong></td>
+<td>阿里系，Coding Plan 套餐对编程场景优化，企业级 SLA</td>
+</tr>
+<tr>
+<td><strong>Kimi Coding Plan</strong></td>
+<td>月之暗面，api.kimi.com，编程场景有针对性优化</td>
+</tr>
+<tr>
+<td><strong>Z.AI &#x2F; GLM</strong></td>
+<td>智谱清华系，国内直连稳定</td>
+</tr>
+</tbody></table>
+<p>我选了 DeepSeek，后续随时能用 <code>hermes model</code> 切到别家。</p>
+<h3 id="2-终端后端"><a href="#2-终端后端" class="headerlink" title="2. 终端后端"></a>2. 终端后端</h3><p>选 <strong>Local</strong>（默认），直接在本机跑。除非你有 Docker 或远程 SSH 执行的特殊需求。</p>
+<h3 id="3-消息平台"><a href="#3-消息平台" class="headerlink" title="3. 消息平台"></a>3. 消息平台</h3><p>建议先 <strong>Skip</strong>。配消息网关需要 Telegram Bot Token、企业微信应用凭证之类的，会让首次配置拖得很长。先把核心跑通，之后用 <code>hermes gateway setup</code> 补。</p>
+<h3 id="4-配置完毕"><a href="#4-配置完毕" class="headerlink" title="4. 配置完毕"></a>4. 配置完毕</h3><p>向导结束后配置文件落在 <code>~/.hermes/</code> 下：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs nix">~<span class="hljs-operator">/</span>.hermes<span class="hljs-symbol">/</span><br>├── config.yaml   <span class="hljs-comment"># 主配置</span><br>├── .env          <span class="hljs-comment"># API Key 等敏感信息</span><br>├── SOUL.md       <span class="hljs-comment"># 人设定义</span><br>├── skills<span class="hljs-symbol">/</span>       <span class="hljs-comment"># 技能库</span><br>├── memories<span class="hljs-symbol">/</span>     <span class="hljs-comment"># 长期记忆</span><br>├── sessions<span class="hljs-symbol">/</span>     <span class="hljs-comment"># 会话记录</span><br>├── cron<span class="hljs-symbol">/</span>         <span class="hljs-comment"># 定时任务</span><br>└── logs<span class="hljs-symbol">/</span>         <span class="hljs-comment"># 日志</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="安装后诊断"><a href="#安装后诊断" class="headerlink" title="安装后诊断"></a>安装后诊断</h2><p>跑 <code>hermes doctor</code>，它会逐项检查环境状态。我的实际输出如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs text">◆ Python Environment<br>  ✓ Python 3.14.4<br>  ✓ Virtual environment active<br><br>◆ Required Packages<br>  ✓ OpenAI SDK / Rich / PyYAML / HTTPX / Croniter ...<br><br>◆ Configuration Files<br>  ✓ ~/.hermes/.env file exists<br>  ✓ API key configured<br>  ✓ Config version up to date (v23)<br><br>◆ Command Installation<br>  ✓ ~/.local/bin/hermes → correct target<br><br>◆ Tool Availability<br>  ✓ clarify / code_execution / cronjob / terminal / delegation<br>  ✓ file / memory / session_search / skills / todo / tts / kanban<br><br>◆ Memory Provider<br>  ✓ Built-in memory active<br></code></pre></td></tr></table></figure>
+
+<p><strong>核心 12 个工具全部绿</strong>：终端执行、代码运行、文件操作、记忆管理、技能系统、定时任务、子智能体委派、TTS 等，日常对话和工作完全够用。</p>
+<p>黄色告警的基本都是可选功能：<code>ripgrep</code> &#x2F; <code>Node.js</code> &#x2F; <code>docker</code> 未装，浏览器工具因此暂时不可用。下面逐个补上。</p>
+<hr>
+<h2 id="补充可选组件"><a href="#补充可选组件" class="headerlink" title="补充可选组件"></a>补充可选组件</h2><h3 id="装-ripgrep（推荐）"><a href="#装-ripgrep（推荐）" class="headerlink" title="装 ripgrep（推荐）"></a>装 ripgrep（推荐）</h3><p>文件搜索速度提升明显，一行搞定：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install -y ripgrep<br></code></pre></td></tr></table></figure>
+
+<h3 id="装-Node-js-npm（给浏览器自动化用）"><a href="#装-Node-js-npm（给浏览器自动化用）" class="headerlink" title="装 Node.js + npm（给浏览器自动化用）"></a>装 Node.js + npm（给浏览器自动化用）</h3><p>安装脚本已经下了 Node.js 22 的 tarball 并解压，<code>node -v</code> 能正常工作。但 Hermes 用的精简版 tarball 不带 npm，导致后续装不了浏览器引擎。</p>
+<p>确认问题：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">node -v   <span class="hljs-comment"># ✓ v22.22.1</span><br>npm -v    <span class="hljs-comment"># ✗ command not found</span><br></code></pre></td></tr></table></figure>
+
+<p>Node.js 22 内置了 corepack（包管理器管理工具），用它启用 npm：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">corepack <span class="hljs-built_in">enable</span> npm<br>npm -v   <span class="hljs-comment"># 输出 11.15.0</span><br></code></pre></td></tr></table></figure>
+
+<p>到此 Node.js + npm 都就绪了。</p>
+<h3 id="装浏览器引擎（Playwright-Chromium）"><a href="#装浏览器引擎（Playwright-Chromium）" class="headerlink" title="装浏览器引擎（Playwright Chromium）"></a>装浏览器引擎（Playwright Chromium）</h3><p>npm 有了之后，先装项目依赖，再下载浏览器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> ~/.hermes/hermes-agent<br>npm install<br>hermes doctor --fix<br></code></pre></td></tr></table></figure>
+
+<p>如果看到这个报错：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">ERROR: Playwright does not support chromium on ubuntu26.04-x64<br></code></pre></td></tr></table></figure>
+
+<p>那是因为 Playwright 1.60 还没适配 Ubuntu 26.04（2026 年 4 月发布的 Resolute Raccoon）。实际兼容性没问题，只是版本检测太严格。临时改一下 <code>/etc/os-release</code> 绕过：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 临时改成 24.04 骗过 Playwright</span><br><span class="hljs-built_in">sudo</span> sed -i <span class="hljs-string">&#x27;s/VERSION_ID=&quot;26.04&quot;/VERSION_ID=&quot;24.04&quot;/&#x27;</span> /etc/os-release<br>npx playwright install chromium<br><span class="hljs-comment"># 改回来</span><br><span class="hljs-built_in">sudo</span> sed -i <span class="hljs-string">&#x27;s/VERSION_ID=&quot;24.04&quot;/VERSION_ID=&quot;26.04&quot;/&#x27;</span> /etc/os-release<br></code></pre></td></tr></table></figure>
+
+<p>最后再跑一次诊断确认：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hermes doctor<br></code></pre></td></tr></table></figure>
+
+<h3 id="其他可选工具"><a href="#其他可选工具" class="headerlink" title="其他可选工具"></a>其他可选工具</h3><p>按需来，不装也能用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Docker（隔离容器执行）</span><br><span class="hljs-built_in">sudo</span> apt install -y docker.io<br><br><span class="hljs-comment"># 消息网关的 Telegram/Discord 支持</span><br>hermes gateway setup<br><br><span class="hljs-comment"># 网页搜索（需要 API Key）</span><br><span class="hljs-comment"># 在 ~/.hermes/.env 里配置 FIRECRAWL_API_KEY 或 TAVILY_API_KEY</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="最终诊断结果"><a href="#最终诊断结果" class="headerlink" title="最终诊断结果"></a>最终诊断结果</h2><p>全部补完后 <code>hermes doctor</code> 的输出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs text">◆ External Tools<br>  ✓ git<br>  ✓ ripgrep (rg)<br>  ✓ Node.js<br>  ✓ agent-browser (Node.js)<br>  ✓ Playwright Chromium<br><br>◆ Tool Availability<br>  ✓ browser        ← 装上了<br>  ✓ clarify<br>  ✓ code_execution<br>  ✓ cronjob<br>  ✓ terminal<br>  ✓ delegation<br>  ✓ file<br>  ✓ memory<br>  ✓ session_search<br>  ✓ skills<br>  ✓ todo<br>  ✓ tts<br>  ✓ kanban<br></code></pre></td></tr></table></figure>
+
+<p><strong>13 个核心工具全部就绪</strong>，包括浏览器自动化。黄色的都是可选高级功能：<code>image_gen</code> &#x2F; <code>video_gen</code> 需要对应 API Key，<code>messaging</code> &#x2F; <code>discord</code> 需要配消息平台，<code>web</code> 搜索需要 Firecrawl 或 Tavily 的 Key，不是刚需。</p>
+<hr>
+<h2 id="开始使用"><a href="#开始使用" class="headerlink" title="开始使用"></a>开始使用</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hermes<br></code></pre></td></tr></table></figure>
+
+<p>进入交互式 CLI，和你选的大模型直接对话。支持多行编辑、命令补全、历史回溯、流式输出。</p>
+<p>几个常用操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">hermes model              <span class="hljs-comment"># 切换模型</span><br>hermes tools              <span class="hljs-comment"># 管理启用的工具</span><br>hermes config <span class="hljs-built_in">set</span>         <span class="hljs-comment"># 单独改某个配置项</span><br>hermes gateway setup      <span class="hljs-comment"># 配置消息平台</span><br>hermes gateway            <span class="hljs-comment"># 启动消息网关</span><br>hermes update             <span class="hljs-comment"># 更新到最新版</span><br>hermes doctor             <span class="hljs-comment"># 环境诊断</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常用命令速查"><a href="#常用命令速查" class="headerlink" title="常用命令速查"></a>常用命令速查</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs text">┌──────────────────────────────────────────────────────────┐<br>│  分类          │  命令                   │  说明          │<br>├──────────────────────────────────────────────────────────┤<br>│  对话          │  hermes                 │  启动交互式 CLI │<br>│  模型管理      │  hermes model           │  切换模型提供商 │<br>│  工具管理      │  hermes tools           │  启用/禁用工具  │<br>│  配置管理      │  hermes config set      │  修改单项配置   │<br>│  配置向导      │  hermes setup           │  重新全量配置   │<br>│  诊断修复      │  hermes doctor          │  环境检查       │<br>│               │  hermes doctor --fix    │  自动修复       │<br>│  更新          │  hermes update          │  拉最新代码     │<br>│  消息网关      │  hermes gateway setup   │  配消息平台     │<br>│               │  hermes gateway          │  启动网关       │<br>│               │  hermes gateway install  │  注册 systemd   │<br>│  状态查看      │  hermes status          │  查看当前配置   │<br>│  迁移          │  hermes claw migrate    │  从 OpenClaw 迁 │<br>└──────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常见坑与处理"><a href="#常见坑与处理" class="headerlink" title="常见坑与处理"></a>常见坑与处理</h2><h3 id="hermes-command-not-found"><a href="#hermes-command-not-found" class="headerlink" title="hermes: command not found"></a><code>hermes: command not found</code></h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">source</span> ~/.bashrc<br><span class="hljs-comment"># 或者关掉终端重开</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="Node-js-有但-npm-不存在"><a href="#Node-js-有但-npm-不存在" class="headerlink" title="Node.js 有但 npm 不存在"></a>Node.js 有但 npm 不存在</h3><p>安装脚本用的精简 tarball 不带 npm。Node.js 22 内置了 corepack，一行启用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">corepack <span class="hljs-built_in">enable</span> npm<br>npm -v<br></code></pre></td></tr></table></figure>
+
+<h3 id="Playwright-提示不支持当前-Ubuntu-版本"><a href="#Playwright-提示不支持当前-Ubuntu-版本" class="headerlink" title="Playwright 提示不支持当前 Ubuntu 版本"></a>Playwright 提示不支持当前 Ubuntu 版本</h3><p>Ubuntu 26.04 用户会遇到 <code>Playwright does not support chromium on ubuntu26.04-x64</code>。临时改版本号绕过，装完改回来。详见上文”装浏览器引擎”那节。</p>
+<h3 id="更新后配置丢失"><a href="#更新后配置丢失" class="headerlink" title="更新后配置丢失"></a>更新后配置丢失</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">hermes config check<br>hermes config migrate<br></code></pre></td></tr></table></figure>
+
+<h3 id="API-Key-提示未设置"><a href="#API-Key-提示未设置" class="headerlink" title="API Key 提示未设置"></a>API Key 提示未设置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">hermes model     <span class="hljs-comment"># 重新走一遍模型选择</span><br><span class="hljs-comment"># 或直接写</span><br>hermes config <span class="hljs-built_in">set</span> OPENROUTER_API_KEY sk-or-v1-xxxx<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>整个安装过程从零开始，去掉等待下载的时间，实际动手不超过 10 分钟。核心体验：</p>
+<ul>
+<li><strong>安装简单</strong>：一条 curl 命令，脚本全自动处理依赖</li>
+<li><strong>配置直观</strong>：交互式向导，上下左右选就行，不用手写 yaml</li>
+<li><strong>诊断完善</strong>：<code>hermes doctor</code> 把问题定位得很清楚，不会让你瞎猜</li>
+<li><strong>国内友好</strong>：中文社区镜像解决了 GitHub 访问慢的老问题</li>
+</ul>
+<p>关于 Ubuntu 26.04 的兼容性问题：Hermes 本身完全正常，只是 Playwright 的版本检测还没跟上 2026 年 4 月发布的 Ubuntu 新版本。一行 <code>sed</code> 临时改版本号就能绕过，不影响功能。</p>
+<p>装好之后真正好玩的部分才开始：让它帮你查日志、写脚本、做巡检日报、定时推送消息。一个会自己写技能文档、越用越懂你的 AI 智能体，值得花这十几分钟。</p>
+<hr>
+<blockquote>
+<p>环境信息：Windows 11 + WSL2 + Ubuntu 26.04 LTS + Hermes Agent（2026 年 5 月）</p>
+<p>中文社区：<a target="_blank" rel="noopener" href="https://hermesagent.org.cn/">https://hermesagent.org.cn</a></p>
+<p>GitHub：<a target="_blank" rel="noopener" href="https://github.com/NousResearch/hermes-agent">https://github.com/NousResearch/hermes-agent</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Ai/" class="category-chain-item">Ai</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Ai/Hermes-Agent/" class="category-chain-item">Hermes-Agent</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Ai/" class="print-no-link">#Ai</a>
+      
+        <a href="/tags/Hermes-Agent/" class="print-no-link">#Hermes-Agent</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通</div>
+      <div>http://bote798.github.io/2026/05/23/Ai专栏：1-WSL2-Ubuntu-安装-Hermes-Agent-完整指南：从零到跑通/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年5月23日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年5月23日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" title="Jenkins Day 3-4 错误总结与解决方案">
+                        <span class="hidden-mobile">Jenkins Day 3-4 错误总结与解决方案</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
