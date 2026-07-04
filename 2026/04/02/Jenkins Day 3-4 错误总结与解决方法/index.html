@@ -19,19 +19,20 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Jenkins Day 3-4 错误总结与解决方案 问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, w">
+    <meta name="description" content="问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, which may be insecure.You c">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Jenkins Day 3-4 错误总结与解决方案">
 <meta property="og:url" content="http://bote798.github.io/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/index.html">
 <meta property="og:site_name" content="bote798&#39;s Blog">
-<meta property="og:description" content="Jenkins Day 3-4 错误总结与解决方案 问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, w">
+<meta property="og:description" content="问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:&#x2F;&#x2F;&#x2F;home&#x2F;LX&#x2F;jenkins_demo&#x2F;demo-java-app&#x27;aborted because it references a local directory, which may be insecure.You c">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
 <meta property="article:published_time" content="2026-04-01T16:02:28.000Z">
-<meta property="article:modified_time" content="2026-04-01T16:10:11.464Z">
+<meta property="article:modified_time" content="2026-07-04T12:25:29.476Z">
 <meta property="article:author" content="bote798">
-<meta property="article:tag" content="linux">
 <meta property="article:tag" content="Jenkins">
+<meta property="article:tag" content="CI&#x2F;CD">
+<meta property="article:tag" content="排错">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
   
@@ -283,8 +284,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="Jenkins-Day-3-4-错误总结与解决方案"><a href="#Jenkins-Day-3-4-错误总结与解决方案" class="headerlink" title="Jenkins Day 3-4 错误总结与解决方案"></a>Jenkins Day 3-4 错误总结与解决方案</h1><hr>
-<h2 id="问题一：本地-file-仓库检出被阻止"><a href="#问题一：本地-file-仓库检出被阻止" class="headerlink" title="问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止"></a>问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止</h2><h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ERROR: Checkout of Git remote <span class="hljs-string">&#x27;file:///home/LX/jenkins_demo/demo-java-app&#x27;</span><br>aborted because it references a <span class="hljs-built_in">local</span> directory, <span class="hljs-built_in">which</span> may be insecure.<br>You can allow <span class="hljs-built_in">local</span> checkouts anyway by setting the system property<br><span class="hljs-string">&#x27;hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT&#x27;</span> to <span class="hljs-literal">true</span>.<br></code></pre></td></tr></table></figure>
+                <h2 id="问题一：本地-file-仓库检出被阻止"><a href="#问题一：本地-file-仓库检出被阻止" class="headerlink" title="问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止"></a>问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止</h2><h3 id="错误日志"><a href="#错误日志" class="headerlink" title="错误日志"></a>错误日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">ERROR: Checkout of Git remote <span class="hljs-string">&#x27;file:///home/LX/jenkins_demo/demo-java-app&#x27;</span><br>aborted because it references a <span class="hljs-built_in">local</span> directory, <span class="hljs-built_in">which</span> may be insecure.<br>You can allow <span class="hljs-built_in">local</span> checkouts anyway by setting the system property<br><span class="hljs-string">&#x27;hudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT&#x27;</span> to <span class="hljs-literal">true</span>.<br></code></pre></td></tr></table></figure>
 
 <h3 id="原因分析"><a href="#原因分析" class="headerlink" title="原因分析"></a>原因分析</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">Jenkins 的 Git 插件从某个版本开始，默认禁止从本地 file:// 路径检出代码。<br>这是出于安全考虑 —— 如果 Jenkins 被攻击者控制，<br>攻击者可能通过配置 file:// 路径读取服务器上的任意文件。<br></code></pre></td></tr></table></figure>
 
@@ -350,12 +350,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
   
   
     <span>></span>
     
-  <a href="/categories/linux/Jenkins/" class="category-chain-item">Jenkins</a>
+  <a href="/categories/DevOps/CI-CD/" class="category-chain-item">CI/CD</a>
   
   
 
@@ -372,9 +372,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/linux/" class="print-no-link">#linux</a>
-      
         <a href="/tags/Jenkins/" class="print-no-link">#Jenkins</a>
+      
+        <a href="/tags/CI-CD/" class="print-no-link">#CI/CD</a>
+      
+        <a href="/tags/%E6%8E%92%E9%94%99/" class="print-no-link">#排错</a>
       
     </div>
   
@@ -405,7 +407,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年4月2日</div>
+          <div>2026年7月4日</div>
         </div>
       
       

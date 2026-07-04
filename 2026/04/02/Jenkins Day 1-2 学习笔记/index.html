@@ -19,19 +19,20 @@
   <meta name="author" content="bote798">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Jenkins Day 1-2 学习笔记核心概念与初始配置 一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼">
+    <meta name="description" content="一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼测试手动部署到服务器    │    ▼发现问题，反馈给开发">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Jenkins Day 1-2 学习笔记">
 <meta property="og:url" content="http://bote798.github.io/2026/04/02/Jenkins%20Day%201-2%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="bote798&#39;s Blog">
-<meta property="og:description" content="Jenkins Day 1-2 学习笔记核心概念与初始配置 一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼">
+<meta property="og:description" content="一、在开始之前：理解 CI&#x2F;CD1.1 什么是 CI&#x2F;CD在没有 CI&#x2F;CD 的时代，软件发布是这样的： 123456789101112131415161718192021222324传统发布流程（手动地狱）：开发者写完代码    │    ▼压缩代码包，通过 QQ&#x2F;邮件&#x2F;FTP 发给测试    │    ▼测试手动部署到服务器    │    ▼发现问题，反馈给开发">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
 <meta property="article:published_time" content="2026-04-01T16:02:00.000Z">
-<meta property="article:modified_time" content="2026-04-01T16:12:53.163Z">
+<meta property="article:modified_time" content="2026-07-04T12:25:29.465Z">
 <meta property="article:author" content="bote798">
-<meta property="article:tag" content="linux">
 <meta property="article:tag" content="Jenkins">
+<meta property="article:tag" content="CI&#x2F;CD">
+<meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://bote798.github.io/img/jenkins/Jenkins-Logo.jpg">
   
@@ -226,7 +227,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          5k 字
         
       </span>
     
@@ -237,7 +238,7 @@
         
         
         
-          43 分钟
+          42 分钟
         
       </span>
     
@@ -283,8 +284,7 @@
             
               <div class="markdown-body">
                 
-                <h1 id="Jenkins-Day-1-2-学习笔记"><a href="#Jenkins-Day-1-2-学习笔记" class="headerlink" title="Jenkins Day 1-2 学习笔记"></a>Jenkins Day 1-2 学习笔记</h1><h2 id="核心概念与初始配置"><a href="#核心概念与初始配置" class="headerlink" title="核心概念与初始配置"></a>核心概念与初始配置</h2><hr>
-<h2 id="一、在开始之前：理解-CI-CD"><a href="#一、在开始之前：理解-CI-CD" class="headerlink" title="一、在开始之前：理解 CI&#x2F;CD"></a>一、在开始之前：理解 CI&#x2F;CD</h2><h3 id="1-1-什么是-CI-CD"><a href="#1-1-什么是-CI-CD" class="headerlink" title="1.1 什么是 CI&#x2F;CD"></a>1.1 什么是 CI&#x2F;CD</h3><p>在没有 CI&#x2F;CD 的时代，软件发布是这样的：</p>
+                <h2 id="一、在开始之前：理解-CI-CD"><a href="#一、在开始之前：理解-CI-CD" class="headerlink" title="一、在开始之前：理解 CI&#x2F;CD"></a>一、在开始之前：理解 CI&#x2F;CD</h2><h3 id="1-1-什么是-CI-CD"><a href="#1-1-什么是-CI-CD" class="headerlink" title="1.1 什么是 CI&#x2F;CD"></a>1.1 什么是 CI&#x2F;CD</h3><p>在没有 CI&#x2F;CD 的时代，软件发布是这样的：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs bash">传统发布流程（手动地狱）：<br><br>开发者写完代码<br>    │<br>    ▼<br>压缩代码包，通过 QQ/邮件/FTP 发给测试<br>    │<br>    ▼<br>测试手动部署到服务器<br>    │<br>    ▼<br>发现问题，反馈给开发者<br>    │<br>    ▼<br>开发者修改，重新打包，再发一次...<br>    │<br>    ▼<br>重复 N 次后，终于没问题了<br>    │<br>    ▼<br>运维手动登录生产服务器，替换文件<br>    │<br>    ▼<br>祈祷别出问题 🙏<br></code></pre></td></tr></table></figure>
 
 <p>这个过程的问题：</p>
@@ -477,12 +477,12 @@
     
       <span class="category-chain">
         
-  <a href="/categories/linux/" class="category-chain-item">linux</a>
+  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
   
   
     <span>></span>
     
-  <a href="/categories/linux/Jenkins/" class="category-chain-item">Jenkins</a>
+  <a href="/categories/DevOps/CI-CD/" class="category-chain-item">CI/CD</a>
   
   
 
@@ -499,9 +499,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/linux/" class="print-no-link">#linux</a>
-      
         <a href="/tags/Jenkins/" class="print-no-link">#Jenkins</a>
+      
+        <a href="/tags/CI-CD/" class="print-no-link">#CI/CD</a>
+      
+        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="print-no-link">#学习笔记</a>
       
     </div>
   
@@ -532,7 +534,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>更新于</div>
-          <div>2026年4月2日</div>
+          <div>2026年7月4日</div>
         </div>
       
       

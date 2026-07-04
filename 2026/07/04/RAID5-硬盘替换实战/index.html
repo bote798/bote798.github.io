@@ -1,0 +1,857 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="mdadm RAID5 硬盘替换实战">
+<meta property="og:url" content="http://bote798.github.io/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
+<meta property="article:published_time" content="2026-07-04T12:26:33.000Z">
+<meta property="article:modified_time" content="2026-07-04T12:28:49.049Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="RAID">
+<meta property="article:tag" content="mdadm">
+<meta property="article:tag" content="存储">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
+  
+  
+  
+  <title>mdadm RAID5 硬盘替换实战 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="mdadm RAID5 硬盘替换实战"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-04 20:26" pubdate>
+          2026年7月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          14 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">mdadm RAID5 硬盘替换实战</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="mdadm-RAID5-硬盘替换实战"><a href="#mdadm-RAID5-硬盘替换实战" class="headerlink" title="mdadm RAID5 硬盘替换实战"></a>mdadm RAID5 硬盘替换实战</h1><h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><ul>
+<li>虚拟机：VMware Workstation</li>
+<li>系统：Ubuntu 22.04 (kernel 5.15.0-185)</li>
+<li>磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器）</li>
+<li>存储栈：</li>
+</ul>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">sda</span> ─┐<br><span class="hljs-attribute">sdb</span> ─┼─ md0 (RAID5, <span class="hljs-number">3</span>+<span class="hljs-number">1</span> spare) → vg0 → lv-<span class="hljs-number">0</span> (ext4) → /data (<span class="hljs-number">40</span>G)<br><span class="hljs-attribute">sdc</span> ─┤<br><span class="hljs-attribute">sdd</span> ─┘ (hot spare)<br></code></pre></td></tr></table></figure>
+
+<h2 id="实战时间线"><a href="#实战时间线" class="headerlink" title="实战时间线"></a>实战时间线</h2><h3 id="00-前置-—-从-LVM-裸-PV-迁移到-mdadm"><a href="#00-前置-—-从-LVM-裸-PV-迁移到-mdadm" class="headerlink" title="00: 前置 — 从 LVM 裸 PV 迁移到 mdadm"></a>00: 前置 — 从 LVM 裸 PV 迁移到 mdadm</h3><p>原先 4 块盘直接做 LVM PV，改为 mdadm RAID5 后重建 LVM 栈：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash">umount /data<br>vgremove vg0              <span class="hljs-comment"># 删除 VG（内含 lv-0）</span><br>pvremove /dev/sd&#123;a,b,c,d&#125;  <span class="hljs-comment"># 擦除 LVM 标签</span><br><br><span class="hljs-comment"># 创建 RAID5：3 盘数据 + 1 热备</span><br>mdadm --create /dev/md0 --level=5 --raid-devices=3 --spare-devices=1 \<br>  /dev/sda /dev/sdb /dev/sdc /dev/sdd<br><br><span class="hljs-comment"># 重建 LVM 层</span><br>pvcreate /dev/md0<br>vgcreate vg0 /dev/md0<br>lvcreate -n lv-0 -l 100%FREE vg0<br>mkfs.ext4 /dev/vg0/lv-0<br>mount /dev/vg0/lv-0 /data<br><br><span class="hljs-comment"># 持久化</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;/dev/vg0/lv-0  /data  ext4  defaults  0  2&#x27;</span> &gt;&gt; /etc/fstab<br>mdadm --detail --scan &gt;&gt; /etc/mdadm/mdadm.conf<br>update-initramfs -u<br></code></pre></td></tr></table></figure>
+
+<p>初始阵列状态：sda&#x2F;sdb&#x2F;sdc active sync，sdd spare（热备）。<code>State: clean</code>。</p>
+<h3 id="01-创建测试数据-校验和"><a href="#01-创建测试数据-校验和" class="headerlink" title="01: 创建测试数据 + 校验和"></a>01: 创建测试数据 + 校验和</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/urandom of=/data/test_100M.bin bs=1M count=100     <span class="hljs-comment"># 105 MB</span><br><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/urandom of=/data/test_10M.bin bs=1M count=10       <span class="hljs-comment">#  10 MB</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;重要数据-验证用&quot;</span> &gt; /data/important.txt<br><span class="hljs-built_in">cp</span> -a /etc /data/etc_backup<br><br><span class="hljs-built_in">md5sum</span> /data/test_100M.bin /data/test_10M.bin /data/important.txt &gt; /tmp/checksums_before.txt<br>find /data/etc_backup -<span class="hljs-built_in">type</span> f -<span class="hljs-built_in">exec</span> <span class="hljs-built_in">md5sum</span> &#123;&#125; \; | <span class="hljs-built_in">sort</span> -k2 &gt; /tmp/checksums_etc_before.txt<br><br><span class="hljs-comment"># 校验和：</span><br><span class="hljs-comment"># d3a9fd89ce... /data/test_100M.bin</span><br><span class="hljs-comment"># 66059d3c18... /data/test_10M.bin</span><br><span class="hljs-comment"># a3518e3b2c... /data/important.txt</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>教训</strong>：<code>/tmp/checksums_before.txt</code> 存在 tmpfs 上，重启即丢。重要校验和应存到持久存储或 <code>/data</code> 自身。</p>
+</blockquote>
+<h3 id="02-模拟故障-—-拔-sdb，热备自动接管"><a href="#02-模拟故障-—-拔-sdb，热备自动接管" class="headerlink" title="02: 模拟故障 — 拔 sdb，热备自动接管"></a>02: 模拟故障 — 拔 sdb，热备自动接管</h3><p>方式一：命令行标记故障（可控）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">mdadm --manage /dev/md0 --fail /dev/sdb<br><span class="hljs-comment"># → sdb 标记 faulty，sdd 自动从 spare 切换为 spare rebuilding</span><br><span class="hljs-comment"># → /proc/mdstat: [2/3] [_UU], recovery = 6.6% → ... → 100%</span><br><span class="hljs-comment"># → 重建耗时 ~1.5 分钟（512K chunk, SCSI 虚拟盘 ~200 MB/s）</span><br></code></pre></td></tr></table></figure>
+
+<p>方式二：直接从 VMware 移除虚拟磁盘：</p>
+<p>内核报 <code>DID_NO_CONNECT</code> I&#x2F;O error，mdadm 检测到后自动标记故障：</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs smali">dmesg: sd 32:0:1:0: [sdb] FAILED Result: hostbyte=DID_NO_CONNECT<br>dmesg: md/raid:md0: Disk failure on sdb, disabling device.<br>dmesg: md: recovery of RAID<span class="hljs-built_in"> array </span>md0<br></code></pre></td></tr></table></figure>
+
+<p>重建完成后移除故障盘：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">mdadm --manage /dev/md0 --remove /dev/sdb<br><span class="hljs-comment"># → State: clean, Active: 3, Working: 3, Failed: 1, Spare: 0</span><br><span class="hljs-comment"># → 此时无热备，3 盘裸跑</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="03-加入新热备盘"><a href="#03-加入新热备盘" class="headerlink" title="03: 加入新热备盘"></a>03: 加入新热备盘</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">mdadm --zero-superblock /dev/sdc   <span class="hljs-comment"># sdc 原是空闲盘</span><br>mdadm --manage /dev/md0 --add /dev/sdc<br><span class="hljs-comment"># → State: clean, Spare: 1，sdc 就位</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="04-⚠️-首次重启踩坑-—-emergency-mode"><a href="#04-⚠️-首次重启踩坑-—-emergency-mode" class="headerlink" title="04: ⚠️ 首次重启踩坑 — emergency mode"></a>04: ⚠️ 首次重启踩坑 — emergency mode</h3><p><strong>现象</strong>：</p>
+<p>重启后系统掉进 emergency mode：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">You are <span class="hljs-keyword">in</span> emergency mode. <span class="hljs-keyword">After</span> logging <span class="hljs-keyword">in</span>, <span class="hljs-keyword">type</span> &quot;journalctl -xb&quot; <span class="hljs-keyword">to</span> <span class="hljs-keyword">view</span><br><span class="hljs-keyword">system</span> logs, &quot;systemctl reboot&quot; <span class="hljs-keyword">to</span> reboot, &quot;systemctl default&quot; <span class="hljs-keyword">or</span> &quot;exit&quot;<br><span class="hljs-keyword">to</span> boot <span class="hljs-keyword">into</span> <span class="hljs-keyword">default</span> mode.<br>Press Enter <span class="hljs-keyword">for</span> maintenance<br>(<span class="hljs-keyword">or</span> press Control-D <span class="hljs-keyword">to</span> <span class="hljs-keyword">continue</span>):<br></code></pre></td></tr></table></figure>
+
+<p><strong>根因</strong>：<code>/etc/fstab</code> 中有<strong>两行</strong> <code>/data</code> 挂载条目，任一行挂载失败都触发 emergency mode：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep data /etc/fstab<br><span class="hljs-comment"># # /data was on /dev/vg0/lv-0 during curtin installation</span><br><span class="hljs-comment"># /dev/disk/by-id/dm-uuid-LVM-... /data ext4 defaults 0 1   ← curtin 自动生成</span><br><span class="hljs-comment"># /dev/vg0/lv-0 /data ext4 defaults 0 2                     ← 手动添加</span><br></code></pre></td></tr></table></figure>
+
+<p>curtin&#x2F;cloud-init 生成的 by-id 路径在 RAID 重组后 UUID 变了，挂载失败。</p>
+<blockquote>
+<p>实际踩坑中还遇到一个血泪细节：emergency mode 下根文件系统默认只读，<code>sed</code> 修改 fstab 静默失败。必须先 <code>mount -o remount,rw /</code>。</p>
+</blockquote>
+<p><strong>修复</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 登录 emergency mode（输入 root 密码）</span><br><br><span class="hljs-comment"># 2. ⚠️ 必须先 remount 根分区为读写！</span><br>mount -o remount,rw /<br><br><span class="hljs-comment"># 3. 注释所有 /data 挂载行</span><br>sed -i <span class="hljs-string">&#x27;s|^/dev.* /data |#&amp;|&#x27;</span> /etc/fstab<br><br><span class="hljs-comment"># 4. 确认</span><br>grep data /etc/fstab<br><span class="hljs-comment"># → 所有行前面都应有 # 号</span><br><br><span class="hljs-comment"># 5. 继续启动</span><br><span class="hljs-built_in">exit</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="05-第二次重启-—-正常"><a href="#05-第二次重启-—-正常" class="headerlink" title="05: 第二次重启 — 正常"></a>05: 第二次重启 — 正常</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 阵列和 LVM 自动组装</span><br>lsblk<br><span class="hljs-comment"># sda/sdb/sdd ── md0 ── vg0-lv--0 (40G lvm)</span><br><span class="hljs-comment"># sdc 独立（后加入为 spare）</span><br><br><span class="hljs-built_in">cat</span> /proc/mdstat<br><span class="hljs-comment"># md0: active raid5 sdb[4] sda[5] sdd[3]  [3/3] [UUU]</span><br><br>mdadm --detail /dev/md0<br><span class="hljs-comment"># State: clean, Active: 3, Working: 4, Failed: 0, Spare: 1</span><br><span class="hljs-comment"># sda/sdb/sdd active sync, sdc spare</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="06-验证数据完整性"><a href="#06-验证数据完整性" class="headerlink" title="06: 验证数据完整性"></a>06: 验证数据完整性</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">mount /dev/vg0/lv-0 /data   <span class="hljs-comment"># 已自动挂载</span><br><span class="hljs-built_in">df</span> -h /data                  <span class="hljs-comment"># 40G, 116M 占用</span><br><br><span class="hljs-built_in">cat</span> /data/important.txt      <span class="hljs-comment"># → &quot;重要数据-验证用&quot; ✓</span><br><span class="hljs-built_in">ls</span> -lh /data/<br><span class="hljs-comment"># test_100M.bin  100M ✓</span><br><span class="hljs-comment"># test_10M.bin   10M  ✓</span><br><span class="hljs-comment"># etc_backup/          ✓</span><br><span class="hljs-comment"># important.txt        ✓</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>注意</strong>：<code>/tmp/checksums_before.txt</code> 因重启丢失（tmpfs），无法做严格 MD5 对比。但文件大小、内容完全一致，RAID5 重建成功验证数据完好。</p>
+</blockquote>
+<h3 id="07-恢复-fstab"><a href="#07-恢复-fstab" class="headerlink" title="07: 恢复 fstab"></a>07: 恢复 fstab</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">vi /etc/fstab<br><span class="hljs-comment"># 取消两行 /data 的注释（去掉 #）</span><br>mount -a   <span class="hljs-comment"># 无报错即正常</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="踩坑复盘"><a href="#踩坑复盘" class="headerlink" title="踩坑复盘"></a>踩坑复盘</h2><table>
+<thead>
+<tr>
+<th>编号</th>
+<th>坑</th>
+<th>现象</th>
+<th>根因</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>emergency mode</strong></td>
+<td>重启后卡 emergency mode，<code>systemctl default</code> 报 <code>Transaction destructive</code></td>
+<td>fstab 有两行 <code>/data</code>，curtin 生成的 by-id 行和手动添加的 <code>/dev/vg0/lv-0</code> 行，任一挂载失败触发 emergency</td>
+<td><code>mount -o remount,rw /</code> 后 <code>sed</code> 注释掉所有 <code>/data</code> 行</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>emergency mode 下 fstab 只读</strong></td>
+<td><code>sed</code> 执行看似成功，重启后 fstab 没变</td>
+<td>emergency mode 默认挂载根分区为只读，<code>sed -i</code> 修改实际写入失败</td>
+<td><strong>必须先</strong> <code>mount -o remount,rw /</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>sed 命令拼写错误</strong></td>
+<td>&#96;sed -i ‘s</td>
+<td>^&#x2F;dev&#x2F;vg0&#x2F;lv-0</td>
+<td>…’<code>中的</code>vg0<code>打成</code>vgo&#96;，匹配不到目标行</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>校验和丢失</strong></td>
+<td><code>/tmp/checksums_before.txt</code> 重启后不存在</td>
+<td><code>/tmp</code> 是 tmpfs，重启即清空</td>
+<td>校验和文件应存到 <code>/data</code>、<code>/root</code> 或外部持久存储</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>VMware 新盘不识别</strong></td>
+<td>添加虚拟磁盘后 <code>lsblk</code> 不显示新盘</td>
+<td>新盘可能挂在不同 SCSI 控制器类型（SATA vs Paravirtual SCSI）</td>
+<td>重启虚拟机解决；或 <code>echo &quot;- - -&quot; &gt; /sys/class/scsi_host/host*/scan</code> 手动扫描</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>VMware 拔盘后 mdadm 反应延迟</strong></td>
+<td><code>dmesg</code> 已报 I&#x2F;O error 但 <code>cat /proc/mdstat</code> 仍显示 <code>[UUU]</code></td>
+<td>mdadm 不是实时轮询，有一定检测延迟</td>
+<td>等待几秒或手动 <code>mdadm --fail</code> 加速</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>拔盘后重启，不同设备名</strong></td>
+<td>第一次启动 sdb 是 faulty，重启后 sdb 又变回正常 active</td>
+<td>mdadm 用 superblock UUID 识别成员，设备名 <code>/dev/sdX</code> 只是临时路径，重启后内核可能重新分配</td>
+<td>不要用设备名判断状态，始终看 <code>mdadm --detail</code> 中的 <code>Number/State</code></td>
+</tr>
+</tbody></table>
+<h2 id="完整操作流程（生产环境标准步骤）"><a href="#完整操作流程（生产环境标准步骤）" class="headerlink" title="完整操作流程（生产环境标准步骤）"></a>完整操作流程（生产环境标准步骤）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># === 准备阶段 ===</span><br><span class="hljs-comment"># 0. 备份 fstab（预防 emergency mode）</span><br><span class="hljs-built_in">cp</span> /etc/fstab /etc/fstab.bak.$(<span class="hljs-built_in">date</span> +%Y%m%d)<br>sed -i <span class="hljs-string">&#x27;s|^/dev.* /data |#&amp;|&#x27;</span> /etc/fstab<br><br><span class="hljs-comment"># 1. 创建测试数据并记录校验和（存到持久位置！）</span><br><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/urandom of=/data/test_100M.bin bs=1M count=100<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;重要数据&quot;</span> &gt; /data/important.txt<br><span class="hljs-built_in">md5sum</span> /data/test_100M.bin /data/important.txt &gt; /root/checksums_before.txt<br><br><span class="hljs-comment"># === 故障模拟 ===</span><br><span class="hljs-comment"># 2. 标记故障盘</span><br>mdadm --manage /dev/md0 --fail /dev/sdb<br><br><span class="hljs-comment"># 3. 观察热备重建</span><br>watch -n 3 <span class="hljs-string">&#x27;cat /proc/mdstat | grep md0&#x27;</span><br><span class="hljs-comment"># 等待 recovery 100%，[UUU]</span><br><br><span class="hljs-comment"># 4. 移除坏盘</span><br>mdadm --manage /dev/md0 --remove /dev/sdb<br><br><span class="hljs-comment"># === 替换 ===</span><br><span class="hljs-comment"># 5. 加入新盘/替换盘</span><br>mdadm --zero-superblock /dev/sdb     <span class="hljs-comment"># 如果重用同一块盘</span><br>mdadm --manage /dev/md0 --add /dev/sdb<br><br><span class="hljs-comment"># 6. 观察重建</span><br><span class="hljs-built_in">cat</span> /proc/mdstat<br><br><span class="hljs-comment"># === 验证 ===</span><br><span class="hljs-comment"># 7. 数据完整性</span><br><span class="hljs-built_in">md5sum</span> -c /root/checksums_before.txt<br><span class="hljs-built_in">ls</span> -lh /data/<br><br><span class="hljs-comment"># === 收尾 ===</span><br><span class="hljs-comment"># 8. 恢复 fstab</span><br><span class="hljs-built_in">cp</span> /etc/fstab.bak.$(<span class="hljs-built_in">date</span> +%Y%m%d) /etc/fstab<br>mount -a<br></code></pre></td></tr></table></figure>
+
+<h2 id="命令速查"><a href="#命令速查" class="headerlink" title="命令速查"></a>命令速查</h2><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>查看阵列状态</td>
+<td><code>cat /proc/mdstat</code></td>
+</tr>
+<tr>
+<td>查看详情</td>
+<td><code>mdadm --detail /dev/md0</code></td>
+</tr>
+<tr>
+<td>查看阵列成员状态</td>
+<td><code>mdadm --detail /dev/md0 | grep -E &#39;State|Number.*sd&#39;</code></td>
+</tr>
+<tr>
+<td>标记故障</td>
+<td><code>mdadm --manage /dev/md0 --fail /dev/sdX</code></td>
+</tr>
+<tr>
+<td>移除盘</td>
+<td><code>mdadm --manage /dev/md0 --remove /dev/sdX</code></td>
+</tr>
+<tr>
+<td>添加盘</td>
+<td><code>mdadm --manage /dev/md0 --add /dev/sdX</code></td>
+</tr>
+<tr>
+<td>擦除 superblock</td>
+<td><code>mdadm --zero-superblock /dev/sdX</code></td>
+</tr>
+<tr>
+<td>持久化配置</td>
+<td><code>mdadm --detail --scan &gt;&gt; /etc/mdadm/mdadm.conf</code></td>
+</tr>
+<tr>
+<td>更新 initramfs</td>
+<td><code>update-initramfs -u</code></td>
+</tr>
+<tr>
+<td>手动触发检查</td>
+<td><code>echo check &gt; /sys/block/md0/md/sync_action</code></td>
+</tr>
+<tr>
+<td>扫描 SCSI 总线</td>
+<td><code>for h in /sys/class/scsi_host/host*/scan; do echo &quot;- - -&quot; &gt; &quot;$h&quot;; done</code></td>
+</tr>
+<tr>
+<td>dmesg 查盘故障</td>
+<td><code>dmesg | grep -iE &#39;sd[a-z]|fail|error|DID_NO_CONNECT&#39;</code></td>
+</tr>
+<tr>
+<td>挂载验证</td>
+<td><code>mount -a</code>（无报错即 fstab 正常）</td>
+</tr>
+</tbody></table>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Linux/%E5%AD%98%E5%82%A8/" class="category-chain-item">存储</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/RAID/" class="print-no-link">#RAID</a>
+      
+        <a href="/tags/mdadm/" class="print-no-link">#mdadm</a>
+      
+        <a href="/tags/%E5%AD%98%E5%82%A8/" class="print-no-link">#存储</a>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>mdadm RAID5 硬盘替换实战</div>
+      <div>http://bote798.github.io/2026/07/04/RAID5-硬盘替换实战/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月4日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年7月4日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/05/23/Ai%E4%B8%93%E6%A0%8F%EF%BC%9A1-WSL2-Ubuntu-%E5%AE%89%E8%A3%85-Hermes-Agent-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%88%B0%E8%B7%91%E9%80%9A/" title="Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通">
+                        <span class="hidden-mobile">Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
