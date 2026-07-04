@@ -46,18 +46,20 @@
     
     <categories>
       
-      <category>Ai</category>
-      
-      <category>Hermes-Agent</category>
+      <category>AI工具</category>
       
     </categories>
     
     
     <tags>
       
-      <tag>Ai</tag>
+      <tag>WSL2</tag>
       
       <tag>Hermes-Agent</tag>
+      
+      <tag>Ubuntu</tag>
+      
+      <tag>AI</tag>
       
     </tags>
     
