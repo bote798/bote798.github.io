@@ -21,25 +21,23 @@
   
     <meta name="description" content="mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="mdadm RAID5 硬盘替换实战">
-<meta property="og:url" content="http://bote798.github.io/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98/index.html">
+<meta property="og:title" content="mdadm RAID5 硬盘替换实战（含热备盘）">
+<meta property="og:url" content="http://bote798.github.io/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/index.html">
 <meta property="og:site_name" content="bote798&#39;s Blog">
 <meta property="og:description" content="mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://bote798.github.io/img/linux.jpg">
 <meta property="article:published_time" content="2026-07-04T12:26:33.000Z">
-<meta property="article:modified_time" content="2026-07-04T12:28:49.049Z">
+<meta property="article:modified_time" content="2026-07-04T12:41:00.856Z">
 <meta property="article:author" content="bote798">
 <meta property="article:tag" content="RAID">
 <meta property="article:tag" content="mdadm">
-<meta property="article:tag" content="存储">
-<meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="http://bote798.github.io/img/linux.jpg">
   
   
   
-  <title>mdadm RAID5 硬盘替换实战 - bote798&#39;s Blog</title>
+  <title>mdadm RAID5 硬盘替换实战（含热备盘） - bote798&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -205,7 +203,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="mdadm RAID5 硬盘替换实战"></span>
+            <span id="subtitle" data-typed-text="mdadm RAID5 硬盘替换实战（含热备盘）"></span>
           
         </div>
 
@@ -228,7 +226,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.6k 字
+          2k 字
         
       </span>
     
@@ -239,7 +237,7 @@
         
         
         
-          14 分钟
+          17 分钟
         
       </span>
     
@@ -280,7 +278,7 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">mdadm RAID5 硬盘替换实战</h1>
+            <h1 id="seo-header">mdadm RAID5 硬盘替换实战（含热备盘）</h1>
             
             
               <div class="markdown-body">
@@ -459,6 +457,19 @@
 <td><code>mount -a</code>（无报错即 fstab 正常）</td>
 </tr>
 </tbody></table>
+<h2 id="查询命令汇总"><a href="#查询命令汇总" class="headerlink" title="查询命令汇总"></a>查询命令汇总</h2><p>日常巡检和排障时快速查看 RAID + LVM + 磁盘 全链路状态。</p>
+<h3 id="RAID-阵列"><a href="#RAID-阵列" class="headerlink" title="RAID 阵列"></a>RAID 阵列</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 一行看阵列状态（最常用）</span><br><span class="hljs-built_in">cat</span> /proc/mdstat<br><br><span class="hljs-comment"># 阵列详细信息</span><br>mdadm --detail /dev/md0<br><br><span class="hljs-comment"># 只看关键字段</span><br>mdadm --detail /dev/md0 | grep -E <span class="hljs-string">&#x27;State|Active|Working|Failed|Spare|Rebuild&#x27;</span><br><br><span class="hljs-comment"># 阵列成员及角色</span><br>mdadm --detail /dev/md0 | grep -A20 <span class="hljs-string">&#x27;Number.*Major&#x27;</span><br><br><span class="hljs-comment"># 阵列 UUID（配置持久化用）</span><br>mdadm --detail --scan<br></code></pre></td></tr></table></figure>
+
+<h3 id="LVM"><a href="#LVM" class="headerlink" title="LVM"></a>LVM</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 物理卷</span><br>pvs<br>pvdisplay<br><br><span class="hljs-comment"># 卷组</span><br>vgs<br>vgdisplay vg0<br><br><span class="hljs-comment"># 逻辑卷（含 RAID 类型和同步进度）</span><br>lvs<br>lvs -a -o name,size,segtype,devices,vg_name<br>lvdisplay /dev/vg0/lv-0<br></code></pre></td></tr></table></figure>
+
+<h3 id="磁盘"><a href="#磁盘" class="headerlink" title="磁盘"></a>磁盘</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 树形看全貌</span><br>lsblk -o NAME,SIZE,TYPE,MOUNTPOINT<br><br><span class="hljs-comment"># 看磁盘型号/序列号</span><br>lsblk -o NAME,SIZE,MODEL,SERIAL,TYPE<br><br><span class="hljs-comment"># 看分区和文件系统</span><br>lsblk -f<br><br><span class="hljs-comment"># 磁盘总览</span><br>fdisk -l /dev/sd[a-z] 2&gt;/dev/null | grep -E <span class="hljs-string">&#x27;Disk /dev|Disk model&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 挂载情况</span><br><span class="hljs-built_in">df</span> -hT /data<br>mount | grep /data<br><br><span class="hljs-comment"># fstab 中的 /data 条目</span><br>grep data /etc/fstab<br><br><span class="hljs-comment"># 文件系统 UUID</span><br>blkid /dev/vg0/lv-0<br></code></pre></td></tr></table></figure>
+
+<h3 id="故障排查"><a href="#故障排查" class="headerlink" title="故障排查"></a>故障排查</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 内核日志中磁盘/RAID 错误</span><br>dmesg | grep -iE <span class="hljs-string">&#x27;sd[a-z]|md|fail|error|DID_NO_CONNECT|I/O error&#x27;</span><br><br><span class="hljs-comment"># 磁盘 SMART 信息</span><br>smartctl -a /dev/sda | grep -E <span class="hljs-string">&#x27;Reallocated|Pending|Uncorrectable|Error&#x27;</span><br><br><span class="hljs-comment"># 触发 RAID 一致性检查</span><br><span class="hljs-built_in">echo</span> check &gt; /sys/block/md0/md/sync_action<br><span class="hljs-built_in">cat</span> /proc/mdstat  <span class="hljs-comment"># 观察检查进度</span><br><br><span class="hljs-comment"># 检查当前同步/检查进度</span><br><span class="hljs-built_in">cat</span> /sys/block/md0/md/sync_completed<br><span class="hljs-built_in">cat</span> /sys/block/md0/md/sync_speed<br><br><span class="hljs-comment"># RAID 阵列当前操作（idle/check/resync/recover）</span><br><span class="hljs-built_in">cat</span> /sys/block/md0/md/sync_action<br></code></pre></td></tr></table></figure>
+
+<h3 id="一键巡检脚本"><a href="#一键巡检脚本" class="headerlink" title="一键巡检脚本"></a>一键巡检脚本</h3><p>保存为 <code>/root/check-storage.sh</code>，日常跑一下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-meta">#!/bin/bash</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== RAID 状态 =====&quot;</span><br><span class="hljs-built_in">cat</span> /proc/mdstat<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== RAID 详情 =====&quot;</span><br>mdadm --detail /dev/md0 | grep -E <span class="hljs-string">&#x27;State|Active|Working|Failed|Spare|Rebuild&#x27;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== LVM =====&quot;</span><br>pvs &amp;&amp; vgs &amp;&amp; lvs<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== 磁盘 =====&quot;</span><br>lsblk -o NAME,SIZE,TYPE,MOUNTPOINT | grep -E <span class="hljs-string">&#x27;sd|md|vg|nvme&#x27;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== 挂载 =====&quot;</span><br><span class="hljs-built_in">df</span> -hT /data<br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;&quot;</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;===== 最近磁盘错误 =====&quot;</span><br>dmesg | grep -iE <span class="hljs-string">&#x27;sd[a-z]|md|fail|error|DID_NO_CONNECT&#x27;</span> | <span class="hljs-built_in">tail</span> -10<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -503,10 +514,6 @@
       
         <a href="/tags/mdadm/" class="print-no-link">#mdadm</a>
       
-        <a href="/tags/%E5%AD%98%E5%82%A8/" class="print-no-link">#存储</a>
-      
-        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
-      
     </div>
   
 </div>
@@ -517,8 +524,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>mdadm RAID5 硬盘替换实战</div>
-      <div>http://bote798.github.io/2026/07/04/RAID5-硬盘替换实战/</div>
+      <div>mdadm RAID5 硬盘替换实战（含热备盘）</div>
+      <div>http://bote798.github.io/2026/07/04/RAID5-硬盘替换实战-含热备盘/</div>
     </div>
     <div class="license-meta">
       
@@ -566,6 +573,12 @@
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" title="mdadm RAID5 硬盘替换实战（无热备盘·关机更换）">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">mdadm RAID5 硬盘替换实战（无热备盘·关机更换）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

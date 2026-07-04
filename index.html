@@ -225,21 +225,99 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="mdadm RAID5 硬盘替换实战">
+        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
+          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="mdadm RAID5 硬盘替换实战（无热备盘·关机更换）">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98/" target="_self">
-          mdadm RAID5 硬盘替换实战
+        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
+          mdadm RAID5 硬盘替换实战（无热备盘·关机更换）
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98/" target="_self">
+      <a class="index-excerpt " href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
+        <div>
+          mdadm RAID5 硬盘替换实战（无热备盘·关机更换） 上一篇讲了有 hot spare 的自动接管流程。这篇讲没有热备盘的情况——需要关机物理换盘，手动重建。  环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 阵列：3×20G RAID5，无热备盘（--spare-devices=0） 存储栈：  123sda ─┐sdb ─┼─ md0 (RAID5,
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-04 21:00" pubdate>
+              2026-07-04
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Linux/%E5%AD%98%E5%82%A8/" class="category-chain-item">存储</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/RAID/">#RAID</a>
+            
+              <a href="/tags/mdadm/">#mdadm</a>
+            
+              <a href="/tags/%E7%A3%81%E7%9B%98%E6%9B%B4%E6%8D%A2/">#磁盘更换</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
+          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="mdadm RAID5 硬盘替换实战（含热备盘）">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
+          mdadm RAID5 硬盘替换实战（含热备盘）
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
         <div>
           mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)
         </div>
@@ -290,10 +368,6 @@
               <a href="/tags/RAID/">#RAID</a>
             
               <a href="/tags/mdadm/">#mdadm</a>
-            
-              <a href="/tags/%E5%AD%98%E5%82%A8/">#存储</a>
-            
-              <a href="/tags/Linux/">#Linux</a>
             
           </div>
         
@@ -442,8 +516,6 @@
             
               <a href="/tags/Jenkins/">#Jenkins</a>
             
-              <a href="/tags/CI-CD/">#CI/CD</a>
-            
               <a href="/tags/%E6%8E%92%E9%94%99/">#排错</a>
             
           </div>
@@ -519,8 +591,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Jenkins/">#Jenkins</a>
-            
-              <a href="/tags/CI-CD/">#CI/CD</a>
             
               <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">#学习笔记</a>
             
@@ -598,8 +668,6 @@
             
               <a href="/tags/Jenkins/">#Jenkins</a>
             
-              <a href="/tags/CI-CD/">#CI/CD</a>
-            
               <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">#学习笔记</a>
             
           </div>
@@ -675,8 +743,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/WSL2/">#WSL2</a>
-            
-              <a href="/tags/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">#网络配置</a>
             
               <a href="/tags/%E6%A1%A5%E6%8E%A5/">#桥接</a>
             
@@ -756,8 +822,6 @@
             
               <a href="/tags/RedHat/">#RedHat</a>
             
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">#数据库</a>
-            
           </div>
         
       </div>
@@ -831,8 +895,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/Jenkins/">#Jenkins</a>
-            
-              <a href="/tags/CI-CD/">#CI/CD</a>
             
               <a href="/tags/Ubuntu/">#Ubuntu</a>
             
@@ -913,86 +975,6 @@
               <a href="/tags/EulerOS/">#EulerOS</a>
             
               <a href="/tags/%E9%9D%99%E6%80%81IP/">#静态IP</a>
-            
-              <a href="/tags/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">#网络配置</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/06/06/%E8%BF%90%E7%BB%B4%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B9%8BAnsible-3/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="运维自动化之Ansible-3">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/06/06/%E8%BF%90%E7%BB%B4%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B9%8BAnsible-3/" target="_self">
-          运维自动化之Ansible-3
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2025/06/06/%E8%BF%90%E7%BB%B4%E8%87%AA%E5%8A%A8%E5%8C%96%E4%B9%8BAnsible-3/" target="_self">
-        <div>
-          三、playbook（初识）1.playbook简介与图解​	playbook是由一个或多个”play”组成的列表。 ​	play的主要功能在于将预定义的一组主机，装扮成事先通过ansible中的task定义好的角色。 ​	Task实际是调用ansible的一个module，将多个play组织在一个playbook中，即可以让它们联合起来，按事先编排的机制执行预定义的动作，Playbook采用YA
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-06 23:26" pubdate>
-              2025-06-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/DevOps/%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BF%90%E7%BB%B4/" class="category-chain-item">自动化运维</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Ansible/">#Ansible</a>
-            
-              <a href="/tags/%E8%87%AA%E5%8A%A8%E5%8C%96/">#自动化</a>
-            
-              <a href="/tags/%E8%BF%90%E7%BB%B4/">#运维</a>
             
           </div>
         
