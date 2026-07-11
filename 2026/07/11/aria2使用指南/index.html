@@ -1,0 +1,870 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简介aria2 是一个轻量级、多协议、多线程的命令行下载工具。纯 C 编写，内存占用极小，支持 HTTP(S)、FTP、SFTP、BitTorrent、Metalink 等多种协议。 核心优势： 多线程并行下载，把一个文件切成多块同时拉取，充分利用带宽。单线程跑 50KB&#x2F;s，开 16 线程合起来就是 800KB&#x2F;s。  一、安装123456789101112131415# D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="aria2 使用指南">
+<meta property="og:url" content="https://bote798.top/2026/07/11/aria2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="简介aria2 是一个轻量级、多协议、多线程的命令行下载工具。纯 C 编写，内存占用极小，支持 HTTP(S)、FTP、SFTP、BitTorrent、Metalink 等多种协议。 核心优势： 多线程并行下载，把一个文件切成多块同时拉取，充分利用带宽。单线程跑 50KB&#x2F;s，开 16 线程合起来就是 800KB&#x2F;s。  一、安装123456789101112131415# D">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/linux.jpg">
+<meta property="article:published_time" content="2026-07-11T04:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-11T09:56:19.755Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="aria2">
+<meta property="article:tag" content="下载工具">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/linux.jpg">
+  
+  
+  
+  <title>aria2 使用指南 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="aria2 使用指南"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-11 12:00" pubdate>
+          2026年7月11日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">aria2 使用指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>aria2 是一个轻量级、多协议、多线程的命令行下载工具。纯 C 编写，内存占用极小，支持 HTTP(S)、FTP、SFTP、BitTorrent、Metalink 等多种协议。</p>
+<p><strong>核心优势：</strong> 多线程并行下载，把一个文件切成多块同时拉取，充分利用带宽。单线程跑 50KB&#x2F;s，开 16 线程合起来就是 800KB&#x2F;s。</p>
+<hr>
+<h2 id="一、安装"><a href="#一、安装" class="headerlink" title="一、安装"></a>一、安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># Debian / Ubuntu</span><br><span class="hljs-built_in">sudo</span> apt install -y aria2<br><br><span class="hljs-comment"># CentOS / RHEL / Fedora</span><br><span class="hljs-built_in">sudo</span> dnf install -y aria2    <span class="hljs-comment"># Fedora 22+</span><br><span class="hljs-built_in">sudo</span> yum install -y aria2    <span class="hljs-comment"># CentOS 7</span><br><br><span class="hljs-comment"># macOS</span><br>brew install aria2<br><br><span class="hljs-comment"># Arch Linux</span><br><span class="hljs-built_in">sudo</span> pacman -S aria2<br><br><span class="hljs-comment"># 验证安装</span><br>aria2c --version<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、基本用法"><a href="#二、基本用法" class="headerlink" title="二、基本用法"></a>二、基本用法</h2><p>命令是 <code>aria2c</code>（末尾的 c 代表 client）。</p>
+<h3 id="单文件下载"><a href="#单文件下载" class="headerlink" title="单文件下载"></a>单文件下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 最简单：直接给 URL</span><br>aria2c https://example.com/file.zip<br><br><span class="hljs-comment"># 指定输出文件名</span><br>aria2c -o myfile.zip https://example.com/file.zip<br><br><span class="hljs-comment"># 指定保存目录</span><br>aria2c -d /path/to/dir https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="多线程加速（核心功能）"><a href="#多线程加速（核心功能）" class="headerlink" title="多线程加速（核心功能）"></a>多线程加速（核心功能）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># -x: 每个服务器最大连接数（线程数）</span><br><span class="hljs-comment"># -s: 最大分片数</span><br><span class="hljs-comment"># 16 线程并行下载</span><br>aria2c -x 16 -s 16 https://example.com/large_file.iso<br></code></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+<th>建议值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-x N</code></td>
+<td>对同一服务器的最大连接数</td>
+<td>16</td>
+</tr>
+<tr>
+<td><code>-s N</code></td>
+<td>文件分片数</td>
+<td>与 -x 保持一致</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>注意：</strong> <code>-x</code> 不能高于 <code>-s</code>。实际效果取决于服务器是否支持 Range 请求（多线程分段下载的前提）。</p>
+</blockquote>
+<h3 id="断点续传"><a href="#断点续传" class="headerlink" title="断点续传"></a>断点续传</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># -c: 自动检测已有文件，从断点继续（布尔值，不需要跟参数）</span><br>aria2c -c https://example.com/file.zip<br><br><span class="hljs-comment"># 结合多线程</span><br>aria2c -c -x 16 -s 16 https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="批量下载"><a href="#批量下载" class="headerlink" title="批量下载"></a>批量下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 多个 URL 空格分隔</span><br>aria2c https://a.com/1.zip https://b.com/2.zip https://c.com/3.zip<br><br><span class="hljs-comment"># 从文件读取 URL 列表（每行一个）</span><br>aria2c -i urls.txt<br></code></pre></td></tr></table></figure>
+
+<p>urls.txt 示例：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stata">https:<span class="hljs-comment">//example.com/file1.iso</span><br>  <span class="hljs-keyword">dir</span>=/path/to/<span class="hljs-keyword">save</span><br>  <span class="hljs-keyword">out</span>=renamed1.iso<br>https:<span class="hljs-comment">//example.com/file2.iso</span><br>  <span class="hljs-keyword">dir</span>=/path/to/<span class="hljs-keyword">save</span><br>  <span class="hljs-keyword">out</span>=renamed2.iso<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="三、进阶用法"><a href="#三、进阶用法" class="headerlink" title="三、进阶用法"></a>三、进阶用法</h2><h3 id="限速"><a href="#限速" class="headerlink" title="限速"></a>限速</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 限制总下载速度</span><br>aria2c --max-download-limit=1M https://example.com/file.zip<br><br><span class="hljs-comment"># 限制单个连接速度</span><br>aria2c --max-overall-download-limit=5M https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="设置代理"><a href="#设置代理" class="headerlink" title="设置代理"></a>设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># HTTP 代理</span><br>aria2c --all-proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890&quot;</span> https://example.com/file.zip<br><br><span class="hljs-comment"># 仅 HTTP</span><br>aria2c --http-proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890&quot;</span> https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="最大并发任务数"><a href="#最大并发任务数" class="headerlink" title="最大并发任务数"></a>最大并发任务数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 同时下载 5 个文件（默认 5）</span><br>aria2c -j 10 https://a.com/1.zip https://b.com/2.zip ...<br></code></pre></td></tr></table></figure>
+
+<h3 id="BT-磁力链接下载"><a href="#BT-磁力链接下载" class="headerlink" title="BT &#x2F; 磁力链接下载"></a>BT &#x2F; 磁力链接下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 种子文件</span><br>aria2c example.torrent<br><br><span class="hljs-comment"># 磁力链接（用引号包起来）</span><br>aria2c <span class="hljs-string">&quot;magnet:?xt=urn:btih:XXXX...&quot;</span><br><br><span class="hljs-comment"># 选择下载种子中的特定文件</span><br>aria2c --select-file=1,3 example.torrent<br><br><span class="hljs-comment"># BT 下载限速</span><br>aria2c --seed-time=0 example.torrent    <span class="hljs-comment"># 下载完不做种</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="安静模式-控制台输出"><a href="#安静模式-控制台输出" class="headerlink" title="安静模式 &#x2F; 控制台输出"></a>安静模式 &#x2F; 控制台输出</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安静模式：只显示下载进度条，不显示详细日志</span><br>aria2c -q https://example.com/file.zip<br><br><span class="hljs-comment"># 完全无输出</span><br>aria2c --quiet https://example.com/file.zip<br><br><span class="hljs-comment"># 显示调试信息</span><br>aria2c --log-level=debug https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<h3 id="校验下载"><a href="#校验下载" class="headerlink" title="校验下载"></a>校验下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 下载后自动校验 checksum</span><br>aria2c --checksum=sha-256=abc123... https://example.com/file.zip<br><br><span class="hljs-comment"># 配合 sha256sum 手动校验</span><br><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;abc123...  file.zip&quot;</span> | <span class="hljs-built_in">sha256sum</span> -c<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、配置文件"><a href="#四、配置文件" class="headerlink" title="四、配置文件"></a>四、配置文件</h2><p>aria2 支持配置文件，避免每次输入一堆参数。默认路径：</p>
+<ul>
+<li>Linux: <code>~/.aria2/aria2.conf</code></li>
+<li>macOS: <code>~/.aria2/aria2.conf</code></li>
+</ul>
+<h3 id="常用配置示例"><a href="#常用配置示例" class="headerlink" title="常用配置示例"></a>常用配置示例</h3><figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-comment"># ~/.aria2/aria2.conf</span><br><br><span class="hljs-comment"># 下载目录</span><br><span class="hljs-attr">dir</span>=/home/user/Downloads<br><br><span class="hljs-comment"># 每个服务器最大连接数（线程数）</span><br><span class="hljs-attr">max-connection-per-server</span>=<span class="hljs-number">16</span><br><span class="hljs-comment"># 文件分片数</span><br><span class="hljs-attr">split</span>=<span class="hljs-number">16</span><br><br><span class="hljs-comment"># 断点续传</span><br><span class="hljs-attr">continue</span>=<span class="hljs-literal">true</span><br><br><span class="hljs-comment"># 最大并发任务数</span><br><span class="hljs-attr">max-concurrent-downloads</span>=<span class="hljs-number">5</span><br><br><span class="hljs-comment"># 限速（0 = 不限速）</span><br><span class="hljs-attr">max-overall-download-limit</span>=<span class="hljs-number">0</span><br><br><span class="hljs-comment"># 安静模式</span><br><span class="hljs-attr">quiet</span>=<span class="hljs-literal">false</span><br><br><span class="hljs-comment"># 代理</span><br><span class="hljs-comment"># all-proxy=http://127.0.0.1:7890</span><br><br><span class="hljs-comment"># 保存会话（断点续传信息），重启后可继续</span><br><span class="hljs-attr">save-session</span>=~/.aria2/aria2.session<br><span class="hljs-attr">save-session-interval</span>=<span class="hljs-number">30</span><br><br><span class="hljs-comment"># BT 设置</span><br><span class="hljs-attr">bt-max-peers</span>=<span class="hljs-number">128</span><br><span class="hljs-attr">seed-time</span>=<span class="hljs-number">0</span><br><span class="hljs-attr">enable-dht</span>=<span class="hljs-literal">true</span><br><span class="hljs-attr">bt-enable-lpd</span>=<span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="使用配置文件"><a href="#使用配置文件" class="headerlink" title="使用配置文件"></a>使用配置文件</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 自动读取 ~/.aria2/aria2.conf</span><br>aria2c https://example.com/file.zip<br><br><span class="hljs-comment"># 指定配置文件</span><br>aria2c --conf-path=/path/to/custom.conf https://example.com/file.zip<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="五、RPC-模式（远程控制）"><a href="#五、RPC-模式（远程控制）" class="headerlink" title="五、RPC 模式（远程控制）"></a>五、RPC 模式（远程控制）</h2><p>aria2 可以以后台守护进程模式运行，通过 JSON-RPC 接口接收下载任务。配合 WebUI（如 AriaNg）可实现图形化远程管理。</p>
+<h3 id="启动-RPC-模式"><a href="#启动-RPC-模式" class="headerlink" title="启动 RPC 模式"></a>启动 RPC 模式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 基本 RPC 模式</span><br>aria2c --enable-rpc --rpc-listen-all --rpc-allow-origin-all<br><br><span class="hljs-comment"># 带密钥的 RPC（防止未授权访问）</span><br>aria2c --enable-rpc --rpc-secret=mypassword --rpc-listen-port=6801<br></code></pre></td></tr></table></figure>
+
+<h3 id="用-curl-调用-RPC"><a href="#用-curl-调用-RPC" class="headerlink" title="用 curl 调用 RPC"></a>用 curl 调用 RPC</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加下载任务</span><br>curl <span class="hljs-string">&quot;http://localhost:6800/jsonrpc&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;1&quot;,&quot;method&quot;:&quot;aria2.addUri&quot;,&quot;params&quot;:[&quot;token:mypassword&quot;,[&quot;https://example.com/file.zip&quot;]]&#125;&#x27;</span><br><br><span class="hljs-comment"># 查看下载状态</span><br>curl <span class="hljs-string">&quot;http://localhost:6800/jsonrpc&quot;</span> \<br>  -d <span class="hljs-string">&#x27;&#123;&quot;jsonrpc&quot;:&quot;2.0&quot;,&quot;id&quot;:&quot;2&quot;,&quot;method&quot;:&quot;aria2.tellActive&quot;,&quot;params&quot;:[&quot;token:mypassword&quot;]&#125;&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="作为-systemd-服务运行"><a href="#作为-systemd-服务运行" class="headerlink" title="作为 systemd 服务运行"></a>作为 systemd 服务运行</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># ~/.config/systemd/user/aria2.service</span><br>[Unit]<br>Description=aria2 RPC Daemon<br>After=network.target<br><br>[Service]<br>ExecStart=/usr/bin/aria2c --conf-path=%h/.aria2/aria2.conf<br>Restart=on-failure<br><br>[Install]<br>WantedBy=default.target<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl --user <span class="hljs-built_in">enable</span> --now aria2<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="六、实战场景"><a href="#六、实战场景" class="headerlink" title="六、实战场景"></a>六、实战场景</h2><h3 id="场景一：下载国内网络慢的大文件（如-kubectl、minikube）"><a href="#场景一：下载国内网络慢的大文件（如-kubectl、minikube）" class="headerlink" title="场景一：下载国内网络慢的大文件（如 kubectl、minikube）"></a>场景一：下载国内网络慢的大文件（如 kubectl、minikube）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">aria2c -x 16 -s 16 -o kubectl \<br>  <span class="hljs-string">&quot;https://dl.k8s.io/release/v1.36.2/bin/linux/amd64/kubectl&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>单线程 50KB&#x2F;s → 多线程 800KB&#x2F;s，56MB 文件约 1 分钟搞定。</p>
+<h3 id="场景二：下载-GitHub-Release-文件（国内直连慢）"><a href="#场景二：下载-GitHub-Release-文件（国内直连慢）" class="headerlink" title="场景二：下载 GitHub Release 文件（国内直连慢）"></a>场景二：下载 GitHub Release 文件（国内直连慢）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">aria2c -x 16 -s 16 \<br>  <span class="hljs-string">&quot;https://github.com/user/repo/releases/download/v1.0/archive.zip&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="场景三：配合镜像站批量下载"><a href="#场景三：配合镜像站批量下载" class="headerlink" title="场景三：配合镜像站批量下载"></a>场景三：配合镜像站批量下载</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 从 URL 列表批量下载</span><br>aria2c -x 8 -s 8 -i urls.txt<br></code></pre></td></tr></table></figure>
+
+<h3 id="场景四：断网后断点续传"><a href="#场景四：断网后断点续传" class="headerlink" title="场景四：断网后断点续传"></a>场景四：断网后断点续传</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 中断后重新执行相同命令，自动续传</span><br>aria2c -c -x 16 -s 16 https://example.com/huge_file.iso<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="七、常用命令速查"><a href="#七、常用命令速查" class="headerlink" title="七、常用命令速查"></a>七、常用命令速查</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>快速下载</td>
+<td><code>aria2c &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>多线程加速</td>
+<td><code>aria2c -x 16 -s 16 &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>指定文件名</td>
+<td><code>aria2c -o name.zip &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>指定目录</td>
+<td><code>aria2c -d /path &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>断点续传</td>
+<td><code>aria2c -c &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>终极组合</td>
+<td><code>aria2c -c -x 16 -s 16 -o name &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>批量下载</td>
+<td><code>aria2c -i urls.txt</code></td>
+</tr>
+<tr>
+<td>磁力链接</td>
+<td><code>aria2c &quot;magnet:?xt=urn:btih:...&quot;</code></td>
+</tr>
+<tr>
+<td>种子文件</td>
+<td><code>aria2c file.torrent</code></td>
+</tr>
+<tr>
+<td>限速 1MB&#x2F;s</td>
+<td><code>aria2c --max-download-limit=1M &lt;URL&gt;</code></td>
+</tr>
+<tr>
+<td>代理下载</td>
+<td><code>aria2c --all-proxy=&quot;http://127.0.0.1:7890&quot; &lt;URL&gt;</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八、对比其他工具"><a href="#八、对比其他工具" class="headerlink" title="八、对比其他工具"></a>八、对比其他工具</h2><table>
+<thead>
+<tr>
+<th>工具</th>
+<th>多线程</th>
+<th>断点续传</th>
+<th>BT&#x2F;磁力</th>
+<th>轻量</th>
+<th>命令行</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>aria2</strong></td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>curl</td>
+<td>❌</td>
+<td>✅ (-C)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>wget</td>
+<td>❌</td>
+<td>✅ (-c)</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>axel</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>uGet</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p>aria2 几乎是命令行下载工具中最全能的，既轻量又支持多协议多线程。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Linux/%E5%B7%A5%E5%85%B7/" class="category-chain-item">工具</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/aria2/" class="print-no-link">#aria2</a>
+      
+        <a href="/tags/%E4%B8%8B%E8%BD%BD%E5%B7%A5%E5%85%B7/" class="print-no-link">#下载工具</a>
+      
+        <a href="/tags/Linux/" class="print-no-link">#Linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>aria2 使用指南</div>
+      <div>https://bote798.top/2026/07/11/aria2使用指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月11日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年7月11日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" title="mdadm RAID5 硬盘替换实战（无热备盘·关机更换）">
+                        <span class="hidden-mobile">mdadm RAID5 硬盘替换实战（无热备盘·关机更换）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -182,28 +182,49 @@
 
   
 
-<div id="banner" class="banner" parallax=true
-     style="background: url('/img/background/background1.png') no-repeat center center; background-size: cover;">
-  <div class="full-bg-img">
-    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
-      <div class="banner-text text-center fade-in-up">
-        <div class="h2">
-          
-            <span id="subtitle" data-typed-text="合理规划才是人生"></span>
-          
-        </div>
 
-        
+
+<!-- ═══════════ Canvas Banner (Homepage Only) ═══════════ -->
+<div id="banner" class="banner canvas-banner" style="height: 100%">
+  <canvas id="bg-canvas"></canvas>
+  <canvas id="glow-canvas"></canvas>
+  <div class="banner-overlay">
+    <div class="banner-text text-center">
+      <div class="logo-wrap">
+        <div class="logo-mark"><div class="logo-dot"></div></div>
+        <div class="logo-name">bote798&#39;s Blog</div>
+        <div class="logo-sub">bote798</div>
       </div>
-
-      
-        <div class="scroll-down-bar">
-          <i class="iconfont icon-arrowdown"></i>
-        </div>
-      
     </div>
+    
+      <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+    
   </div>
+  <div class="veil"></div>
 </div>
+
+<style>
+.canvas-banner{position:relative;overflow:hidden;background:#020210;min-height:300px}
+.canvas-banner canvas#bg-canvas{position:absolute;top:0;left:0;z-index:1;width:100%;height:100%}
+.canvas-banner canvas#glow-canvas{position:absolute;top:0;left:0;z-index:2;pointer-events:none;width:100%;height:100%}
+.canvas-banner .banner-overlay{position:absolute;top:0;left:0;width:100%;height:100%;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.canvas-banner .veil{position:absolute;top:0;left:0;width:100%;height:100%;z-index:4;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 40%,rgba(2,2,16,0.6) 100%),radial-gradient(ellipse at 50% 45%,rgba(120,100,180,0.04) 0%,transparent 50%)}
+.canvas-banner .logo-wrap{opacity:0;animation:logoIn 3s ease-out 3.5s forwards;text-align:center}
+.canvas-banner .logo-mark{position:relative;display:inline-block;width:56px;height:56px;margin-bottom:1.5rem}
+.canvas-banner .logo-mark::before{content:'';position:absolute;top:50%;left:50%;width:42px;height:42px;transform:translate(-50%,-50%) rotate(45deg);border:1px solid rgba(160,140,210,0.55);background:rgba(15,10,40,0.5);box-shadow:0 0 35px rgba(160,140,210,0.2),inset 0 0 35px rgba(100,80,160,0.06)}
+.canvas-banner .logo-mark::after{content:'';position:absolute;top:50%;left:50%;width:20px;height:20px;transform:translate(-50%,-50%) rotate(45deg);border:1px solid rgba(160,140,210,0.4);background:rgba(15,10,40,0.35)}
+.canvas-banner .logo-dot{position:absolute;top:50%;left:50%;width:3px;height:3px;background:rgba(200,185,235,0.8);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 14px rgba(180,160,220,0.7)}
+.canvas-banner .logo-name{font-family:'Georgia','Times New Roman',serif;font-size:1.6rem;letter-spacing:0.3em;color:rgba(120,105,180,0.85);margin-bottom:0.5rem;text-shadow:0 0 8px rgba(200,190,240,0.6),0 0 20px rgba(180,160,230,0.4),0 0 50px rgba(150,130,210,0.3)}
+.canvas-banner .logo-sub{font-family:'Georgia','Times New Roman',serif;font-size:0.6rem;letter-spacing:0.35em;color:rgba(140,125,190,0.7);text-transform:uppercase;text-shadow:0 0 6px rgba(190,180,220,0.5),0 0 16px rgba(160,140,200,0.3)}
+@keyframes logoIn{0%{opacity:0;filter:blur(16px);transform:translateY(20px)}60%{opacity:1;filter:blur(0);transform:translateY(0)}100%{opacity:1;filter:blur(0);transform:translateY(0)}}
+.canvas-banner .scroll-down-bar{position:absolute;bottom:10px}
+</style>
+
+<script>
+(function(){var bg=document.getElementById('bg-canvas'),glow=document.getElementById('glow-canvas');var bgCtx=bg.getContext('2d'),glowCtx=glow.getContext('2d'),W,H;function resize(){var c=document.querySelector('.canvas-banner');W=bg.width=glow.width=c.offsetWidth;H=bg.height=glow.height=c.offsetHeight}resize();window.addEventListener('resize',resize);var N=80,GAP=1.5,DELAY=22,FLIP_MS=120;var FLIP_TIME=(N-1)*DELAY+FLIP_MS,HOLD=900,HALF=FLIP_TIME+HOLD,CYCLE=HALF*2;var OFF=[4,4,22],DIM=[25,18,70],MID=[80,60,150],ON=[150,130,210],PEAK=[210,200,240];function lerp3(a,b,t){return[Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)]}function hash(i,s){var h=i*2654435761+s;h=((h>>16)^h)*0x45d9f3b;return((h>>16)^h)&0xffff}var startTime=null,nSeed=0;var sparks=[];for(var i=0;i<30;i++)sparks.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.25,vy:-Math.random()*0.35-0.04,life:Math.random(),maxLife:0.6+Math.random()*0.8,size:Math.random()*1+0.3,phase:Math.random()*Math.PI*2});function updateSparks(){for(var i=0;i<sparks.length;i++){var s=sparks[i];s.x+=s.vx+Math.sin(s.life*8+s.phase)*0.06;s.y+=s.vy;s.life+=0.003;if(s.life>s.maxLife||s.y<-20||s.x<-20||s.x>W+20){s.x=Math.random()*W;s.y=H+20;s.life=0;s.maxLife=0.6+Math.random()*0.8}}}function draw(now){if(!startTime)startTime=now;var elapsed=now-startTime,cycleT=elapsed%CYCLE;nSeed=Math.floor(elapsed/180);var stripW=(W-GAP*(N-1))/N,toOn=cycleT<HALF,subT=cycleT%HALF,flipping=subT<FLIP_TIME;bgCtx.clearRect(0,0,W,H);var fog=bgCtx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.6);fog.addColorStop(0,'rgba(30,22,60,0.2)');fog.addColorStop(0.4,'rgba(15,10,40,0.1)');fog.addColorStop(1,'rgba(0,0,0,0)');bgCtx.fillStyle=fog;bgCtx.fillRect(0,0,W,H);var scanH=3,scanSpace=6;for(var i=0;i<N;i++){var s0=i*DELAY,s1=s0+FLIP_MS,t,gw;if(flipping){if(subT<s0){t=toOn?0:1;gw=0}else if(subT<s1){var raw=(subT-s0)/FLIP_MS,e=raw<0.5?2*raw*raw:1-Math.pow(-2*raw+2,2)/2;t=toOn?e:1-e;gw=raw<0.5?raw*2:(1-raw)*2}else{t=toOn?1:0;gw=0}}else{t=toOn?1:0;gw=0}if(t<0.005)continue;var x=i*(stripW+GAP),alpha=Math.min(t,0.9),c;if(t<0.2)c=lerp3(OFF,DIM,t/0.2);else if(t<0.5)c=lerp3(DIM,MID,(t-0.2)/0.3);else if(t<0.8)c=lerp3(MID,ON,(t-0.5)/0.3);else c=lerp3(ON,PEAK,(t-0.8)/0.2);var grad=bgCtx.createLinearGradient(0,0,0,H);grad.addColorStop(0,'rgba('+c[0]+','+c[1]+','+c[2]+','+(alpha*0.2)+')');grad.addColorStop(0.1,'rgba('+c[0]+','+c[1]+','+c[2]+','+(alpha*0.7)+')');grad.addColorStop(0.5,'rgba('+c[0]+','+c[1]+','+c[2]+','+alpha+')');grad.addColorStop(0.9,'rgba('+c[0]+','+c[1]+','+c[2]+','+(alpha*0.7)+')');grad.addColorStop(1,'rgba('+c[0]+','+c[1]+','+c[2]+','+(alpha*0.2)+')');bgCtx.fillStyle=grad;bgCtx.fillRect(x,0,stripW,H);if(t>0.12){var sa=(t-0.12)*0.08;bgCtx.fillStyle='rgba(0,0,0,'+sa+')';for(var sy=0;sy<H;sy+=scanSpace)bgCtx.fillRect(x,sy,stripW,scanH)}if(t>0.25){var nf=(hash(i,nSeed)/65535)*0.025*t;bgCtx.fillStyle='rgba(0,0,0,'+nf+')';bgCtx.fillRect(x,0,stripW,H)}if(t>0.4){var ea=(t-0.4)*0.15;bgCtx.fillStyle='rgba('+PEAK[0]+','+PEAK[1]+','+PEAK[2]+','+ea+')';bgCtx.fillRect(x,0,Math.max(1,stripW*0.08),H)}}glowCtx.clearRect(0,0,W,H);if(flipping){var leadIdx=Math.floor(subT/DELAY);if(leadIdx>=0&&leadIdx<N){var ti=(subT-leadIdx*DELAY)/FLIP_MS;if(ti>0&&ti<1){var lx=leadIdx*(stripW+GAP),ea=(1-Math.abs(ti-0.5)*2)*0.5,gr=glowCtx.createRadialGradient(lx+stripW/2,H/2,stripW*0.5,lx+stripW/2,H/2,stripW*4);gr.addColorStop(0,'rgba(180,160,230,'+(ea*0.3)+')');gr.addColorStop(0.4,'rgba(160,140,210,'+(ea*0.12)+')');gr.addColorStop(1,'rgba(0,0,0,0)');glowCtx.fillStyle=gr;glowCtx.fillRect(lx-stripW*3,0,stripW*7,H)}}}var litCount=toOn?(flipping?Math.floor(subT/DELAY)+1:N):(flipping?N-Math.floor(subT/DELAY):0);if(litCount>0){var ag=glowCtx.createRadialGradient(W/2,H/2,W*0.3,W/2,H/2,W*0.7);ag.addColorStop(0,'rgba(120,100,180,'+(0.015*Math.min(litCount/N,1))+')');ag.addColorStop(1,'rgba(0,0,0,0)');glowCtx.fillStyle=ag;glowCtx.fillRect(0,0,W,H)}if(!flipping&&subT<FLIP_TIME+300){var pt=(subT-FLIP_TIME)/300;if(pt>0&&pt<1){glowCtx.fillStyle='rgba(160,140,210,'+((1-pt)*0.04)+')';glowCtx.fillRect(0,0,W,H)}}updateSparks();for(var i=0;i<sparks.length;i++){var s=sparks[i],sa=Math.sin(s.life/s.maxLife*Math.PI)*0.55;if(sa<0.01)continue;glowCtx.beginPath();glowCtx.arc(s.x,s.y,s.size,0,Math.PI*2);glowCtx.fillStyle='rgba(210,200,240,'+sa+')';glowCtx.fill();glowCtx.beginPath();glowCtx.arc(s.x,s.y,s.size*3,0,Math.PI*2);glowCtx.fillStyle='rgba(180,160,220,'+(sa*0.15)+')';glowCtx.fill()}requestAnimationFrame(draw)}requestAnimationFrame(draw)})();
+</script>
+
+
 
 </div>
 
@@ -220,6 +241,84 @@
               <div class="col-12 col-md-10 m-auto">
                 
 
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2025/02/19/Anaconda%E4%B8%8Evirtualenv/" target="_self">
+          <img src="/img/python.png" srcset="/img/loading.gif" lazyload alt="Anaconda与virtualenv">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/02/19/Anaconda%E4%B8%8Evirtualenv/" target="_self">
+          Anaconda与virtualenv
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2025/02/19/Anaconda%E4%B8%8Evirtualenv/" target="_self">
+        <div>
+          Anaconda虚拟环境（基于conda）与virtualenv虚拟环境在多个方面存在显著差异，以下是它们的详细对比： 1. 包管理与依赖范围 Anaconda (conda) 多语言支持：管理Python包的同时，可处理非Python依赖（如C&#x2F;C++库、R包等），例如MKL、OpenSSL。 预编译二进制包：通过Anaconda仓库提供优化后的二进制包，避免从源码编译，适合科学计算。
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-02-19 20:43" pubdate>
+              2025-02-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E5%BC%80%E5%8F%91/" class="category-chain-item">开发</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E5%BC%80%E5%8F%91/Python/" class="category-chain-item">Python</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Anaconda/">#Anaconda</a>
+            
+              <a href="/tags/virtualenv/">#virtualenv</a>
+            
+              <a href="/tags/%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/">#虚拟环境</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
 
   <div class="row mx-auto index-card">
     
@@ -908,84 +1007,6 @@
               <a href="/tags/%E9%95%9C%E5%83%8F%E4%BB%93%E5%BA%93/">#镜像仓库</a>
             
               <a href="/tags/Harbor/">#Harbor</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/01/09/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE802-1X%E8%AE%A4%E8%AF%81/" target="_self">
-          <img src="/img/%E5%8D%8E%E4%B8%BAlogo.jpeg" srcset="/img/loading.gif" lazyload alt="华为交换机配置802.1X认证">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2025/01/09/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE802-1X%E8%AE%A4%E8%AF%81/" target="_self">
-          华为交换机配置802.1X认证
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2025/01/09/%E5%8D%8E%E4%B8%BA%E4%BA%A4%E6%8D%A2%E6%9C%BA%E9%85%8D%E7%BD%AE802-1X%E8%AE%A4%E8%AF%81/" target="_self">
-        <div>
-          1.802.1X是做什么的？在中型及以上的项目实施中，802.1X是必备的一项配置，简单来说就是检测网络用户的身份，以保证敏感信息的安全性。 ​		在这一验证过程中有以下三种角色：  Supplicant（请求者）：这是尝试访问受保护网络资源的客户端设备。 Authenticator（认证器）：通常是交换机或无线接入点（AP），它充当守门员的角色，只允许经过身份验证的设备访问网络。 Authent
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2025-01-09 19:30" pubdate>
-              2025-01-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B/" class="category-chain-item">网络工程</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/%E7%BD%91%E7%BB%9C%E5%B7%A5%E7%A8%8B/%E4%BA%A4%E6%8D%A2%E6%9C%BA/" class="category-chain-item">交换机</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%8D%8E%E4%B8%BA/">#华为</a>
-            
-              <a href="/tags/802-1X/">#802.1X</a>
-            
-              <a href="/tags/%E8%AE%A4%E8%AF%81/">#认证</a>
             
           </div>
         
