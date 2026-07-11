@@ -1,0 +1,908 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="主机：Siche-Ubuntu (192.168.0.64)服务：AdGuardHome v0.107.77影响：DNS 解析服务中断恢复时间：2026-07-09状态：✅ 已恢复  一、问题摘要AdGuardHome 服务反复重启失败，systemctl status 显示 Active: activating (auto-restart)，进程退出码 1。经排查，根因由三类问题叠加形成：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AdGuardHome 启动失败故障复盘">
+<meta property="og:url" content="https://bote798.top/2026/07/09/AdGuardHome%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="主机：Siche-Ubuntu (192.168.0.64)服务：AdGuardHome v0.107.77影响：DNS 解析服务中断恢复时间：2026-07-09状态：✅ 已恢复  一、问题摘要AdGuardHome 服务反复重启失败，systemctl status 显示 Active: activating (auto-restart)，进程退出码 1。经排查，根因由三类问题叠加形成：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/linux.jpg">
+<meta property="article:published_time" content="2026-07-09T10:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-11T10:05:16.408Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="AdGuardHome">
+<meta property="article:tag" content="DNS">
+<meta property="article:tag" content="故障复盘">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/linux.jpg">
+  
+  
+  
+  <title>AdGuardHome 启动失败故障复盘 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="AdGuardHome 启动失败故障复盘"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-09 18:00" pubdate>
+          2026年7月9日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          9 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">AdGuardHome 启动失败故障复盘</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><strong>主机</strong>：Siche-Ubuntu (192.168.0.64)<br><strong>服务</strong>：AdGuardHome v0.107.77<br><strong>影响</strong>：DNS 解析服务中断<br><strong>恢复时间</strong>：2026-07-09<br><strong>状态</strong>：✅ 已恢复</p>
+<hr>
+<h2 id="一、问题摘要"><a href="#一、问题摘要" class="headerlink" title="一、问题摘要"></a>一、问题摘要</h2><p>AdGuardHome 服务反复重启失败，<code>systemctl status</code> 显示 <code>Active: activating (auto-restart)</code>，进程退出码 <code>1</code>。经排查，根因由三类问题叠加形成：</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>类别</th>
+<th>严重度</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>端口占用</td>
+<td>高</td>
+<td>libvirt dnsmasq 抢占 UDP 53 端口</td>
+</tr>
+<tr>
+<td>2</td>
+<td>配置错误</td>
+<td>高</td>
+<td><code>bind_hosts</code> 包含不存在的 IP (192.168.0.24)</td>
+</tr>
+<tr>
+<td>3</td>
+<td>数据损坏</td>
+<td>中</td>
+<td><code>sessions.db</code> 损坏&#x2F;锁定导致 SQLite 打开超时</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、时间线"><a href="#二、时间线" class="headerlink" title="二、时间线"></a>二、时间线</h2><table>
+<thead>
+<tr>
+<th>时间点</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T0</td>
+<td>用户发现 AdGuardHome 不可用</td>
+</tr>
+<tr>
+<td>T1</td>
+<td><code>journalctl</code> &#x2F; <code>systemctl status</code> 确认服务反复重启</td>
+</tr>
+<tr>
+<td>T2</td>
+<td>前台启动捕获错误：<code>listen udp 192.168.0.24:53: bind: cannot assign requested address</code></td>
+</tr>
+<tr>
+<td>T3</td>
+<td>修正确认 <code>192.168.0.24</code> 不存在于任何网卡，仅 <code>192.168.0.64</code> 可用</td>
+</tr>
+<tr>
+<td>T4</td>
+<td>停止 libvirt dnsmasq，释放 <code>192.168.122.1:53</code></td>
+</tr>
+<tr>
+<td>T5</td>
+<td>修改 <code>bind_hosts</code> → <code>[127.0.0.1, 192.168.0.64, ::1]</code></td>
+</tr>
+<tr>
+<td>T6</td>
+<td>再次启动，新错误：<code>sessions.db: timeout</code></td>
+</tr>
+<tr>
+<td>T7</td>
+<td>排查磁盘 I&#x2F;O（正常）、文件锁（无持有者）、权限（正常）</td>
+</tr>
+<tr>
+<td>T8</td>
+<td>发现 <code>querylog.json</code> 膨胀至 8.9 GB</td>
+</tr>
+<tr>
+<td>T9</td>
+<td>备份并删除 <code>sessions.db</code>，清空 <code>querylog.json</code></td>
+</tr>
+<tr>
+<td>T10</td>
+<td>重新启动 → <strong>成功</strong>，服务稳定运行</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、详细排查"><a href="#三、详细排查" class="headerlink" title="三、详细排查"></a>三、详细排查</h2><h3 id="3-1-UDP-53-端口占用"><a href="#3-1-UDP-53-端口占用" class="headerlink" title="3.1 UDP 53 端口占用"></a>3.1 UDP 53 端口占用</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">netstat -tulpn | grep <span class="hljs-string">&#x27;:53&#x27;</span><br><span class="hljs-comment"># 输出：192.168.122.1:53 被 dnsmasq (libvirt) 占用</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>根因</strong>：libvirt 默认虚拟网络 (<code>virbr0</code>) 自带的 dnsmasq 实例监听了 <code>192.168.122.1:53</code>，与 AdGuardHome 的 DNS 监听需求冲突。</p>
+<p><strong>修复</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">virsh net-destroy default<br>virsh net-autostart default --<span class="hljs-built_in">disable</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-bind-hosts-无效-IP"><a href="#3-2-bind-hosts-无效-IP" class="headerlink" title="3.2 bind_hosts 无效 IP"></a>3.2 bind_hosts 无效 IP</h3><p>配置文件中 <code>bind_hosts</code> 数组包含 <code>192.168.0.24</code>，但该地址未被分配给任何接口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">ip addr show | grep 192.168.0.24<br><span class="hljs-comment"># 无输出 — IP 不存在</span><br></code></pre></td></tr></table></figure>
+
+<p>AdGuardHome 在初始化 DNS 监听器时 <code>bind(2)</code> 调用失败，返回 <code>EADDRNOTAVAIL</code>，直接阻止服务启动。</p>
+<p><strong>修复</strong>：将 <code>bind_hosts</code> 修正为实际存在的地址：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">bind_hosts:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-number">192.168</span><span class="hljs-number">.0</span><span class="hljs-number">.64</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;::1&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-sessions-db-超时"><a href="#3-3-sessions-db-超时" class="headerlink" title="3.3 sessions.db 超时"></a>3.3 sessions.db 超时</h3><p>端口和配置修复后，前台启动仍报错：</p>
+<figure class="highlight nix"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nix"><span class="hljs-params">session_storage:</span> opening db filename<span class="hljs-operator">=</span><span class="hljs-symbol">/opt/AdGuardHome/data/sessions.db</span> err<span class="hljs-operator">=</span>timeout<br><span class="hljs-params">fatal:</span> initializing auth <span class="hljs-params">module:</span> creating session <span class="hljs-params">storage:</span> timeout<br></code></pre></td></tr></table></figure>
+
+<p>排除因素：</p>
+<ul>
+<li><strong>磁盘 I&#x2F;O</strong>：<code>iostat</code> 显示 <code>%util &lt; 1%</code>，排除性能瓶颈</li>
+<li><strong>文件锁</strong>：<code>lsof /opt/AdGuardHome/data/sessions.db</code> 无进程持有</li>
+<li><strong>权限</strong>：<code>root:root / 600</code>，正常</li>
+</ul>
+<p>推测原因：</p>
+<ul>
+<li><code>sessions.db</code> 内部 SQLite 锁未正确释放（如上次进程被 SIGKILL）</li>
+<li><code>querylog.json</code> 高达 8.9 GB，文件系统元数据操作延迟间接影响 db 打开</li>
+</ul>
+<p><strong>修复</strong>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl stop AdGuardHome<br><span class="hljs-built_in">rm</span> -f /opt/AdGuardHome/data/sessions.db<br>&gt; /opt/AdGuardHome/data/querylog.json    <span class="hljs-comment"># 清空日志</span><br>systemctl start AdGuardHome<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、根因分析（5-Why）"><a href="#四、根因分析（5-Why）" class="headerlink" title="四、根因分析（5 Why）"></a>四、根因分析（5 Why）</h2><ol>
+<li><strong>为什么服务起不来？</strong> → DNS 监听器初始化失败 + session 存储初始化失败</li>
+<li><strong>为什么 DNS 监听失败？</strong> → 配置中绑定了不存在的 IP <code>192.168.0.24</code></li>
+<li><strong>为什么 session 也失败？</strong> → <code>sessions.db</code> 损坏&#x2F;锁定，SQLite 打开超时</li>
+<li><strong>为什么 db 会损坏？</strong> → 服务异常退出时未清理锁，且 <code>querylog.json</code> 过大加剧 I&#x2F;O 延迟</li>
+<li><strong>为什么 querylog 这么大？</strong> → 查询日志无保留期限制，长期累积</li>
+</ol>
+<hr>
+<h2 id="五、修复措施"><a href="#五、修复措施" class="headerlink" title="五、修复措施"></a>五、修复措施</h2><table>
+<thead>
+<tr>
+<th>措施</th>
+<th>操作</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>关闭 libvirt dnsmasq</td>
+<td><code>virsh net-destroy default &amp;&amp; virsh net-autostart default --disable</code></td>
+</tr>
+<tr>
+<td>修正 bind_hosts</td>
+<td>移除 <code>192.168.0.24</code>，保留实际 IP</td>
+</tr>
+<tr>
+<td>重建 sessions.db</td>
+<td>删除损坏文件，让服务重建</td>
+</tr>
+<tr>
+<td>清空 querylog.json</td>
+<td>释放 8.9 GB 空间</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、预防改进"><a href="#六、预防改进" class="headerlink" title="六、预防改进"></a>六、预防改进</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>措施</th>
+<th>优先级</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>日志轮转</strong>：在 AdGuardHome Web UI → 设置 → 查询日志，设置保留期限（建议 7 天）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>配置校验</strong>：部署前运行 <code>AdGuardHome --check-config</code> 验证 bind_hosts</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>大文件告警</strong>：Prometheus 添加 <code>node_filesystem_file_size_bytes</code> 规则，<code>querylog.json &gt; 1GB</code> 触发告警</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>数据库保护</strong>：考虑将 <code>sessions.db</code> 移至 tmpfs（内存文件系统），避免磁盘 I&#x2F;O 依赖</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>升级 AdGuardHome</strong>：关注 v0.107.77 后续版本是否优化 session 超时机制</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>端口规划</strong>：libvirt 如恢复使用，需配置 AdGuardHome 不监听 <code>192.168.122.1:53</code>（或给 virbr0 换网段）</td>
+<td>P3</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、验证结果"><a href="#七、验证结果" class="headerlink" title="七、验证结果"></a>七、验证结果</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">systemctl status AdGuardHome | <span class="hljs-built_in">head</span> -3<br><span class="hljs-comment"># Active: active (running)</span><br><br>curl -sI http://192.168.0.64:8008 | <span class="hljs-built_in">head</span> -1<br><span class="hljs-comment"># HTTP/1.1 200 OK</span><br><br>dig @192.168.0.64 baidu.com +short<br><span class="hljs-comment"># 返回正确 IP</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="八、附录"><a href="#八、附录" class="headerlink" title="八、附录"></a>八、附录</h2><h3 id="8-1-关键路径"><a href="#8-1-关键路径" class="headerlink" title="8.1 关键路径"></a>8.1 关键路径</h3><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>二进制</td>
+<td><code>/opt/AdGuardHome/AdGuardHome</code></td>
+</tr>
+<tr>
+<td>配置</td>
+<td><code>/opt/AdGuardHome/AdGuardHome.yaml</code></td>
+</tr>
+<tr>
+<td>数据目录</td>
+<td><code>/opt/AdGuardHome/data/</code></td>
+</tr>
+<tr>
+<td>sessions.db</td>
+<td><code>/opt/AdGuardHome/data/sessions.db</code></td>
+</tr>
+<tr>
+<td>querylog.json</td>
+<td><code>/opt/AdGuardHome/data/querylog.json</code></td>
+</tr>
+</tbody></table>
+<h3 id="8-2-恢复-libvirt（如需）"><a href="#8-2-恢复-libvirt（如需）" class="headerlink" title="8.2 恢复 libvirt（如需）"></a>8.2 恢复 libvirt（如需）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">virsh net-start default<br>virsh net-autostart default<br><span class="hljs-comment"># 注意：此时需调整 AdGuardHome 绑定，避免 53 端口冲突</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="8-3-重置管理员密码"><a href="#8-3-重置管理员密码" class="headerlink" title="8.3 重置管理员密码"></a>8.3 重置管理员密码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># AdGuardHome 密码以 bcrypt 哈希存储在配置文件中</span><br><span class="hljs-comment"># 如需重置，停止服务后删除 users 段，重启后重新注册</span><br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Linux/%E8%BF%90%E7%BB%B4/" class="category-chain-item">运维</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/AdGuardHome/" class="print-no-link">#AdGuardHome</a>
+      
+        <a href="/tags/DNS/" class="print-no-link">#DNS</a>
+      
+        <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/" class="print-no-link">#故障复盘</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>AdGuardHome 启动失败故障复盘</div>
+      <div>https://bote798.top/2026/07/09/AdGuardHome启动失败故障复盘/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月9日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年7月11日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/11/aria2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" title="aria2 使用指南">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">aria2 使用指南</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" title="mdadm RAID5 硬盘替换实战（无热备盘·关机更换）">
+                        <span class="hidden-mobile">mdadm RAID5 硬盘替换实战（无热备盘·关机更换）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
