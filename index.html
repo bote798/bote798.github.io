@@ -246,8 +246,241 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+          K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+        <div>
+          类型：辅助讲义（对应 第一章 Pod + 第二章 Deployment）定位：讲透”归属关系”和”管理关系”两条主线，涵盖 Pod 到 Deployment 的底层原理日期：2026年7月13日前置：已完成第一章（环境搭建与 Pod 入门）   一、一句话总览集群是一群机器，每台机器叫节点，Pod 跑在节点上，容器装在 Pod 里。 1234Cluster（集群）  └── Node（节点 /
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-14 12:00" pubdate>
+              2026-07-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kind/">#Kind</a>
+            
+              <a href="/tags/Pod/">#Pod</a>
+            
+              <a href="/tags/Deployment/">#Deployment</a>
+            
+              <a href="/tags/ReplicaSet/">#ReplicaSet</a>
+            
+              <a href="/tags/K8s%E6%9E%B6%E6%9E%84/">#K8s架构</a>
+            
+              <a href="/tags/Cluster/">#Cluster</a>
+            
+              <a href="/tags/Node/">#Node</a>
+            
+              <a href="/tags/Container/">#Container</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：02-踩坑记录与知识扩展">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+          K8s学习笔记：02-踩坑记录与知识扩展
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+        <div>
+          对应章节：第二章 Deployment 控制器 &#x2F; 2.1~2.4日期：2026年7月13日   坑 1：rollout history 只显示两条 → 以为”只能存两个版本”现象来回更新镜像 + 回滚了好几次，rollout history 却始终只有两条，而且 REVISION 号是 4、5 这种大数字： 1234kubectl rollout history deploy/my-
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 12:30" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+            
+              <a href="/tags/Deployment/">#Deployment</a>
+            
+              <a href="/tags/ReplicaSet/">#ReplicaSet</a>
+            
+              <a href="/tags/rollout/">#rollout</a>
+            
+              <a href="/tags/revisionHistoryLimit/">#revisionHistoryLimit</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-Deployment%E6%8E%A7%E5%88%B6%E5%99%A8/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：02-Deployment控制器">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-Deployment%E6%8E%A7%E5%88%B6%E5%99%A8/" target="_self">
+          K8s学习笔记：02-Deployment控制器
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-02-Deployment%E6%8E%A7%E5%88%B6%E5%99%A8/" target="_self">
+        <div>
+          目标：理解为什么需要 Deployment，掌握创建、扩缩容、滚动更新和回滚   2.1 Pod 的局限与 Deployment 的诞生回顾：Pod 能干什么第一章你学会了用 kubectl run 创建 Pod。Pod 能跑起来，但它有个致命问题： 12kubectl delete pod my-nginx# Pod 删了就是删了，没人会帮你重建  Pod 是”宠物”，不是”牛”——死了就是死
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 12:00" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/kubectl/">#kubectl</a>
+            
+              <a href="/tags/Deployment/">#Deployment</a>
+            
+              <a href="/tags/ReplicaSet/">#ReplicaSet</a>
+            
+              <a href="/tags/%E6%BB%9A%E5%8A%A8%E6%9B%B4%E6%96%B0/">#滚动更新</a>
+            
+              <a href="/tags/%E5%9B%9E%E6%BB%9A/">#回滚</a>
+            
+              <a href="/tags/%E6%89%A9%E7%BC%A9%E5%AE%B9/">#扩缩容</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2026/07/12/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01-Kind%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%AC%AC%E4%B8%80%E4%B8%AAPod/" target="_self">
-          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：Kind集群搭建与第一个Pod">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：01-Kind集群搭建与第一个Pod">
         </a>
       </div>
     
@@ -255,7 +488,7 @@
       <h2 class="index-header">
         
         <a href="/2026/07/12/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01-Kind%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA%E4%B8%8E%E7%AC%AC%E4%B8%80%E4%B8%AAPod/" target="_self">
-          K8s学习笔记：Kind集群搭建与第一个Pod
+          K8s学习笔记：01-Kind集群搭建与第一个Pod
         </a>
       </h2>
 
@@ -322,7 +555,7 @@
     
       <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2026/07/12/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
-          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：踩坑记录与知识扩展">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：01-踩坑记录与知识扩展">
         </a>
       </div>
     
@@ -330,7 +563,7 @@
       <h2 class="index-header">
         
         <a href="/2026/07/12/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-01-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
-          K8s学习笔记：踩坑记录与知识扩展
+          K8s学习笔记：01-踩坑记录与知识扩展
         </a>
       </h2>
 
@@ -775,231 +1008,6 @@
               <a href="/tags/RAID/">#RAID</a>
             
               <a href="/tags/mdadm/">#mdadm</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/05/23/Ai%E4%B8%93%E6%A0%8F%EF%BC%9A1-WSL2-Ubuntu-%E5%AE%89%E8%A3%85-Hermes-Agent-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%88%B0%E8%B7%91%E9%80%9A/" target="_self">
-          <img src="/img/ai.png" srcset="/img/loading.gif" lazyload alt="Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/05/23/Ai%E4%B8%93%E6%A0%8F%EF%BC%9A1-WSL2-Ubuntu-%E5%AE%89%E8%A3%85-Hermes-Agent-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%88%B0%E8%B7%91%E9%80%9A/" target="_self">
-          Ai专栏：1.WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/05/23/Ai%E4%B8%93%E6%A0%8F%EF%BC%9A1-WSL2-Ubuntu-%E5%AE%89%E8%A3%85-Hermes-Agent-%E5%AE%8C%E6%95%B4%E6%8C%87%E5%8D%97%EF%BC%9A%E4%BB%8E%E9%9B%B6%E5%88%B0%E8%B7%91%E9%80%9A/" target="_self">
-        <div>
-          WSL2 Ubuntu 安装 Hermes Agent 完整指南：从零到跑通 一篇来自一线 IT 运维的实际安装记录，不是翻译官方文档。   Hermes Agent 是什么Hermes Agent 是 Nous Research 在 2026 年 2 月发布的开源自主 AI 智能体框架，MIT 协议。两个月内 GitHub 斩获 6.4 万星，到 5 月全球 Token 消耗量已经超过了同赛道的
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-05-23 11:50" pubdate>
-              2026-05-23
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/AI%E5%B7%A5%E5%85%B7/" class="category-chain-item">AI工具</a>
-  
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Hermes-Agent/">#Hermes-Agent</a>
-            
-              <a href="/tags/WSL2/">#WSL2</a>
-            
-              <a href="/tags/Ubuntu/">#Ubuntu</a>
-            
-              <a href="/tags/AI/">#AI</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" target="_self">
-          <img src="/img/jenkins/Jenkins-Logo.jpg" srcset="/img/loading.gif" lazyload alt="Jenkins Day 3-4 错误总结与解决方案">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" target="_self">
-          Jenkins Day 3-4 错误总结与解决方案
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/04/02/Jenkins%20Day%203-4%20%E9%94%99%E8%AF%AF%E6%80%BB%E7%BB%93%E4%B8%8E%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" target="_self">
-        <div>
-          问题一：本地 file:&#x2F;&#x2F; 仓库检出被阻止错误日志1234ERROR: Checkout of Git remote &#x27;file:///home/LX/jenkins_demo/demo-java-app&#x27;aborted because it references a local directory, which may be insecure.You c
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-04-02 00:02" pubdate>
-              2026-04-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/DevOps/CI-CD/" class="category-chain-item">CI/CD</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Jenkins/">#Jenkins</a>
-            
-              <a href="/tags/%E6%8E%92%E9%94%99/">#排错</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/04/02/Jenkins%20Day%203-4%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
-          <img src="/img/jenkins/Jenkins-Logo.jpg" srcset="/img/loading.gif" lazyload alt="Jenkins Day 3-4 学习笔记">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/04/02/Jenkins%20Day%203-4%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
-          Jenkins Day 3-4 学习笔记
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/04/02/Jenkins%20Day%203-4%20%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
-        <div>
-          一、今日学习目标总览12345678910Day 3-4 你将掌握：├── 准备本地 Git 仓库作为练习项目├── 创建 Freestyle Project 并关联 Git├── 配置源码管理（SCM）├── 配置构建触发器（手动/定时/轮询/远程）├── 编写 Shell 构建步骤├── 配置构建后操作（产物归档、邮件通知）├── 理解构建状态和构建历史└── 完整体验一次&quot;代码提交
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-04-02 00:02" pubdate>
-              2026-04-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/DevOps/CI-CD/" class="category-chain-item">CI/CD</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Jenkins/">#Jenkins</a>
-            
-              <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">#学习笔记</a>
             
           </div>
         
