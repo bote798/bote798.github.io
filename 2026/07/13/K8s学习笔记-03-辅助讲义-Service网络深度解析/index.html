@@ -1,0 +1,982 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对应章节：第三章 Service 网络 &#x2F; 3.1~3.7定位：讲透 Service 底层原理——虚拟 IP 的真相、流量转发机制、DNS 解析链路日期：2026年7月13日前置：已完成第二章 Deployment，理解了 Pod IP 不稳定的问题   一、一句话总结 ServiceService 给一组 Pod 一个固定不变的虚拟 IP + DNS 名字，kube-proxy 在每">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s学习笔记：03-辅助讲义-Service网络深度解析">
+<meta property="og:url" content="https://bote798.top/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%BE%85%E5%8A%A9%E8%AE%B2%E4%B9%89-Service%E7%BD%91%E7%BB%9C%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="对应章节：第三章 Service 网络 &#x2F; 3.1~3.7定位：讲透 Service 底层原理——虚拟 IP 的真相、流量转发机制、DNS 解析链路日期：2026年7月13日前置：已完成第二章 Deployment，理解了 Pod IP 不稳定的问题   一、一句话总结 ServiceService 给一组 Pod 一个固定不变的虚拟 IP + DNS 名字，kube-proxy 在每">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/k8s/k8s.png">
+<meta property="article:published_time" content="2026-07-13T10:30:00.000Z">
+<meta property="article:modified_time" content="2026-07-16T12:00:11.189Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="iptables">
+<meta property="article:tag" content="Service">
+<meta property="article:tag" content="ClusterIP">
+<meta property="article:tag" content="Endpoints">
+<meta property="article:tag" content="CoreDNS">
+<meta property="article:tag" content="kube-proxy">
+<meta property="article:tag" content="IPVS">
+<meta property="article:tag" content="DNAT">
+<meta property="article:tag" content="深度解析">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/k8s/k8s.png">
+  
+  
+  
+  <title>K8s学习笔记：03-辅助讲义-Service网络深度解析 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="K8s学习笔记：03-辅助讲义-Service网络深度解析"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-13 18:30" pubdate>
+          2026年7月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">K8s学习笔记：03-辅助讲义-Service网络深度解析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>对应章节：第三章 Service 网络 &#x2F; 3.1~3.7<br>定位：讲透 Service 底层原理——虚拟 IP 的真相、流量转发机制、DNS 解析链路<br>日期：2026年7月13日<br>前置：已完成第二章 Deployment，理解了 Pod IP 不稳定的问题</p>
+</blockquote>
+<hr>
+<h2 id="一、一句话总结-Service"><a href="#一、一句话总结-Service" class="headerlink" title="一、一句话总结 Service"></a>一、一句话总结 Service</h2><p><strong>Service 给一组 Pod 一个固定不变的虚拟 IP + DNS 名字，kube-proxy 在每台节点上把流量转发到后端 Pod。</strong></p>
+<p>三层关键角色：</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs armasm">你访问 Service (ClusterIP / DNS)<br>        │<br>        ▼<br>   kube-proxy（每台节点上都有，负责转发）<br>        │<br>        ▼<br>   后端 Pod（真实容器，<span class="hljs-built_in">IP</span> 随便变）<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二、Service-的-ClusterIP-到底是什么？"><a href="#二、Service-的-ClusterIP-到底是什么？" class="headerlink" title="二、Service 的 ClusterIP 到底是什么？"></a>二、Service 的 ClusterIP 到底是什么？</h2><h3 id="2-1-它不是一个”网卡”"><a href="#2-1-它不是一个”网卡”" class="headerlink" title="2.1 它不是一个”网卡”"></a>2.1 它不是一个”网卡”</h3><p>如果你登录到任何一台节点执行 <code>ip addr</code>，<strong>你找不到 ClusterIP</strong>。它不绑定在任何网络接口上。</p>
+<p>ClusterIP 是一个仅存在于 kube-proxy 规则表中的虚拟地址：</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs armasm">真实 <span class="hljs-built_in">IP</span>（如 Pod 的 <span class="hljs-number">10</span>.<span class="hljs-number">244</span>.<span class="hljs-number">0</span>.<span class="hljs-number">5</span>）→ 绑定在 veth 网卡上 → <span class="hljs-built_in">ip</span> <span class="hljs-keyword">addr</span> 看得到<br><span class="hljs-symbol">ClusterIP</span>（如 <span class="hljs-number">10</span>.<span class="hljs-number">96</span>.<span class="hljs-number">0</span>.<span class="hljs-number">50</span>）       → 仅存在于 iptables/IPVS 规则中 → <span class="hljs-built_in">ip</span> <span class="hljs-keyword">addr</span> 看不到<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-2-那数据包是怎么到达-Pod-的？"><a href="#2-2-那数据包是怎么到达-Pod-的？" class="headerlink" title="2.2 那数据包是怎么到达 Pod 的？"></a>2.2 那数据包是怎么到达 Pod 的？</h3><p>流程图（以 iptables 模式为例）：</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs dns">客户端 Pod 发出请求<br>  │ 目标: <span class="hljs-number">10.96.0.50</span>:<span class="hljs-number">80</span> (Service ClusterIP)<br>  ▼<br>客户端所在节点的内核网络栈<br>  │ iptables PREROUTING 链命中规则：<br>  │ &quot;目标地址是 <span class="hljs-number">10.96.0.50</span>:<span class="hljs-number">80</span> 的包，DNAT 到 &lt;某个后端 Pod IP&gt;&quot;<br>  ▼<br>数据包目标地址被改写为真实 Pod IP（如 <span class="hljs-number">10.244.0.5</span>:<span class="hljs-number">80</span>）<br>  │<br>  ▼<br>包被路由到 Pod 所在节点 → Pod 容器的网络命名空间 → nginx 收到请求<br></code></pre></td></tr></table></figure>
+
+<p>关键认知：<strong>Service 不做代理</strong>，不经过任何用户态进程转发。iptables 在内核层面直接改写数据包的目标地址（DNAT），性能开销极小。</p>
+<hr>
+<h2 id="三、kube-proxy-的三种转发模式"><a href="#三、kube-proxy-的三种转发模式" class="headerlink" title="三、kube-proxy 的三种转发模式"></a>三、kube-proxy 的三种转发模式</h2><p>kube-proxy 是运行在每台节点上的 DaemonSet Pod（或系统进程），它 watch API server 监听 Service 和 Endpoints 的变化，然后改写本机规则。</p>
+<h3 id="3-1-三种模式对比"><a href="#3-1-三种模式对比" class="headerlink" title="3.1 三种模式对比"></a>3.1 三种模式对比</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>规则位置</th>
+<th>性能</th>
+<th>负载均衡算法</th>
+<th>适用规模</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>userspace（旧）</strong></td>
+<td>kube-proxy 进程自己转发</td>
+<td>最差（用户态↔内核态来回切）</td>
+<td>轮询</td>
+<td>已被淘汰</td>
+</tr>
+<tr>
+<td><strong>iptables（默认）</strong></td>
+<td>iptables 规则链</td>
+<td>好（内核态，O(n) 规则匹配）</td>
+<td>随机（statistic 模块）</td>
+<td>中小集群</td>
+</tr>
+<tr>
+<td><strong>IPVS（推荐）</strong></td>
+<td>IPVS 内核模块</td>
+<td>最好（内核态，O(1) 哈希查找）</td>
+<td>rr &#x2F; lc &#x2F; sh 等多种</td>
+<td>1000+ Service</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-iptables-模式（Kind-默认）"><a href="#3-2-iptables-模式（Kind-默认）" class="headerlink" title="3.2 iptables 模式（Kind 默认）"></a>3.2 iptables 模式（Kind 默认）</h3><p>每增加一个 Service + 后端 Pod 组合，kube-proxy 就往 iptables 里写规则：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs scss">Service my-svc (<span class="hljs-number">10.96</span>.<span class="hljs-number">0.50</span>:<span class="hljs-number">80</span>) → <span class="hljs-number">3</span> 个后端 Pod<br>  iptables 规则：<br>    -<span class="hljs-selector-tag">A</span> KUBE-SVC-XXXX -m statistic <span class="hljs-attr">--mode</span> random <span class="hljs-attr">--probability</span> <span class="hljs-number">0.333</span> -j KUBE-SEP-YYYY  (→ Pod A)<br>    -<span class="hljs-selector-tag">A</span> KUBE-SVC-XXXX -m statistic <span class="hljs-attr">--mode</span> random <span class="hljs-attr">--probability</span> <span class="hljs-number">0.500</span> -j KUBE-SEP-ZZZZ  (→ Pod B)<br>    -<span class="hljs-selector-tag">A</span> KUBE-SVC-XXXX -j KUBE-SEP-WWWW                                             (→ Pod C)<br></code></pre></td></tr></table></figure>
+
+<p>规律：N 个后端 → N 条规则串成链，匹配是 O(n) 的。所以 iptables 模式下 Service + Pod 多了之后规则爆炸，影响性能。</p>
+<h3 id="3-3-IPVS-模式"><a href="#3-3-IPVS-模式" class="headerlink" title="3.3 IPVS 模式"></a>3.3 IPVS 模式</h3><p>IPVS 是 Linux 内核的传输层负载均衡模块（LVS 项目的核心）。kube-proxy 在 IPVS 模式下创建一个虚拟服务 + 多个真实后端，哈希 O(1) 查找，支持多种调度算法：</p>
+<table>
+<thead>
+<tr>
+<th>算法缩写</th>
+<th>全称</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>rr</td>
+<td>Round Robin</td>
+<td>轮询</td>
+</tr>
+<tr>
+<td>lc</td>
+<td>Least Connection</td>
+<td>最少连接数</td>
+</tr>
+<tr>
+<td>sh</td>
+<td>Source Hashing</td>
+<td>源地址哈希（同一客户端固定到同一后端）</td>
+</tr>
+</tbody></table>
+<p>生产环境 Service 超过 100 个就应考虑切 IPVS。但 Kind 环境 iptables 完全够用。</p>
+<h3 id="3-4-为什么理解这个有用？"><a href="#3-4-为什么理解这个有用？" class="headerlink" title="3.4 为什么理解这个有用？"></a>3.4 为什么理解这个有用？</h3><ul>
+<li>排障时：Pod 明明活着但 Service 访问不通 → 可能是本地 iptables 规则没更新</li>
+<li>性能调优：大规模集群 iptables 规则爆炸 → 切 IPVS</li>
+<li>你访问 ClusterIP，包不会经过 kube-proxy 进程——它在控制面写规则，数据面是内核</li>
+</ul>
+<hr>
+<h2 id="四、Endpoints：Service-和-Pod-之间的”动态电话本”"><a href="#四、Endpoints：Service-和-Pod-之间的”动态电话本”" class="headerlink" title="四、Endpoints：Service 和 Pod 之间的”动态电话本”"></a>四、Endpoints：Service 和 Pod 之间的”动态电话本”</h2><h3 id="4-1-Endpoints-是什么"><a href="#4-1-Endpoints-是什么" class="headerlink" title="4.1 Endpoints 是什么"></a>4.1 Endpoints 是什么</h3><p>Endpoints 是一个 API 对象，记录”当前匹配 Service selector 的所有 Pod IP + 端口”。它不是转发路径中的一跳，而是 kube-proxy 用来<strong>生成转发规则的数据源</strong>。</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs dns">用户创建 Service (selector: app=nginx)<br>         │<br>         ▼<br>Endpoints Controller 持续 watch Pod 的变化<br>         │  Pod 创建/删除 → 检查标签是否匹配<br>         ▼<br>更新 Endpoints 对象：&#123; <span class="hljs-number">10.244.0.5</span>:<span class="hljs-number">80</span>, <span class="hljs-number">10.244.0.6</span>:<span class="hljs-number">80</span>, <span class="hljs-number">10.244.0.7</span>:<span class="hljs-number">80</span> &#125;<br>         │<br>         ▼<br>kube-proxy  watch Endpoints → 重新生成 iptables/IPVS 规则<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-Endpoints-vs-EndpointSlice"><a href="#4-2-Endpoints-vs-EndpointSlice" class="headerlink" title="4.2 Endpoints vs EndpointSlice"></a>4.2 Endpoints vs EndpointSlice</h3><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>版本</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Endpoints</td>
+<td>老</td>
+<td>单个对象存所有后端 IP，后端超多时对象过大，更新慢</td>
+</tr>
+<tr>
+<td>EndpointSlice</td>
+<td>新（1.21 GA）</td>
+<td>每个 Service 拆成多个 Slice（每个最多 100 条），增量更新</td>
+</tr>
+</tbody></table>
+<p>新集群默认用 EndpointSlice，<code>kubectl get endpoints</code> 看到的其实是 EndpointSlice 的汇总视图。</p>
+<h3 id="4-3-没了-selector-的-Service（手动-Endpoints）"><a href="#4-3-没了-selector-的-Service（手动-Endpoints）" class="headerlink" title="4.3 没了 selector 的 Service（手动 Endpoints）"></a>4.3 没了 selector 的 Service（手动 Endpoints）</h3><p>可以不写 selector，自己手动建 Endpoints：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 场景：集群内有外部数据库，想给 Pod 一个统一的 DNS 名字访问</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">Service</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">external-db</span><br><span class="hljs-attr">spec:</span><br>  <span class="hljs-attr">ports:</span><br>    <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">3306</span><br>  <span class="hljs-comment"># 没有 selector！</span><br><span class="hljs-meta">---</span><br><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span><br><span class="hljs-attr">kind:</span> <span class="hljs-string">Endpoints</span><br><span class="hljs-attr">metadata:</span><br>  <span class="hljs-attr">name:</span> <span class="hljs-string">external-db</span>   <span class="hljs-comment"># 名字必须和 Service 完全一致</span><br><span class="hljs-attr">subsets:</span><br>  <span class="hljs-bullet">-</span> <span class="hljs-attr">addresses:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">ip:</span> <span class="hljs-number">192.168</span><span class="hljs-number">.1</span><span class="hljs-number">.100</span>   <span class="hljs-comment"># 外部数据库的真实 IP</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">3306</span><br></code></pre></td></tr></table></figure>
+
+<p>这时候 kube-proxy 照常生成转发规则，把流量发到 192.168.1.100:3306——给集群外资源起了一个集群内 DNS 名字。</p>
+<hr>
+<h2 id="五、DNS-服务发现：CoreDNS-的解析链路"><a href="#五、DNS-服务发现：CoreDNS-的解析链路" class="headerlink" title="五、DNS 服务发现：CoreDNS 的解析链路"></a>五、DNS 服务发现：CoreDNS 的解析链路</h2><h3 id="5-1-整体架构"><a href="#5-1-整体架构" class="headerlink" title="5.1 整体架构"></a>5.1 整体架构</h3><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs routeros">Pod 发起<span class="hljs-built_in"> DNS </span>查询 <span class="hljs-string">&quot;my-nginx-svc&quot;</span><br>         │<br>         ▼<br>Pod 的 /etc/resolv.conf → nameserver 指向 CoreDNS<span class="hljs-built_in"> Service </span>ClusterIP<br>         │<br>         ▼<br>CoreDNS Pod（kube-system 中，通常 2 个副本）<br>         │  查自己的配置（从<span class="hljs-built_in"> Service </span>和 Pod 自动生成）<br>         ▼<br>返回 my-nginx-svc 的 ClusterIP: 10.96.x.x<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-Pod-的-etc-resolv-conf-长什么样"><a href="#5-2-Pod-的-etc-resolv-conf-长什么样" class="headerlink" title="5.2 Pod 的 &#x2F;etc&#x2F;resolv.conf 长什么样"></a>5.2 Pod 的 &#x2F;etc&#x2F;resolv.conf 长什么样</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">nameserver 10.96.0.10          <span class="hljs-comment"># CoreDNS 的 ClusterIP</span><br>search default.svc.cluster.local svc.cluster.local cluster.local<br>options ndots:5<br></code></pre></td></tr></table></figure>
+
+<p><code>search</code> 域就是为什么同 namespace 内只用写 <code>my-nginx-svc</code> 而不是完整 FQDN——系统自动拼接后缀逐个尝试。</p>
+<h3 id="5-3-完整-FQDN-结构"><a href="#5-3-完整-FQDN-结构" class="headerlink" title="5.3 完整 FQDN 结构"></a>5.3 完整 FQDN 结构</h3><figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mel">&lt;service名&gt;.&lt;<span class="hljs-keyword">namespace</span>&gt;.svc.&lt;<span class="hljs-keyword">cluster</span>域&gt;<br><br>my-nginx-svc.<span class="hljs-keyword">default</span>.svc.<span class="hljs-keyword">cluster</span>.local<br>  │            │       │   └───── 集群域（默认 <span class="hljs-keyword">cluster</span>.local）<br>  │            │       └────────── 固定后缀 <span class="hljs-string">&quot;svc&quot;</span><br>  │            └────────────────── <span class="hljs-keyword">namespace</span> 名<br>  └─────────────────────────────── Service 名<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-同-namespace-vs-跨-namespace"><a href="#5-4-同-namespace-vs-跨-namespace" class="headerlink" title="5.4 同 namespace vs 跨 namespace"></a>5.4 同 namespace vs 跨 namespace</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>写法</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>同 namespace</td>
+<td><code>my-nginx-svc</code></td>
+<td>search 域自动补全</td>
+</tr>
+<tr>
+<td>跨 namespace</td>
+<td><code>my-nginx-svc.production</code></td>
+<td>需指定 namespace</td>
+</tr>
+<tr>
+<td>跨 namespace 完整</td>
+<td><code>my-nginx-svc.production.svc.cluster.local</code></td>
+<td>显式全路径</td>
+</tr>
+</tbody></table>
+<h3 id="5-5-DNS-缓存与-TTL"><a href="#5-5-DNS-缓存与-TTL" class="headerlink" title="5.5 DNS 缓存与 TTL"></a>5.5 DNS 缓存与 TTL</h3><p>每次查询的 TTL 默认 30 秒。Service 的 ClusterIP 是不变的，所以即使后端 Pod 全换了，缓存也是有效的——真正变化的 Endpoints 由 kube-proxy 管，不是 DNS 管。</p>
+<hr>
+<h2 id="六、三种-Service-类型的数据流全景"><a href="#六、三种-Service-类型的数据流全景" class="headerlink" title="六、三种 Service 类型的数据流全景"></a>六、三种 Service 类型的数据流全景</h2><h3 id="6-1-流量路径对比"><a href="#6-1-流量路径对比" class="headerlink" title="6.1 流量路径对比"></a>6.1 流量路径对比</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">ClusterIP</span>（集群内部）：<br>  Pod A → DNS 解析 → ClusterIP → iptables DNAT → 后端 Pod<br><br><span class="hljs-symbol">NodePort</span>（节点端口对外）：<br>  外部客户端 → 节点<span class="hljs-built_in">IP</span>:<span class="hljs-number">31234</span> → iptables DNAT → ClusterIP → iptables 再 DNAT → 后端 Pod<br>             └─ 第一跳：NodePort → ClusterIP ─┘ └─ 第二跳：ClusterIP → Pod ─┘<br><br><span class="hljs-symbol">LoadBalancer</span>（云上）：<br>  外部客户端 → 云LB公网<span class="hljs-built_in">IP</span> → 转发到所有节点的 NodePort →（后续同 NodePort）<br></code></pre></td></tr></table></figure>
+
+<p>NodePort 的本质是：在每台节点的 iptables 里加一条规则，把 <code>节点IP:31234</code> 的流量 DNAT 到 ClusterIP:80，后续和 ClusterIP 一模一样。</p>
+<h3 id="6-2-哪种场景用哪种"><a href="#6-2-哪种场景用哪种" class="headerlink" title="6.2 哪种场景用哪种"></a>6.2 哪种场景用哪种</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>使用场景</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ClusterIP</td>
+<td>集群内微服务互调（前端→后端→数据库）</td>
+<td>不暴露到集群外，安全，默认选择</td>
+</tr>
+<tr>
+<td>NodePort</td>
+<td>开发测试临时对外，云 LB 的后端</td>
+<td>简单，但端口范围受限（30000-32767）</td>
+</tr>
+<tr>
+<td>LoadBalancer</td>
+<td>生产对外暴露 HTTP&#x2F;HTTPS</td>
+<td>自动化配置云 LB + 公网 IP + 健康检查</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、Kind-环境下的网络真相"><a href="#七、Kind-环境下的网络真相" class="headerlink" title="七、Kind 环境下的网络真相"></a>七、Kind 环境下的网络真相</h2><h3 id="7-1-Kind-的节点是-Docker-容器"><a href="#7-1-Kind-的节点是-Docker-容器" class="headerlink" title="7.1 Kind 的节点是 Docker 容器"></a>7.1 Kind 的节点是 Docker 容器</h3><p>真实集群：节点 &#x3D; 物理机&#x2F;虚拟机 → NodePort 直接在宿主机网络栈上监听端口。</p>
+<p>Kind 集群：节点 &#x3D; Docker 容器 → NodePort 端口开在<strong>容器内部</strong>，宿主机默认看不到。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs armasm">真实集群：         你的笔记本 → 节点<span class="hljs-built_in">IP</span>:<span class="hljs-number">31234</span> → Pod<br>                                └─ 节点真实网卡<br><br><span class="hljs-symbol">Kind</span> 集群：         你的笔记本 → 容器<span class="hljs-built_in">IP</span>:<span class="hljs-number">31234</span> → Pod<br>                                └─ Docker 网络内部，笔记本默认不通<br></code></pre></td></tr></table></figure>
+
+<h3 id="7-2-三种解法"><a href="#7-2-三种解法" class="headerlink" title="7.2 三种解法"></a>7.2 三种解法</h3><table>
+<thead>
+<tr>
+<th>办法</th>
+<th>原理</th>
+<th>何时用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>kubectl port-forward svc/xxx 8080:80 --address 0.0.0.0</code></td>
+<td>kubectl 在宿主机起代理，通过 API server 隧道转发</td>
+<td>临时测试，最快</td>
+</tr>
+<tr>
+<td><code>extraPortMappings</code> 建集群时配置</td>
+<td>建 Kind 集群时在容器上做 <code>-p 31234:31234</code></td>
+<td>建集群时就确定要用 NodePort</td>
+</tr>
+<tr>
+<td>NodePort 不用，直接用 Ingress</td>
+<td>Ingress Controller 通过 hostPort&#x2F;hostNetwork 对外暴露 80&#x2F;443</td>
+<td>生产方式，第五章讲</td>
+</tr>
+</tbody></table>
+<p><strong><code>kubectl port-forward</code> 是开发测试最方便的方式</strong>，它的转发路径和真实 NodePort 不同（走 API server 隧道），但效果相同。</p>
+<hr>
+<h2 id="八、Service、Endpoints、kube-proxy-三者协作全貌"><a href="#八、Service、Endpoints、kube-proxy-三者协作全貌" class="headerlink" title="八、Service、Endpoints、kube-proxy 三者协作全貌"></a>八、Service、Endpoints、kube-proxy 三者协作全貌</h2><p>把前面各节串起来，一张图：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs routeros">                          ┌──────────┐<br>                          │   API    │<br>                          │ <span class="hljs-built_in"> Server </span> │<br>                          └────┬─────┘<br>                               │ watch (持续监听)<br>     ┌─────────────────────────┼─────────────────────────┐<br>     │                         │                         │<br>┌────▼─────┐            ┌──────▼──────┐           ┌──────▼──────┐<br>│Endpoints │            │  kube-proxy │           │  CoreDNS    │<br>│Controller│            │  (每节点)    │           │  (集群 DNS)  │<br>└──────────┘            └──────┬──────┘           └─────────────┘<br>维护 Endpoints 对象            │ watch<span class="hljs-built_in"> Service </span>+ Endpoints<br>记录匹配 Pod 的<span class="hljs-built_in"> IP </span>            │ 改写本地 iptables/IPVS<br>                               │<br>                      ┌────────▼────────┐<br>                      │  iptables 规则   │<br>                      │  10.96.0.50:80  │<br>                      │  → DNAT → Pod地址│<br>                      └────────┬────────┘<br>                               │<br>                ┌──────────────┼──────────────┐<br>                │              │              │<br>           ┌───Pod───┐   ┌───Pod───┐   ┌───Pod───┐<br>           │<span class="hljs-attribute">app</span>=nginx│   │<span class="hljs-attribute">app</span>=nginx│   │<span class="hljs-attribute">app</span>=nginx│<br>           │10.244.0│    │10.244.0│    │10.244.0│<br>           │   .5    │   │   .6    │   │   .7    │<br>           └─────────┘   └─────────┘   └─────────┘<br></code></pre></td></tr></table></figure>
+
+<p><strong>数据面</strong>（你的请求包经过的）：iptables 规则 → Pod<br><strong>控制面</strong>（配置如何生效的）：API Server → Endpoints Controller &#x2F; kube-proxy → 更新 iptables</p>
+<hr>
+<h2 id="九、常见误区纠正"><a href="#九、常见误区纠正" class="headerlink" title="九、常见误区纠正"></a>九、常见误区纠正</h2><table>
+<thead>
+<tr>
+<th>误区</th>
+<th>真相</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“ClusterIP 是一个虚拟网卡”</td>
+<td>不是，仅存在于 iptables&#x2F;IPVS 规则中，<code>ip addr</code> 看不到</td>
+</tr>
+<tr>
+<td>“Service 是代理，流量经过它”</td>
+<td>不是，K8s Service 无进程，是内核规则转发（DNAT）</td>
+</tr>
+<tr>
+<td>“kube-proxy 转发每个请求”</td>
+<td>不对，kube-proxy 只写规则，不参与数据面转发</td>
+</tr>
+<tr>
+<td>“NodePort 在 Kind 里直接能用”</td>
+<td>不能，因为 Kind 节点是 Docker 容器，宿主机看不到容器端口</td>
+</tr>
+<tr>
+<td>“Service 用 DNS 做负载均衡”</td>
+<td>DNS 只做名字解析（返回 ClusterIP），负载均衡靠 iptables&#x2F;IPVS</td>
+</tr>
+<tr>
+<td>“删掉 Service 后 Pod 也受影响”</td>
+<td>不受影响，Service 只是 Pod 前面的入口，删 Service 不影响 Pod 运行</td>
+</tr>
+<tr>
+<td>“Endpoints 变化需要等 DNS 缓存过期”</td>
+<td>不需要，DNS 只到 ClusterIP（不变的），Endpoints 变化由 kube-proxy 实时更新</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十、与主章节的对照关系"><a href="#十、与主章节的对照关系" class="headerlink" title="十、与主章节的对照关系"></a>十、与主章节的对照关系</h2><table>
+<thead>
+<tr>
+<th>主章节</th>
+<th>本辅助讲义对应内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3.1 Pod 网络困境</td>
+<td>第二节：ClusterIP 是什么</td>
+</tr>
+<tr>
+<td>3.2 Service 靠 label 关联 Pod</td>
+<td>第四节：Endpoints 机制</td>
+</tr>
+<tr>
+<td>3.3 三种 Service 类型</td>
+<td>第六节：三种类型数据流全景</td>
+</tr>
+<tr>
+<td>3.4 ClusterIP 实操</td>
+<td>第三节：kube-proxy 三种转发模式</td>
+</tr>
+<tr>
+<td>3.5 NodePort</td>
+<td>第七节：Kind 环境 NodePort 真相</td>
+</tr>
+<tr>
+<td>3.6 DNS 服务发现</td>
+<td>第五节：CoreDNS 解析链路</td>
+</tr>
+<tr>
+<td>3.7 章节练习</td>
+<td>全文作为练习时的参考答案</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="本章核心认知回顾"><a href="#本章核心认知回顾" class="headerlink" title="本章核心认知回顾"></a>本章核心认知回顾</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown">Service 底层三要素：<br><br><span class="hljs-bullet">  1.</span> ClusterIP = 内核规则中的虚拟地址（不是网卡，ip addr 看不到）<br><span class="hljs-code">     └─ kube-proxy 写 iptables/IPVS 规则实现 DNAT 转发</span><br><span class="hljs-code"></span><br><span class="hljs-bullet">  2.</span> Endpoints = &quot;动态电话本&quot;，记录匹配 Pod 的 IP 列表<br><span class="hljs-code">     └─ 数据源，kube-proxy 据此生成规则 → Pod 增减自动更新</span><br><span class="hljs-code"></span><br><span class="hljs-bullet">  3.</span> CoreDNS = 集群 DNS，把 Service 名解析为 ClusterIP<br><span class="hljs-code">     └─ 搜索域机制：短名自动拼接 &lt;ns&gt;.svc.cluster.local</span><br><span class="hljs-code"></span><br>数据面：iptables/IPVS 内核规则（高性能，无用户态转发）<br>控制面：API Server → Endpoints Controller / kube-proxy → 更新规则<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iptables/" class="print-no-link">#iptables</a>
+      
+        <a href="/tags/Service/" class="print-no-link">#Service</a>
+      
+        <a href="/tags/ClusterIP/" class="print-no-link">#ClusterIP</a>
+      
+        <a href="/tags/Endpoints/" class="print-no-link">#Endpoints</a>
+      
+        <a href="/tags/CoreDNS/" class="print-no-link">#CoreDNS</a>
+      
+        <a href="/tags/kube-proxy/" class="print-no-link">#kube-proxy</a>
+      
+        <a href="/tags/IPVS/" class="print-no-link">#IPVS</a>
+      
+        <a href="/tags/DNAT/" class="print-no-link">#DNAT</a>
+      
+        <a href="/tags/%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" class="print-no-link">#深度解析</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>K8s学习笔记：03-辅助讲义-Service网络深度解析</div>
+      <div>https://bote798.top/2026/07/13/K8s学习笔记-03-辅助讲义-Service网络深度解析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月13日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年7月16日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04-ConfigMap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" title="K8s学习笔记：04-ConfigMap配置管理">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">K8s学习笔记：04-ConfigMap配置管理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" title="K8s学习笔记：03-踩坑记录与知识扩展">
+                        <span class="hidden-mobile">K8s学习笔记：03-踩坑记录与知识扩展</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

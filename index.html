@@ -246,23 +246,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
-          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系">
+        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04-ConfigMap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：04-ConfigMap配置管理">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
-          K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系
+        <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04-ConfigMap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" target="_self">
+          K8s学习笔记：04-ConfigMap配置管理
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+      <a class="index-excerpt " href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04-ConfigMap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" target="_self">
         <div>
-          类型：辅助讲义（对应 第一章 Pod + 第二章 Deployment）定位：讲透”归属关系”和”管理关系”两条主线，涵盖 Pod 到 Deployment 的底层原理日期：2026年7月13日前置：已完成第一章（环境搭建与 Pod 入门）   一、一句话总览集群是一群机器，每台机器叫节点，Pod 跑在节点上，容器装在 Pod 里。 1234Cluster（集群）  └── Node（节点 /
+          对应章节：第四章 配置与存储 &#x2F; 4.1 ConfigMap：把配置从镜像里抽出来日期：2026年7月14日   为什么不能把配置写进镜像？回顾前三章你造的 Nginx： 1kubectl create deployment my-nginx-deploy --image=nginx:alpine --port=80  这个 nginx 用的是什么首页？镜像里自带的默认页（”Welco
         </div>
       </a>
 
@@ -270,7 +270,7 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-14 12:00" pubdate>
+            <time datetime="2026-07-14 12:30" pubdate>
               2026-07-14
             </time>
           </div>
@@ -301,21 +301,260 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Kind/">#Kind</a>
+              <a href="/tags/ConfigMap/">#ConfigMap</a>
             
-              <a href="/tags/Pod/">#Pod</a>
+              <a href="/tags/envFrom/">#envFrom</a>
             
-              <a href="/tags/Deployment/">#Deployment</a>
+              <a href="/tags/valueFrom/">#valueFrom</a>
             
-              <a href="/tags/ReplicaSet/">#ReplicaSet</a>
+              <a href="/tags/volume/">#volume</a>
             
-              <a href="/tags/K8s%E6%9E%B6%E6%9E%84/">#K8s架构</a>
+              <a href="/tags/subPath/">#subPath</a>
             
-              <a href="/tags/Cluster/">#Cluster</a>
+              <a href="/tags/%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/">#配置管理</a>
             
-              <a href="/tags/Node/">#Node</a>
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%BE%85%E5%8A%A9%E8%AE%B2%E4%B9%89-Service%E7%BD%91%E7%BB%9C%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：03-辅助讲义-Service网络深度解析">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%BE%85%E5%8A%A9%E8%AE%B2%E4%B9%89-Service%E7%BD%91%E7%BB%9C%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
+          K8s学习笔记：03-辅助讲义-Service网络深度解析
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%BE%85%E5%8A%A9%E8%AE%B2%E4%B9%89-Service%E7%BD%91%E7%BB%9C%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
+        <div>
+          对应章节：第三章 Service 网络 &#x2F; 3.1~3.7定位：讲透 Service 底层原理——虚拟 IP 的真相、流量转发机制、DNS 解析链路日期：2026年7月13日前置：已完成第二章 Deployment，理解了 Pod IP 不稳定的问题   一、一句话总结 ServiceService 给一组 Pod 一个固定不变的虚拟 IP + DNS 名字，kube-proxy 在每
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 18:30" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
             
-              <a href="/tags/Container/">#Container</a>
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/iptables/">#iptables</a>
+            
+              <a href="/tags/Service/">#Service</a>
+            
+              <a href="/tags/ClusterIP/">#ClusterIP</a>
+            
+              <a href="/tags/Endpoints/">#Endpoints</a>
+            
+              <a href="/tags/CoreDNS/">#CoreDNS</a>
+            
+              <a href="/tags/kube-proxy/">#kube-proxy</a>
+            
+              <a href="/tags/IPVS/">#IPVS</a>
+            
+              <a href="/tags/DNAT/">#DNAT</a>
+            
+              <a href="/tags/%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/">#深度解析</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：03-踩坑记录与知识扩展">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+          K8s学习笔记：03-踩坑记录与知识扩展
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95%E4%B8%8E%E7%9F%A5%E8%AF%86%E6%89%A9%E5%B1%95/" target="_self">
+        <div>
+          对应章节：第三章 Service 网络 &#x2F; 3.1~3.7日期：2026年7月13日说明：本篇的坑全部来自本人实操时真实踩到的，比顺利通关更值得回看   坑 1：--rm 打成 00rm → 残留一个卡住的 test Pod现象123456kubectl run test 00rm -it --image=busybox:1.36 --restart=Never -- sh# erro
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 16:30" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DNS/">#DNS</a>
+            
+              <a href="/tags/%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5/">#故障排查</a>
+            
+              <a href="/tags/Service/">#Service</a>
+            
+              <a href="/tags/ClusterIP/">#ClusterIP</a>
+            
+              <a href="/tags/NodePort/">#NodePort</a>
+            
+              <a href="/tags/NXDOMAIN/">#NXDOMAIN</a>
+            
+              <a href="/tags/port-forward/">#port-forward</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-Service%E7%BD%91%E7%BB%9C/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：03-Service网络">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-Service%E7%BD%91%E7%BB%9C/" target="_self">
+          K8s学习笔记：03-Service网络
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-03-Service%E7%BD%91%E7%BB%9C/" target="_self">
+        <div>
+          对应章节：第三章 Service 网络 &#x2F; 3.1~3.7日期：2026年7月13日   Pod 的网络困境与 Service 的诞生问题：Pod 的 IP 是”临时”的第二章你见过：删一个 Pod，Deployment 立刻补一个新的。但新 Pod 的 IP 和旧的不一样。 123kubectl get pods -o wide      # 记下某个 Pod 的 IP，比如 10.
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 14:30" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DNS/">#DNS</a>
+            
+              <a href="/tags/Service/">#Service</a>
+            
+              <a href="/tags/ClusterIP/">#ClusterIP</a>
+            
+              <a href="/tags/NodePort/">#NodePort</a>
+            
+              <a href="/tags/LoadBalancer/">#LoadBalancer</a>
+            
+              <a href="/tags/label/">#label</a>
+            
+              <a href="/tags/Endpoints/">#Endpoints</a>
+            
+              <a href="/tags/CoreDNS/">#CoreDNS</a>
             
           </div>
         
@@ -468,6 +707,87 @@
               <a href="/tags/%E5%9B%9E%E6%BB%9A/">#回滚</a>
             
               <a href="/tags/%E6%89%A9%E7%BC%A9%E5%AE%B9/">#扩缩容</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+          <img src="/img/k8s/k8s.png" srcset="/img/loading.gif" lazyload alt="K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+          K8s学习笔记：（01与02）辅助-核心架构-集群节点Pod关系
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2026/07/13/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-%E6%A0%B8%E5%BF%83%E6%9E%B6%E6%9E%84-%E9%9B%86%E7%BE%A4%E8%8A%82%E7%82%B9Pod%E5%85%B3%E7%B3%BB/" target="_self">
+        <div>
+          类型：辅助讲义（对应 第一章 Pod + 第二章 Deployment）定位：讲透”归属关系”和”管理关系”两条主线，涵盖 Pod 到 Deployment 的底层原理日期：2026年7月13日前置：已完成第一章（环境搭建与 Pod 入门）   一、一句话总览集群是一群机器，每台机器叫节点，Pod 跑在节点上，容器装在 Pod 里。 1234Cluster（集群）  └── Node（节点 /
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2026-07-13 12:00" pubdate>
+              2026-07-13
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Kind/">#Kind</a>
+            
+              <a href="/tags/Pod/">#Pod</a>
+            
+              <a href="/tags/Deployment/">#Deployment</a>
+            
+              <a href="/tags/ReplicaSet/">#ReplicaSet</a>
+            
+              <a href="/tags/K8s%E6%9E%B6%E6%9E%84/">#K8s架构</a>
+            
+              <a href="/tags/Cluster/">#Cluster</a>
+            
+              <a href="/tags/Node/">#Node</a>
+            
+              <a href="/tags/Container/">#Container</a>
             
           </div>
         
@@ -698,316 +1018,6 @@
               <a href="/tags/DNS/">#DNS</a>
             
               <a href="/tags/%E5%B9%BF%E5%91%8A%E8%BF%87%E6%BB%A4/">#广告过滤</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/11/aria2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="aria2 使用指南">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/11/aria2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" target="_self">
-          aria2 使用指南
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/11/aria2%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" target="_self">
-        <div>
-          简介aria2 是一个轻量级、多协议、多线程的命令行下载工具。纯 C 编写，内存占用极小，支持 HTTP(S)、FTP、SFTP、BitTorrent、Metalink 等多种协议。 核心优势： 多线程并行下载，把一个文件切成多块同时拉取，充分利用带宽。单线程跑 50KB&#x2F;s，开 16 线程合起来就是 800KB&#x2F;s。  一、安装123456789101112131415# D
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-11 12:00" pubdate>
-              2026-07-11
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Linux/%E5%B7%A5%E5%85%B7/" class="category-chain-item">工具</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/aria2/">#aria2</a>
-            
-              <a href="/tags/%E4%B8%8B%E8%BD%BD%E5%B7%A5%E5%85%B7/">#下载工具</a>
-            
-              <a href="/tags/Linux/">#Linux</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/09/AdGuardHome%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="AdGuardHome 启动失败故障复盘">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/09/AdGuardHome%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/" target="_self">
-          AdGuardHome 启动失败故障复盘
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/09/AdGuardHome%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/" target="_self">
-        <div>
-          主机：Siche-Ubuntu (192.168.0.64)服务：AdGuardHome v0.107.77影响：DNS 解析服务中断恢复时间：2026-07-09状态：✅ 已恢复  一、问题摘要AdGuardHome 服务反复重启失败，systemctl status 显示 Active: activating (auto-restart)，进程退出码 1。经排查，根因由三类问题叠加形成：
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-09 18:00" pubdate>
-              2026-07-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Linux/%E8%BF%90%E7%BB%B4/" class="category-chain-item">运维</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/AdGuardHome/">#AdGuardHome</a>
-            
-              <a href="/tags/DNS/">#DNS</a>
-            
-              <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/">#故障复盘</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="mdadm RAID5 硬盘替换实战（无热备盘·关机更换）">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-          mdadm RAID5 硬盘替换实战（无热备盘·关机更换）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E6%97%A0%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-        <div>
-          mdadm RAID5 硬盘替换实战（无热备盘·关机更换） 上一篇讲了有 hot spare 的自动接管流程。这篇讲没有热备盘的情况——需要关机物理换盘，手动重建。  环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 阵列：3×20G RAID5，无热备盘（--spare-devices=0） 存储栈：  123sda ─┐sdb ─┼─ md0 (RAID5,
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-04 21:00" pubdate>
-              2026-07-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Linux/%E5%AD%98%E5%82%A8/" class="category-chain-item">存储</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/RAID/">#RAID</a>
-            
-              <a href="/tags/mdadm/">#mdadm</a>
-            
-              <a href="/tags/%E7%A3%81%E7%9B%98%E6%9B%B4%E6%8D%A2/">#磁盘更换</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-          <img src="/img/linux.jpg" srcset="/img/loading.gif" lazyload alt="mdadm RAID5 硬盘替换实战（含热备盘）">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-          mdadm RAID5 硬盘替换实战（含热备盘）
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2026/07/04/RAID5-%E7%A1%AC%E7%9B%98%E6%9B%BF%E6%8D%A2%E5%AE%9E%E6%88%98-%E5%90%AB%E7%83%AD%E5%A4%87%E7%9B%98/" target="_self">
-        <div>
-          mdadm RAID5 硬盘替换实战环境 虚拟机：VMware Workstation 系统：Ubuntu 22.04 (kernel 5.15.0-185) 磁盘：4×20G 虚拟磁盘 + 1×20G NVMe 系统盘（Paravirtual SCSI 控制器） 存储栈：  1234sda ─┐sdb ─┼─ md0 (RAID5, 3+1 spare) → vg0 → lv-0 (ext4)
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2026-07-04 20:26" pubdate>
-              2026-07-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/Linux/%E5%AD%98%E5%82%A8/" class="category-chain-item">存储</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/RAID/">#RAID</a>
-            
-              <a href="/tags/mdadm/">#mdadm</a>
             
           </div>
         
