@@ -1,0 +1,802 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="对应章节：第四章 配置与存储 &#x2F; 4.2 Secret：密码&#x2F;密钥的安全存储日期：2026年7月28日   痛点：密码不能写进 YAML 提交 Git4.1 学了 ConfigMap 存配置。但数据库密码、API Key、TLS 证书怎么办？ 1234# 这样写 &#x3D; 找死data:  DB_PASSWORD: &quot;MyP@ssw0rd&quot;    ← Git 提">
+<meta property="og:type" content="article">
+<meta property="og:title" content="K8s学习笔记：04.2-Secret敏感信息管理">
+<meta property="og:url" content="https://bote798.top/2026/07/28/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04.2-Secret%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="对应章节：第四章 配置与存储 &#x2F; 4.2 Secret：密码&#x2F;密钥的安全存储日期：2026年7月28日   痛点：密码不能写进 YAML 提交 Git4.1 学了 ConfigMap 存配置。但数据库密码、API Key、TLS 证书怎么办？ 1234# 这样写 &#x3D; 找死data:  DB_PASSWORD: &quot;MyP@ssw0rd&quot;    ← Git 提">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/k8s/k8s.png">
+<meta property="article:published_time" content="2026-07-28T04:30:00.000Z">
+<meta property="article:modified_time" content="2026-07-28T05:53:42.324Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="envFrom">
+<meta property="article:tag" content="volume">
+<meta property="article:tag" content="Secret">
+<meta property="article:tag" content="base64">
+<meta property="article:tag" content="敏感信息">
+<meta property="article:tag" content="安全管理">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/k8s/k8s.png">
+  
+  
+  
+  <title>K8s学习笔记：04.2-Secret敏感信息管理 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="K8s学习笔记：04.2-Secret敏感信息管理"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-07-28 12:30" pubdate>
+          2026年7月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          729 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">K8s学习笔记：04.2-Secret敏感信息管理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>对应章节：第四章 配置与存储 &#x2F; 4.2 Secret：密码&#x2F;密钥的安全存储<br>日期：2026年7月28日</p>
+</blockquote>
+<hr>
+<h2 id="痛点：密码不能写进-YAML-提交-Git"><a href="#痛点：密码不能写进-YAML-提交-Git" class="headerlink" title="痛点：密码不能写进 YAML 提交 Git"></a>痛点：密码不能写进 YAML 提交 Git</h2><p>4.1 学了 ConfigMap 存配置。但数据库密码、API Key、TLS 证书怎么办？</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># 这样写 = 找死</span><br><span class="hljs-attr">data:</span><br>  <span class="hljs-attr">DB_PASSWORD:</span> <span class="hljs-string">&quot;MyP@ssw0rd&quot;</span>    <span class="hljs-string">←</span> <span class="hljs-string">Git</span> <span class="hljs-string">提交就泄露</span><br>  <span class="hljs-attr">API_KEY:</span> <span class="hljs-string">&quot;sk-xxxxx&quot;</span>          <span class="hljs-string">←</span> <span class="hljs-string">任何人</span> <span class="hljs-string">clone</span> <span class="hljs-string">代码都能看到</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>不能把密码当普通配置存。</strong> K8s 的解法：Secret。</p>
+<hr>
+<h2 id="Secret-是什么"><a href="#Secret-是什么" class="headerlink" title="Secret 是什么"></a>Secret 是什么</h2><p>Secret 和 ConfigMap 使用方式几乎一样，区别在<strong>存储和内存安全</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ConfigMap</th>
+<th>Secret</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>存储</td>
+<td>etcd 明文</td>
+<td>etcd 里 base64 编码</td>
+</tr>
+<tr>
+<td>用途</td>
+<td>配置（端口、环境名）</td>
+<td>密码、Token、证书</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>普通内存</td>
+<td>只在 tmpfs（不落磁盘）</td>
+</tr>
+<tr>
+<td>大小限制</td>
+<td>1MB</td>
+<td>1MB</td>
+</tr>
+<tr>
+<td>使用方式</td>
+<td>envFrom &#x2F; valueFrom &#x2F; volume</td>
+<td><strong>完全相同</strong></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>base64 不是加密！</strong> <code>echo &#39;cGFzc3dvcmQ=&#39; | base64 -d</code> 任何人秒解。真正的安全靠 etcd 加密 + RBAC + 审计。</p>
+</blockquote>
+<hr>
+<h2 id="创建-Secret"><a href="#创建-Secret" class="headerlink" title="创建 Secret"></a>创建 Secret</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方式一：--from-literal</span><br>kubectl create secret generic db-creds \<br>  --from-literal=username=admin \<br>  --from-literal=password=MyP@ssw0rd<br><br><span class="hljs-comment"># 方式二：--from-file</span><br><span class="hljs-built_in">echo</span> -n <span class="hljs-string">&#x27;admin&#x27;</span> &gt; /tmp/username.txt<br><span class="hljs-built_in">echo</span> -n <span class="hljs-string">&#x27;MyP@ssw0rd&#x27;</span> &gt; /tmp/password.txt<br>kubectl create secret generic db-creds-file \<br>  --from-file=/tmp/username.txt \<br>  --from-file=/tmp/password.txt<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>generic</code> 是 Secret 的类型名（Opaque），最常见的一种。还有 <code>docker-registry</code>（拉镜像凭据）和 <code>tls</code>（证书）类型。</p>
+</blockquote>
+<hr>
+<h2 id="查看-Secret"><a href="#查看-Secret" class="headerlink" title="查看 Secret"></a>查看 Secret</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl get secret<br><span class="hljs-comment"># NAME            TYPE     DATA   AGE</span><br><span class="hljs-comment"># db-creds        Opaque   2      10s</span><br><br>kubectl describe secret db-creds<br><span class="hljs-comment"># Name:         db-creds</span><br><span class="hljs-comment"># Namespace:    default</span><br><span class="hljs-comment"># Type:  Opaque</span><br><span class="hljs-comment"># Data</span><br><span class="hljs-comment"># ====</span><br><span class="hljs-comment"># password:  10 bytes    ← 不显示明文，只显示大小</span><br><span class="hljs-comment"># username:  5 bytes</span><br><br>kubectl get secret db-creds -o yaml<br><span class="hljs-comment"># data:</span><br><span class="hljs-comment">#   password: TXlQQHNzdzByZA==    ← base64 编码</span><br><span class="hljs-comment">#   username: YWRtaW4=</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>手动还原：<code>echo &#39;TXlQQHNzdzByZA==&#39; | base64 -d</code> → <code>MyP@ssw0rd</code></p>
+</blockquote>
+<hr>
+<h2 id="把-Secret-注入-Pod"><a href="#把-Secret-注入-Pod" class="headerlink" title="把 Secret 注入 Pod"></a>把 Secret 注入 Pod</h2><h3 id="用法一：envFrom（全量注入为环境变量）"><a href="#用法一：envFrom（全量注入为环境变量）" class="headerlink" title="用法一：envFrom（全量注入为环境变量）"></a>用法一：envFrom（全量注入为环境变量）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl apply -f - &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">apiVersion: v1</span><br><span class="hljs-string">kind: Pod</span><br><span class="hljs-string">metadata:</span><br><span class="hljs-string">  name: test-secret</span><br><span class="hljs-string">spec:</span><br><span class="hljs-string">  containers:</span><br><span class="hljs-string">  - name: busybox</span><br><span class="hljs-string">    image: busybox:1.36</span><br><span class="hljs-string">    command: [&quot;sleep&quot;, &quot;3600&quot;]</span><br><span class="hljs-string">    envFrom:</span><br><span class="hljs-string">    - secretRef:</span><br><span class="hljs-string">        name: db-creds</span><br><span class="hljs-string">  restartPolicy: Never</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl <span class="hljs-built_in">exec</span> test-secret -- <span class="hljs-built_in">env</span> | grep -E <span class="hljs-string">&quot;username|password&quot;</span><br><span class="hljs-comment"># username=admin</span><br><span class="hljs-comment"># password=MyP@ssw0rd</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>容器里是<strong>明文</strong>。base64 只在 etcd 存储时编码，kubelet 挂载时自动解码。</p>
+</blockquote>
+<h3 id="用法二：volume-mount（每个-key-一个文件）"><a href="#用法二：volume-mount（每个-key-一个文件）" class="headerlink" title="用法二：volume mount（每个 key 一个文件）"></a>用法二：volume mount（每个 key 一个文件）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl delete pod test-secret<br><br>kubectl apply -f - &lt;&lt;<span class="hljs-string">EOF</span><br><span class="hljs-string">apiVersion: v1</span><br><span class="hljs-string">kind: Pod</span><br><span class="hljs-string">metadata:</span><br><span class="hljs-string">  name: test-secret-vol</span><br><span class="hljs-string">spec:</span><br><span class="hljs-string">  volumes:</span><br><span class="hljs-string">  - name: secret-volume</span><br><span class="hljs-string">    secret:</span><br><span class="hljs-string">      secretName: db-creds</span><br><span class="hljs-string">  containers:</span><br><span class="hljs-string">  - name: busybox</span><br><span class="hljs-string">    image: busybox:1.36</span><br><span class="hljs-string">    command: [&quot;sleep&quot;, &quot;3600&quot;]</span><br><span class="hljs-string">    volumeMounts:</span><br><span class="hljs-string">    - name: secret-volume</span><br><span class="hljs-string">      mountPath: /etc/secrets</span><br><span class="hljs-string">      readOnly: true</span><br><span class="hljs-string">  restartPolicy: Never</span><br><span class="hljs-string">EOF</span><br></code></pre></td></tr></table></figure>
+
+<p>挂载后容器里：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl <span class="hljs-built_in">exec</span> test-secret-vol -- <span class="hljs-built_in">ls</span> /etc/secrets/<br><span class="hljs-comment"># password   username       ← 每个 key 一个文件</span><br><br>kubectl <span class="hljs-built_in">exec</span> test-secret-vol -- <span class="hljs-built_in">cat</span> /etc/secrets/username<br><span class="hljs-comment"># admin                     ← 内容是明文</span><br><br>kubectl <span class="hljs-built_in">exec</span> test-secret-vol -- <span class="hljs-built_in">cat</span> /etc/secrets/password<br><span class="hljs-comment"># MyP@ssw0rd</span><br><br>kubectl <span class="hljs-built_in">exec</span> test-secret-vol -- <span class="hljs-built_in">env</span> | grep -E <span class="hljs-string">&quot;username|password&quot;</span><br><span class="hljs-comment"># (无输出 — volume 方式不会注入环境变量)</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Secret-vs-ConfigMap-使用场景判断"><a href="#Secret-vs-ConfigMap-使用场景判断" class="headerlink" title="Secret vs ConfigMap 使用场景判断"></a>Secret vs ConfigMap 使用场景判断</h2><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>用什么</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Nginx 监听端口 8080</td>
+<td>ConfigMap</td>
+</tr>
+<tr>
+<td>数据库连接地址 db.prod.com</td>
+<td>ConfigMap</td>
+</tr>
+<tr>
+<td>数据库密码 MyP@ssw0rd</td>
+<td><strong>Secret</strong></td>
+</tr>
+<tr>
+<td>API Token sk-xxxxx</td>
+<td><strong>Secret</strong></td>
+</tr>
+<tr>
+<td>日志级别 DEBUG</td>
+<td>ConfigMap</td>
+</tr>
+<tr>
+<td>TLS 证书 .crt&#x2F;.key</td>
+<td><strong>Secret</strong> (type: tls)</td>
+</tr>
+</tbody></table>
+<p><strong>直觉法则</strong>：值能公开贴到群里 → ConfigMap；值要捂着的 → Secret。</p>
+<hr>
+<h2 id="练习记录"><a href="#练习记录" class="headerlink" title="练习记录"></a>练习记录</h2><h3 id="练习-1：envFrom-验证"><a href="#练习-1：envFrom-验证" class="headerlink" title="练习 1：envFrom 验证"></a>练习 1：envFrom 验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 用 --from-literal 创建 Secret，含 username 和 api_key</span><br><span class="hljs-comment"># 2. 起 busybox Pod，envFrom 注入</span><br><span class="hljs-comment"># 3. kubectl exec 进去 env 验证</span><br><span class="hljs-comment"># 4. kubectl get secret -o yaml 看 base64 编码</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="练习-2：volume-挂载验证"><a href="#练习-2：volume-挂载验证" class="headerlink" title="练习 2：volume 挂载验证"></a>练习 2：volume 挂载验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 重建 Pod，改用 volume 方式挂载 Secret 到 /etc/myapp</span><br><span class="hljs-comment"># 2. 进去 ls /etc/myapp/ 看文件列表</span><br><span class="hljs-comment"># 3. cat 每个文件，确认是明文</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="练习-3：对比实验"><a href="#练习-3：对比实验" class="headerlink" title="练习 3：对比实验"></a>练习 3：对比实验</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 1. 同时挂载一个 ConfigMap 和一个 Secret</span><br><span class="hljs-comment"># 2. 验证两者在容器里的表现是否一样（应该完全一样，都看到明文）</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="清理"><a href="#清理" class="headerlink" title="清理"></a>清理</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">kubectl delete pod test-secret-vol<br>kubectl delete secret db-creds db-creds-file<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Kubernetes/" class="category-chain-item">Kubernetes</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/envFrom/" class="print-no-link">#envFrom</a>
+      
+        <a href="/tags/volume/" class="print-no-link">#volume</a>
+      
+        <a href="/tags/Secret/" class="print-no-link">#Secret</a>
+      
+        <a href="/tags/base64/" class="print-no-link">#base64</a>
+      
+        <a href="/tags/%E6%95%8F%E6%84%9F%E4%BF%A1%E6%81%AF/" class="print-no-link">#敏感信息</a>
+      
+        <a href="/tags/%E5%AE%89%E5%85%A8%E7%AE%A1%E7%90%86/" class="print-no-link">#安全管理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>K8s学习笔记：04.2-Secret敏感信息管理</div>
+      <div>https://bote798.top/2026/07/28/K8s学习笔记-04.2-Secret敏感信息/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年7月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年7月28日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/08/08/xrdp-%E6%8E%92%E9%9A%9C%E8%AE%B0%E5%BD%95/" title="WSL Debian xrdp 无法启动 —— 排查与修复记录">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">WSL Debian xrdp 无法启动 —— 排查与修复记录</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/07/14/K8s%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-04.1-ConfigMap%E9%85%8D%E7%BD%AE%E7%AE%A1%E7%90%86/" title="K8s学习笔记：04.1-ConfigMap配置管理">
+                        <span class="hidden-mobile">K8s学习笔记：04.1-ConfigMap配置管理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

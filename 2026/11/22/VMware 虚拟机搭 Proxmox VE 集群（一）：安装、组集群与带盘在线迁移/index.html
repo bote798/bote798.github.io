@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移 目标：三台 PVE 节点组成一个集群，每台挂本地 ZFS 盘，验证”带盘在线迁移”，不使用共享存储。环境：Windows 宿主机 + VMware Workstation 17 + Proxmox VE 9.2.32（Debian 13 trixie，内核 7.0.14-30-pve）。  规划   节点 Hos">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移">
+<meta property="og:url" content="https://bote798.top/2026/11/22/VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%90%AD%20Proxmox%20VE%20%E9%9B%86%E7%BE%A4%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%AE%89%E8%A3%85%E3%80%81%E7%BB%84%E9%9B%86%E7%BE%A4%E4%B8%8E%E5%B8%A6%E7%9B%98%E5%9C%A8%E7%BA%BF%E8%BF%81%E7%A7%BB/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移 目标：三台 PVE 节点组成一个集群，每台挂本地 ZFS 盘，验证”带盘在线迁移”，不使用共享存储。环境：Windows 宿主机 + VMware Workstation 17 + Proxmox VE 9.2.32（Debian 13 trixie，内核 7.0.14-30-pve）。  规划   节点 Hos">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/Proxmox/proxmox.png">
+<meta property="article:published_time" content="2026-11-22T07:19:00.000Z">
+<meta property="article:modified_time" content="2026-11-22T07:22:15.969Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="虚拟化">
+<meta property="article:tag" content="Proxmox">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/Proxmox/proxmox.png">
+  
+  
+  
+  <title>VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-11-22 15:19" pubdate>
+          2026年11月22日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="VMware-虚拟机搭-Proxmox-VE-集群（一）：安装、组集群与带盘在线迁移"><a href="#VMware-虚拟机搭-Proxmox-VE-集群（一）：安装、组集群与带盘在线迁移" class="headerlink" title="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移"></a>VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移</h1><blockquote>
+<p>目标：三台 PVE 节点组成一个集群，每台挂本地 ZFS 盘，验证”带盘在线迁移”，不使用共享存储。<br>环境：Windows 宿主机 + VMware Workstation 17 + Proxmox VE 9.2.32（Debian 13 trixie，内核 7.0.14-30-pve）。</p>
+</blockquote>
+<h2 id="规划"><a href="#规划" class="headerlink" title="规划"></a>规划</h2><table>
+<thead>
+<tr>
+<th>节点</th>
+<th>Hostname</th>
+<th>IP</th>
+<th>系统盘</th>
+<th>数据盘</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pve1</td>
+<td>pve1.lab</td>
+<td>192.168.88.11</td>
+<td>32 GiB</td>
+<td>60 GiB</td>
+</tr>
+<tr>
+<td>pve2</td>
+<td>pve2.lab</td>
+<td>192.168.88.12</td>
+<td>32 GiB</td>
+<td>60 GiB</td>
+</tr>
+<tr>
+<td>pve3</td>
+<td>pve3.lab</td>
+<td>192.168.88.13</td>
+<td>32 GiB</td>
+<td>60 GiB</td>
+</tr>
+</tbody></table>
+<p>网络使用 VMware NAT（VMnet8），网关 192.168.88.2。静态 IP 要避开 VMware 的 DHCP 池（通常是 .128 到 .254），否则会和自动分配的地址冲突。</p>
+<p>系统盘装 PVE，数据盘留空，装完后单独做成 ZFS 池。这样”系统”和”虚拟机磁盘”分离，也方便后面测试迁移。</p>
+<h2 id="1-宿主机准备"><a href="#1-宿主机准备" class="headerlink" title="1. 宿主机准备"></a>1. 宿主机准备</h2><p>嵌套 KVM 要求 VMware 把 VT-x&#x2F;AMD-V 透传给虚拟机，Windows 上最大的干扰是 Hyper-V。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 关闭 Hyper-V，避免它与 VMware 的嵌套虚拟化冲突（管理员 PowerShell）</span><br>bcdedit /<span class="hljs-built_in">set</span> hypervisorlaunchtype off<br><br><span class="hljs-comment"># 然后在&quot;启用或关闭 Windows 功能&quot;中取消：</span><br><span class="hljs-comment">#   Hyper-V、Windows 虚拟机监控程序平台、虚拟机平台、WSL</span><br><span class="hljs-comment"># 并在&quot;Windows 安全中心 → 设备安全性 → 内核隔离&quot;中关闭&quot;内存完整性&quot;</span><br><span class="hljs-comment"># 最后重启</span><br></code></pre></td></tr></table></figure>
+
+<p>VMware Workstation 17 即可（个人使用免费）。宿主机建议 16GB 内存以上、8 核、100GB 空闲磁盘。</p>
+<h2 id="2-创建三台虚拟机"><a href="#2-创建三台虚拟机" class="headerlink" title="2. 创建三台虚拟机"></a>2. 创建三台虚拟机</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>配置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>客户机系统</td>
+<td>Linux → Debian 12&#x2F;13 64 位</td>
+</tr>
+<tr>
+<td>CPU</td>
+<td>2 vCPU，勾选”虚拟化 Intel VT-x&#x2F;EPT 或 AMD-V&#x2F;RVI”</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>4096 MB</td>
+</tr>
+<tr>
+<td>硬盘 1</td>
+<td>32 GiB，SCSI</td>
+</tr>
+<tr>
+<td>硬盘 2</td>
+<td>60 GiB，SCSI</td>
+</tr>
+<tr>
+<td>网络</td>
+<td>NAT（VMnet8）</td>
+</tr>
+<tr>
+<td>CD&#x2F;DVD</td>
+<td>Proxmox VE ISO</td>
+</tr>
+</tbody></table>
+<p>每台都要勾选嵌套虚拟化，这是硬性要求。三台配置保持一致。</p>
+<p>PVE ISO 从 <a target="_blank" rel="noopener" href="https://www.proxmox.com/en/downloads">https://www.proxmox.com/en/downloads</a> 的下载页获取，文件名形如 proxmox-ve_9.2-1.iso，大小约 1.5 到 2GB。下载后校验：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-comment"># 校验 ISO 完整性，和下载页的 SHA256 对比</span><br><span class="hljs-built_in">Get-FileHash</span> .\proxmox<span class="hljs-literal">-ve_9</span>.<span class="hljs-number">2</span><span class="hljs-literal">-1</span>.iso <span class="hljs-literal">-Algorithm</span> SHA256<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-安装-PVE（虚拟机要开intel-VT-x）"><a href="#3-安装-PVE（虚拟机要开intel-VT-x）" class="headerlink" title="3. 安装 PVE（虚拟机要开intel VT-x）"></a>3. 安装 PVE（虚拟机要开intel VT-x）</h2><p>挂载 ISO 启动，选择 Install Proxmox VE (Graphical)，然后按向导走：</p>
+<ol>
+<li>接受 EULA</li>
+<li>Target Harddisk 选系统盘（32GiB 那块），文件系统选 ext4</li>
+<li>时区、键盘</li>
+<li>设置 root 密码和邮箱</li>
+<li>网络配置</li>
+</ol>
+<p>网络页按规划填写：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">Management Interface: nic0<br>Hostname (FQDN):      pve1.lab<br>IP Address (CIDR):    192.168.88.11/24<br>Gateway:              192.168.88.2<br>DNS Server:           192.168.88.2<br>☑ Pin network interface names<br></code></pre></td></tr></table></figure>
+
+<p>要点：</p>
+<ul>
+<li>Hostname 必须是带点的 FQDN，三台分别用 pve1.lab &#x2F; pve2.lab &#x2F; pve3.lab</li>
+<li>数据盘（60GiB 那块）不要选、不要格式化，装完保持空白</li>
+<li>安装器显示的是十进制 GB，32GiB 会显示成 34.4GB，不是错误</li>
+<li>pve2、pve3 只改 Hostname 和 IP，其余步骤完全相同</li>
+</ul>
+<h2 id="4-首次登录与检查"><a href="#4-首次登录与检查" class="headerlink" title="4. 首次登录与检查"></a>4. 首次登录与检查</h2><p>浏览器打开 <a href="https://192.168.88.11:8006，用">https://192.168.88.11:8006，用</a> root 加安装时设置的密码登录，领域选 Linux PAM。自签名证书的警告直接跳过。</p>
+<p>登录后在 Shell 里检查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看 PVE 版本</span><br>pveversion<br><br><span class="hljs-comment"># 确认 FQDN 解析正确</span><br>hostname --fqdn<br><br><span class="hljs-comment"># 确认磁盘布局：系统盘有分区，数据盘全空</span><br>lsblk<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-换源"><a href="#5-换源" class="headerlink" title="5. 换源"></a>5. 换源</h2><p>PVE 9 使用 deb822 格式的 .sources 文件，不再是 pve-enterprise.list。默认只配了企业源，没有订阅会 401。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 查看当前源文件</span><br><span class="hljs-built_in">ls</span> -l /etc/apt/sources.list.d/<br><br><span class="hljs-comment"># 禁用企业源（pve 和 ceph 两个），没有订阅用不上</span><br><span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> pve-enterprise.sources ceph.sources; <span class="hljs-keyword">do</span><br>  p=/etc/apt/sources.list.d/<span class="hljs-variable">$f</span><br>  [ -f <span class="hljs-string">&quot;<span class="hljs-variable">$p</span>&quot;</span> ] || <span class="hljs-built_in">continue</span><br>  sed -i <span class="hljs-string">&#x27;s/^Enabled:.*/Enabled: no/&#x27;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$p</span>&quot;</span><br>  grep -q <span class="hljs-string">&#x27;^Enabled:&#x27;</span> <span class="hljs-string">&quot;<span class="hljs-variable">$p</span>&quot;</span> || <span class="hljs-built_in">echo</span> <span class="hljs-string">&#x27;Enabled: no&#x27;</span> &gt;&gt; <span class="hljs-string">&quot;<span class="hljs-variable">$p</span>&quot;</span><br><span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<p>写入免费源，官方地址和清华镜像二选一：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 方案一：Proxmox 官方源</span><br><span class="hljs-built_in">cat</span> &gt; /etc/apt/sources.list.d/proxmox.sources &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>Types: deb<br>URIs: http://download.proxmox.com/debian/pve<br>Suites: trixie<br>Components: pve-no-subscription<br>Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg<br>EOF<br><br><span class="hljs-comment"># 方案二：清华镜像（国内速度快），其余字段不变</span><br><span class="hljs-built_in">cat</span> &gt; /etc/apt/sources.list.d/proxmox.sources &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>Types: deb<br>URIs: https://mirrors.tuna.tsinghua.edu.cn/proxmox/debian/pve<br>Suites: trixie<br>Components: pve-no-subscription<br>Signed-By: /usr/share/keyrings/proxmox-archive-keyring.gpg<br>EOF<br></code></pre></td></tr></table></figure>
+
+<p>Signed-By 仍指向本机已有的官方 keyring，镜像只转发文件，签名校验不受影响。</p>
+<p>顺手把 Debian 基础源也换成镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 替换 Debian 主仓库地址</span><br>sed -i <span class="hljs-string">&#x27;s|http://deb.debian.org/debian/|https://mirrors.tuna.tsinghua.edu.cn/debian/|&#x27;</span> \<br>  /etc/apt/sources.list.d/debian.sources<br><br><span class="hljs-comment"># 替换 Debian 安全仓库地址</span><br>sed -i <span class="hljs-string">&#x27;s|http://security.debian.org/debian-security/|https://mirrors.tuna.tsinghua.edu.cn/debian-security/|&#x27;</span> \<br>  /etc/apt/sources.list.d/debian.sources<br><br><span class="hljs-comment"># 替换 Proxmox 仓库地址</span><br>sed -i <span class="hljs-string">&#x27;s|http://download.proxmox.com/debian/pve|https://mirrors.tuna.tsinghua.edu.cn/proxmox/debian/pve|&#x27;</span> \<br>  /etc/apt/sources.list.d/proxmox.sources<br><br><span class="hljs-comment"># 验证</span><br>grep -r <span class="hljs-string">&quot;URIs&quot;</span> /etc/apt/sources.list.d/<br></code></pre></td></tr></table></figure>
+
+<p>更新并确认：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 刷新索引，输出中不应出现 401</span><br>apt update<br><br><span class="hljs-comment"># 升级到最新</span><br>apt full-upgrade -y<br><br><span class="hljs-comment"># 对比运行内核和已安装内核，不一致就重启</span><br><span class="hljs-built_in">uname</span> -r<br>dpkg -l <span class="hljs-string">&#x27;proxmox-kernel-*&#x27;</span> | grep ^ii<br>reboot<br><br><span class="hljs-comment"># 确认免费源已生效</span><br>apt policy proxmox-ve<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>升级过程中如果刷屏 “Tried to start delayed item … but failed”，是 apt 3.0.3 的已知 bug，由临时下载失败触发，apt 3.0.4 已修复。确认 apt –version 在 3.0.4 以上即可忽略。</p>
+</blockquote>
+<p>pve2、pve3 装完后，把源文件从 pve1 拷过去，省得重复改：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在 pve1 上执行</span><br>scp /etc/apt/sources.list.d/&#123;debian.sources,proxmox.sources,pve-enterprise.sources,ceph.sources&#125; \<br>  root@192.168.88.12:/etc/apt/sources.list.d/<br>scp /etc/apt/sources.list.d/&#123;debian.sources,proxmox.sources,pve-enterprise.sources,ceph.sources&#125; \<br>  root@192.168.88.13:/etc/apt/sources.list.d/<br><br><span class="hljs-comment"># 两台各自更新</span><br>apt update &amp;&amp; apt full-upgrade -y<br></code></pre></td></tr></table></figure>
+
+<h2 id="6-组集群"><a href="#6-组集群" class="headerlink" title="6. 组集群"></a>6. 组集群</h2><p>先统一三台的名称解析，每台都覆盖写入同样的内容：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 三台节点互相解析，集群和迁移都依赖它</span><br><span class="hljs-built_in">cat</span> &gt; /etc/hosts &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>127.0.0.1 localhost<br>192.168.88.11 pve1.lab pve1<br>192.168.88.12 pve2.lab pve2<br>192.168.88.13 pve3.lab pve3<br>EOF<br><br><span class="hljs-comment"># 验证</span><br>getent hosts pve1.lab pve2.lab pve3.lab<br></code></pre></td></tr></table></figure>
+
+<p>在 pve1 创建集群：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建集群</span><br>pvecm create labcluster<br><br><span class="hljs-comment"># 单节点时 Expected votes 为 1，Quorate: Yes</span><br>pvecm status<br></code></pre></td></tr></table></figure>
+
+<p>在 pve2、pve3 加入（确保此时没有虚拟机）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 加入集群，按提示输入 pve1 的 root 密码</span><br>pvecm add 192.168.88.11<br></code></pre></td></tr></table></figure>
+
+<p>三台都加入后检查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 应列出 3 个节点</span><br>pvecm nodes<br><br><span class="hljs-comment"># Expected votes: 3，Quorum: 2，Quorate: Yes</span><br>pvecm status<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-ZFS-池与存储"><a href="#7-ZFS-池与存储" class="headerlink" title="7. ZFS 池与存储"></a>7. ZFS 池与存储</h2><p>每台节点各建一个同名池。先确认哪块是 60GiB 的空盘——<strong>认大小，不认设备名</strong>，VMware 里不同虚拟机的盘序可能相反。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 确认空盘，60G 且没有分区</span><br>lsblk<br><br><span class="hljs-comment"># 创建池（把 /dev/sdX 换成实际设备名）</span><br>zpool create -o ashift=12 vmdata /dev/sdX<br><br><span class="hljs-comment"># 确认 ONLINE</span><br>zpool status vmdata<br></code></pre></td></tr></table></figure>
+
+<p>如果 ZFS 报 “is in use”，说明选到了系统盘，停下来重新确认，<strong>不要加 -f 强推</strong>。</p>
+<p>三台的池都建好后，在一台上添加存储（storage.cfg 是集群共享配置，只需一次）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 添加 ZFS 存储，ID 与池名一致</span><br>pvesm add zfspool vmdata --pool vmdata --content images<br><br><span class="hljs-comment"># 每台节点分别检查，都应为 active</span><br>pvesm status --storage vmdata<br></code></pre></td></tr></table></figure>
+
+<h2 id="8-测试-VM-与带盘在线迁移"><a href="#8-测试-VM-与带盘在线迁移" class="headerlink" title="8. 测试 VM 与带盘在线迁移"></a>8. 测试 VM 与带盘在线迁移</h2><p>先下载镜像，然后上传,镜像会上传到 “&#x2F;var&#x2F;lib&#x2F;vz&#x2F;template&#x2F;iso” 下面</p>
+<p>![屏幕截图 2026-11-22 144050](C:\Users\Bote798\Pictures\Screenshots\屏幕截图 2026-11-22 144050.png)</p>
+<p>建一台最小 VM，系统盘放在 vmdata：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 创建 VM：1 核 512M</span><br>qm create 100 --name mig-test --memory 512 --cores 1 \<br>  --net0 virtio,bridge=vmbr0 --scsihw virtio-scsi-single --ostype l26<br><br><span class="hljs-comment"># 8G 磁盘放本地 ZFS 池</span><br>qm <span class="hljs-built_in">set</span> 100 --scsi0 vmdata:8<br><br><span class="hljs-comment"># 挂 ISO 并从光盘启动</span><br>qm <span class="hljs-built_in">set</span> 100 --ide2 <span class="hljs-built_in">local</span>:iso/alpine-standard-3.24.4-x86_64.iso,media=cdrom<br>qm <span class="hljs-built_in">set</span> 100 --boot order=ide2<br><br><span class="hljs-comment"># 启动</span><br>qm start 100<br></code></pre></td></tr></table></figure>
+
+<p>控制台登录后跑一个时间戳循环，用来观察迁移过程中虚拟机是否中断：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在 Alpine 控制台内执行</span><br><span class="hljs-keyword">while</span> <span class="hljs-literal">true</span>; <span class="hljs-keyword">do</span> <span class="hljs-built_in">date</span>; <span class="hljs-built_in">sleep</span> 1; <span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+
+<p>迁移前必须弹出光驱。PVE 不会迁移 local 存储上的 ISO，配置里带着 cdrom 镜像会直接拒绝：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 把光驱设为无介质</span><br>qm <span class="hljs-built_in">set</span> 100 --ide2 none,media=cdrom<br><br><span class="hljs-comment"># 确认配置</span><br>qm config 100 | grep ide2<br></code></pre></td></tr></table></figure>
+
+<p>失败时的典型日志：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs text">can&#x27;t migrate local disk &#x27;local:iso/...&#x27;: local cdrom image<br>ERROR: Problem found while scanning volumes - can&#x27;t migrate VM<br></code></pre></td></tr></table></figure>
+
+<p>执行在线迁移：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 带本地磁盘，虚拟机不停机</span><br>qm migrate 100 pve2 --with-local-disks --online<br></code></pre></td></tr></table></figure>
+
+<p>实测日志（8GiB 磁盘）：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs text">starting storage migration<br>mirror-scsi0: transferred 8.0 GiB of 8.0 GiB (100.00%) in 4s, ready<br>switching to actively synced mode<br>starting online/live migration<br>migration completed, transferred 416.7 MiB VM-state<br>migration finished successfully (duration 00:00:16)<br></code></pre></td></tr></table></figure>
+
+<p>整个过程中 Alpine 控制台的时间戳连续，首次迁移停机约 14 毫秒，反向迁移到 pve3 时停机 6 毫秒。</p>
+<p>迁移后核对：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 目标节点：VM 在运行，磁盘已迁入</span><br>qm status 100<br>pvesm list vmdata --vmid 100<br><br><span class="hljs-comment"># 源节点：磁盘已不存在</span><br>pvesm list vmdata --vmid 100<br></code></pre></td></tr></table></figure>
+
+<p>最后修正启动顺序，否则关机后无法启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 光驱已空，改从硬盘启动</span><br>qm <span class="hljs-built_in">set</span> 100 --boot order=scsi0<br><br><span class="hljs-comment"># 可选：删掉空光驱</span><br>qm <span class="hljs-built_in">set</span> 100 --delete ide2<br></code></pre></td></tr></table></figure>
+
+<h2 id="9-当前进度"><a href="#9-当前进度" class="headerlink" title="9. 当前进度"></a>9. 当前进度</h2><ul>
+<li><input checked="" disabled="" type="checkbox"> pve1 &#x2F; pve2 &#x2F; pve3 安装，内核统一到 7.0.14-30-pve</li>
+<li><input checked="" disabled="" type="checkbox"> 三台换源、更新</li>
+<li><input checked="" disabled="" type="checkbox"> 集群组建完成（3 节点、3 票、Quorate）</li>
+<li><input checked="" disabled="" type="checkbox"> 每台创建 ZFS 池 vmdata</li>
+<li><input checked="" disabled="" type="checkbox"> 集群存储 vmdata 添加完成，三台 active</li>
+<li><input checked="" disabled="" type="checkbox"> 测试 VM 创建，磁盘落在 vmdata</li>
+<li><input checked="" disabled="" type="checkbox"> 带盘在线迁移验证（pve1 到 pve2，停机 14 ms）</li>
+<li><input checked="" disabled="" type="checkbox"> 反向迁移复测（pve2 到 pve3，停机 6 ms）</li>
+</ul>
+<h2 id="10-注意"><a href="#10-注意" class="headerlink" title="10. 注意"></a>10. 注意</h2><ul>
+<li>PVE 9 的企业源文件是 pve-enterprise.sources，不是旧版的 .list，旧命令会报 “No such file”。</li>
+<li>升级时满屏 “Tried to start delayed item”，是 apt 3.0.3 的已知 bug，升到 3.0.4 后消失。</li>
+<li>新内核装好后必须重启才会生效，用 uname -r 和已安装内核对比确认。</li>
+<li>迁移报 local cdrom image：PVE 不迁移 local 存储上的 ISO，迁移前先执行 qm set –ide2 none,media&#x3D;cdrom。</li>
+<li>弹出光驱后忘记改 boot order，虚拟机关机后会提示 no bootable device。</li>
+</ul>
+<h2 id="11-后续更新内容（可能）"><a href="#11-后续更新内容（可能）" class="headerlink" title="11. 后续更新内容（可能）"></a>11. 后续更新内容（可能）</h2><ul>
+<li>给关键 VM 配置 pvesr 复制，迁移时只传增量，节点故障也能在对面直接拉起。</li>
+<li>部署 Proxmox Backup Server，做一次整机备份与恢复演练。</li>
+<li>评估何时需要共享存储：只有要求秒级迁移或自动故障切换时，才值得上 Ceph 副本 2。</li>
+</ul>
+<p>bote因为比较忙所以不能像以前一样手写文档了，现在都是大肥鱼写完我再改，后面的内容更新也会慢一点。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DevOps/" class="category-chain-item">DevOps</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/DevOps/Proxmox/" class="category-chain-item">Proxmox</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E8%99%9A%E6%8B%9F%E5%8C%96/" class="print-no-link">#虚拟化</a>
+      
+        <a href="/tags/Proxmox/" class="print-no-link">#Proxmox</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移</div>
+      <div>https://bote798.top/2026/11/22/VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年11月22日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年11月22日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/08/wsl2-networkmanager-fix/" title="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录">
+                        <span class="hidden-mobile">WSL2 Debian 桌面环境导致断网 —— 排查与修复记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

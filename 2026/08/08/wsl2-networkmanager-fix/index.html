@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/About/bote798.png">
+  <link rel="icon" href="/img/About/bote798.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="bote798">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录日期：2026-08-08环境：Windows 11 + WSL2 + Debian（systemd 初始化）状态：✅ 已修复（2026-08-08 晚补查：systemd-networkd 才是最后的元凶，详见第八节）  一、问题现象 Debian 只要一启动桌面环境（graphical），WSL 虚拟机就断网。 重启电脑后网络恢复，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录">
+<meta property="og:url" content="https://bote798.top/2026/08/08/wsl2-networkmanager-fix/index.html">
+<meta property="og:site_name" content="bote798&#39;s Blog">
+<meta property="og:description" content="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录日期：2026-08-08环境：Windows 11 + WSL2 + Debian（systemd 初始化）状态：✅ 已修复（2026-08-08 晚补查：systemd-networkd 才是最后的元凶，详见第八节）  一、问题现象 Debian 只要一启动桌面环境（graphical），WSL 虚拟机就断网。 重启电脑后网络恢复，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bote798.top/img/linux.jpg">
+<meta property="article:published_time" content="2026-08-08T13:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-08T09:26:57.648Z">
+<meta property="article:author" content="bote798">
+<meta property="article:tag" content="WSL2">
+<meta property="article:tag" content="故障复盘">
+<meta property="article:tag" content="Debian">
+<meta property="article:tag" content="断网">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://bote798.top/img/linux.jpg">
+  
+  
+  
+  <title>WSL2 Debian 桌面环境导致断网 —— 排查与修复记录 - bote798&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"bote798.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 80vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>EVA</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+
+
+<!-- ═══════════ Default Banner (Other Pages) ═══════════ -->
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/background/background5.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录"></span>
+          
+        </div>
+        
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-08 21:30" pubdate>
+          2026年8月8日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+      </div>
+      
+        <div class="scroll-down-bar"><i class="iconfont icon-arrowdown"></i></div>
+      
+    </div>
+  </div>
+</div>
+
+
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">WSL2 Debian 桌面环境导致断网 —— 排查与修复记录</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="WSL2-Debian-桌面环境导致断网-——-排查与修复记录"><a href="#WSL2-Debian-桌面环境导致断网-——-排查与修复记录" class="headerlink" title="WSL2 Debian 桌面环境导致断网 —— 排查与修复记录"></a>WSL2 Debian 桌面环境导致断网 —— 排查与修复记录</h1><p><strong>日期</strong>：2026-08-08<br><strong>环境</strong>：Windows 11 + WSL2 + Debian（systemd 初始化）<br><strong>状态</strong>：✅ 已修复（2026-08-08 晚补查：systemd-networkd 才是最后的元凶，详见第八节）</p>
+<hr>
+<h2 id="一、问题现象"><a href="#一、问题现象" class="headerlink" title="一、问题现象"></a>一、问题现象</h2><ul>
+<li>Debian 只要一启动桌面环境（graphical），WSL 虚拟机就断网。</li>
+<li>重启电脑后网络恢复，但只要再次启动桌面环境，又断网。</li>
+</ul>
+<h2 id="二、排查过程（只读诊断）"><a href="#二、排查过程（只读诊断）" class="headerlink" title="二、排查过程（只读诊断）"></a>二、排查过程（只读诊断）</h2><h3 id="2-1-系统初始化方式"><a href="#2-1-系统初始化方式" class="headerlink" title="2.1 系统初始化方式"></a>2.1 系统初始化方式</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">ps -p 1 -o <span class="hljs-built_in">comm</span>=<br><span class="hljs-comment"># systemd</span><br>systemctl get-default<br><span class="hljs-comment"># graphical.target</span><br>systemctl is-enabled NetworkManager<br><span class="hljs-comment"># enabled</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>WSL2 默认 init 是 systemd，桌面环境（graphical.target）开机自启，<br>NetworkManager 随之启用。</p>
+</blockquote>
+<h3 id="2-2-断网时的实际状态（关键证据）"><a href="#2-2-断网时的实际状态（关键证据）" class="headerlink" title="2.2 断网时的实际状态（关键证据）"></a>2.2 断网时的实际状态（关键证据）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">ip a show eth0<br><span class="hljs-comment"># eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1492 ...</span><br><span class="hljs-comment">#     link/ether 00:15:5d:80:73:13</span><br><span class="hljs-comment">#     inet6 fe80::215:5dff:fe80:7313/64 scope link</span><br><span class="hljs-comment">#     （没有任何 IPv4 地址）</span><br><br>ip route<br><span class="hljs-comment"># （空 —— 没有任何路由）</span><br><br><span class="hljs-built_in">cat</span> /etc/resolv.conf<br><span class="hljs-comment"># nameserver 10.255.255.254   （WSL 自动生成的 DNS 代理，DNS 本身没问题）</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>判定：eth0 无 IPv4、无默认路由 → 这就是断网的直接原因。</strong></p>
+<h3 id="2-3-NetworkManager-日志"><a href="#2-3-NetworkManager-日志" class="headerlink" title="2.3 NetworkManager 日志"></a>2.3 NetworkManager 日志</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">journalctl -u NetworkManager -n 30 --no-pager<br></code></pre></td></tr></table></figure>
+
+<p>关键行：</p>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs pf">device (eth0): Activation: successful, device activated.<br>manager: NetworkManager <span class="hljs-keyword">state</span> is now CONNECTED_LOCAL<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>NM 成功”接管”了 eth0（使用它自己创建的 <code>Wired connection 1</code> 连接，走 DHCP），<br>但最终停在 CONNECTED_LOCAL —— 意思是链路通了、却一个 IP 都没拿到。</p>
+</blockquote>
+<h3 id="2-4-手动-DHCP-请求验证（确认-WSL2-限制）"><a href="#2-4-手动-DHCP-请求验证（确认-WSL2-限制）" class="headerlink" title="2.4 手动 DHCP 请求验证（确认 WSL2 限制）"></a>2.4 手动 DHCP 请求验证（确认 WSL2 限制）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> dhclient -v eth0<br><span class="hljs-comment"># DHCPDISCOVER on eth0 ... interval 6 / 8 / 13 ...</span><br><span class="hljs-comment"># No DHCPOFFERS received.</span><br><span class="hljs-comment"># No working leases in persistent database - sleeping.</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>WSL2 的虚拟 DHCP 服务器只在虚拟机启动时给 eth0 发一次 IP，</strong><br><strong>不响应虚拟机运行中发起的 DHCP 请求。</strong><br>因此网上”NM 抢网后用 dhclient 要回 IP”的办法在 WSL2 里行不通。</p>
+</blockquote>
+<h2 id="三、根因"><a href="#三、根因" class="headerlink" title="三、根因"></a>三、根因</h2><figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">WSL2</span> 启动时给 eth0 配好 <span class="hljs-number">172</span>.x.x.x NAT 地址 → 网络正常<br>        ↓ 启动桌面环境<br><span class="hljs-symbol">NetworkManager</span> 接管 eth0（connection-assumed），清掉 WSL 的 <span class="hljs-built_in">IP</span>，走自己的 DHCP<br>        ↓<br><span class="hljs-symbol">WSL2</span> 虚拟 DHCP 服务器与 NM 的 DHCP 客户端互不兼容（知名老坑）<br>        ↓<br><span class="hljs-symbol">NM</span> 拿不到租约（No DHCPOFFERS received）→ eth0 无 <span class="hljs-built_in">IP</span>、无路由 → 断网<br>        ↓<br>重启电脑 = WSL relay 状态重置，WSL 重新给 eth0 发 <span class="hljs-built_in">IP</span> → 网络恢复<br>（直到下一次 NM 再次接管 eth0）<br></code></pre></td></tr></table></figure>
+
+<p><strong>结论：不是桌面环境消耗资源，而是 NetworkManager 抢占了 eth0 的管理权。</strong><br>DNS 全程正常（resolv.conf 指向 WSL 的 10.255.255.254 代理），问题纯粹在 IP&#x2F;路由。</p>
+<h2 id="四、修复方案（已实施：NM-不管理-eth0）"><a href="#四、修复方案（已实施：NM-不管理-eth0）" class="headerlink" title="四、修复方案（已实施：NM 不管理 eth0）"></a>四、修复方案（已实施：NM 不管理 eth0）</h2><h3 id="4-1-让-NetworkManager-不管理-eth0"><a href="#4-1-让-NetworkManager-不管理-eth0" class="headerlink" title="4.1 让 NetworkManager 不管理 eth0"></a>4.1 让 NetworkManager 不管理 eth0</h3><p>新建 drop-in 配置（不动主配置文件）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">tee</span> /etc/NetworkManager/conf.d/10-wsl-eth0-unmanaged.conf &gt; /dev/null &lt;&lt;<span class="hljs-string">&#x27;EOF&#x27;</span><br>[device]<br>match-device=interface-name:eth0<br>managed=0<br>EOF<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-重启-NetworkManager-并验证"><a href="#4-2-重启-NetworkManager-并验证" class="headerlink" title="4.2 重启 NetworkManager 并验证"></a>4.2 重启 NetworkManager 并验证</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart NetworkManager<br>nmcli device status<br></code></pre></td></tr></table></figure>
+
+<p>重启前（未生效）：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">DEVICE <span class="hljs-built_in"> TYPE </span>     STATE                  <span class="hljs-built_in"> CONNECTION</span><br><span class="hljs-built_in"></span>lo      loopback  connected (externally)  lo<br>eth0   <span class="hljs-built_in"> ethernet </span> connected (externally)  eth0<br></code></pre></td></tr></table></figure>
+
+<p>重启后（生效）：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ada">DEVICE  <span class="hljs-keyword">TYPE</span>      <span class="hljs-type">STATE                   </span>CONNECTION<br>lo      loopback  connected (externally)  lo<br>eth0    ethernet  unmanaged               <span class="hljs-comment">--</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><code>eth0 → unmanaged</code> 即 NM 彻底撒手，不再接管 eth0。</p>
+</blockquote>
+<h3 id="4-3-重启-WSL-虚拟机，让-WSL-重新发-IP"><a href="#4-3-重启-WSL-虚拟机，让-WSL-重新发-IP" class="headerlink" title="4.3 重启 WSL 虚拟机，让 WSL 重新发 IP"></a>4.3 重启 WSL 虚拟机，让 WSL 重新发 IP</h3><p>在 Windows 侧执行：</p>
+<figure class="highlight ada"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ada">wsl <span class="hljs-comment">--shutdown</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>关闭所有 WSL 发行版，重新打开 Debian 后 WSL 会重新给 eth0 发 IP。<br>与”重启电脑”等效，但无需重启 Windows。</p>
+</blockquote>
+<h2 id="五、验证清单（待执行）"><a href="#五、验证清单（待执行）" class="headerlink" title="五、验证清单（待执行）"></a>五、验证清单（待执行）</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">ip a show eth0        <span class="hljs-comment"># 应看到 172.x.x.x 的 IPv4</span><br>ip route              <span class="hljs-comment"># 应有 default via 172.x.x.x dev eth0</span><br>ping -c 3 223.5.5.5   <span class="hljs-comment"># 外网连通</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="六、后续注意事项"><a href="#六、后续注意事项" class="headerlink" title="六、后续注意事项"></a>六、后续注意事项</h2><ol>
+<li><strong>桌面环境的 NM 图形小工具里，eth0 会一直显示”未管理&#x2F;不可用”</strong> —— 这是正常现象，忽略即可；网页、SSH、WSL 互访都不受影响。</li>
+<li>以后<strong>再开桌面环境也不会断网</strong>：NM 不管理 eth0，桌面环境没有任何途径再去破坏它。</li>
+<li>如果后续需要 NM 管理 eth0（比如要连 Wi-Fi 网卡），只需删除<br><code>/etc/NetworkManager/conf.d/10-wsl-eth0-unmanaged.conf</code> 并重启 NM。</li>
+<li>WSL 的 DHCP 只在启动时发一次 IP，运行中不要手动跑 <code>dhclient</code>——没有用。</li>
+</ol>
+<h2 id="七、备选方案（未采用）"><a href="#七、备选方案（未采用）" class="headerlink" title="七、备选方案（未采用）"></a>七、备选方案（未采用）</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>做法</th>
+<th>取舍</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>NM 不管理 eth0</strong>（已采用）</td>
+<td>conf.d 里 <code>managed=0</code></td>
+<td>改动最小、只在 Debian 侧；NM 小工具里 eth0 显示”未管理”</td>
+</tr>
+<tr>
+<td><strong>禁用 NetworkManager</strong></td>
+<td><code>systemctl disable --now NetworkManager</code></td>
+<td>最简单彻底，但桌面网络设置小工具失效</td>
+</tr>
+<tr>
+<td><strong>WSL mirrored 网络模式</strong></td>
+<td>Windows <code>.wslconfig</code> 加 <code>networkingMode=mirrored</code></td>
+<td>VM 直连宿主机网卡，从根上绕开 NAT&#x2F;DHCP；需要较新 WSL 版本，改变网络行为</td>
+</tr>
+</tbody></table>
+<h2 id="八、补充：systemd-networkd-才是最后的元凶（2026-08-08-晚，已验证）"><a href="#八、补充：systemd-networkd-才是最后的元凶（2026-08-08-晚，已验证）" class="headerlink" title="八、补充：systemd-networkd 才是最后的元凶（2026-08-08 晚，已验证）"></a>八、补充：systemd-networkd 才是最后的元凶（2026-08-08 晚，已验证）</h2><h3 id="8-1-为什么-NM-的修复不够"><a href="#8-1-为什么-NM-的修复不够" class="headerlink" title="8.1 为什么 NM 的修复不够"></a>8.1 为什么 NM 的修复不够</h3><p>NM 改为 unmanaged 后，<code>wsl --shutdown</code> 再让 Debian <strong>单独</strong>开机，eth0 依然无 IP、无路由。<br>查 journal 发现第二个抢网者：</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle">systemd-networkd[<span class="hljs-number">97</span>]: eth0: Found matching .network <span class="hljs-keyword">file</span>: <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/network/</span>eth0.network<br>systemd-networkd[<span class="hljs-number">97</span>]: eth0: Configuring with <span class="hljs-regexp">/etc/</span>systemd<span class="hljs-regexp">/network/</span>eth0.network.<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p><code>systemd-networkd</code> 处于 <strong>enabled + active</strong>（ubuntu 发行版也 enable 了它，但 ubuntu 是 init.d 启动，networkd 从未运行，所以没事）</p>
+</li>
+<li><p><code>/etc/systemd/network/eth0.network</code>（2026-08-07 13:28 创建，疑似按网上”WSL 修网指南”手写）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[Match]</span><br><span class="hljs-attr">Name</span>=eth0<br><br><span class="hljs-section">[Network]</span><br><span class="hljs-attr">DHCP</span>=<span class="hljs-literal">true</span><br><br><span class="hljs-section">[DHCPv4]</span><br><span class="hljs-attr">UseDomains</span>=<span class="hljs-literal">true</span><br><span class="hljs-attr">UseMTU</span>=<span class="hljs-literal">true</span><br><br><span class="hljs-section">[DHCP]</span><br><span class="hljs-attr">ClientIdentifier</span>=mac<br></code></pre></td></tr></table></figure>
+</li>
+<li><p>后果：networkd 接管 eth0 → 清掉 WSL 预推的 IP → 发起 DHCP → WSL2 虚拟 DHCP 服务器不应答（同 2.4 节）→ eth0 永远无 IP、无路由。</p>
+</li>
+</ul>
+<h3 id="8-2-为什么”一启动-Debian，WSL-就都断网”"><a href="#8-2-为什么”一启动-Debian，WSL-就都断网”" class="headerlink" title="8.2 为什么”一启动 Debian，WSL 就都断网”"></a>8.2 为什么”一启动 Debian，WSL 就都断网”</h3><p>Debian 每次开机 networkd 都发起 DHCP 广播，把 WSL relay（NAT&#x2F;DHCP 服务）搅死后，<br><strong>之后所有发行版开机都拿不到租约</strong>。实测顺序：ubuntu 第一次开机有 IP → 启动 Debian →<br>ubuntu 重启后也无 IP → 表现为”只要启动 Debian，整个 WSL 都断网”。</p>
+<h3 id="8-3-修复操作（已在-Debian-内执行）"><a href="#8-3-修复操作（已在-Debian-内执行）" class="headerlink" title="8.3 修复操作（已在 Debian 内执行）"></a>8.3 修复操作（已在 Debian 内执行）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl <span class="hljs-built_in">disable</span> --now systemd-networkd<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">mv</span> /etc/systemd/network/eth0.network /etc/systemd/network/eth0.network.disabled<br></code></pre></td></tr></table></figure>
+
+<h3 id="8-4-最终验证（全部通过）"><a href="#8-4-最终验证（全部通过）" class="headerlink" title="8.4 最终验证（全部通过）"></a>8.4 最终验证（全部通过）</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>wsl --shutdown</code> 后 Debian 单独启动</td>
+<td>eth0&#x3D;192.168.254.151&#x2F;20，default via 192.168.240.1，ping 223.5.5.5 0% 丢包，DNS 解析正常</td>
+</tr>
+<tr>
+<td>Debian 运行中再启动 ubuntu</td>
+<td><strong>两个发行版同时在线，外网均通</strong></td>
+</tr>
+<tr>
+<td>桌面环境（graphical.target 开机自启）</td>
+<td>正常启动，不影响网络</td>
+</tr>
+<tr>
+<td>NM 侧</td>
+<td>eth0 仍 unmanaged；<code>systemd-networkd</code> 持久禁用，重启不复活</td>
+</tr>
+</tbody></table>
+<h3 id="8-5-注意事项"><a href="#8-5-注意事项" class="headerlink" title="8.5 注意事项"></a>8.5 注意事项</h3><ol>
+<li><code>eth0.network</code> 已改名 <code>.disabled</code> 留档。如需恢复 networkd：改名回去 + <code>systemctl enable --now systemd-networkd</code>，<br>但 <strong>WSL2 下 networkd 的 DHCP 永远不会成功</strong>（虚拟 DHCP 只应答开机时 WSL 自己发起的首次请求）。</li>
+<li>WSL 2.9.4 下两个发行版内网 IP 相同（都是 192.168.254.151）属正常现象（共享 NAT 按 VM 区分），外网互不影响。</li>
+<li>两个发行版都不要手动跑 <code>dhclient</code>——同样无效，还会再次搅乱 relay。</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Linux/%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" class="category-chain-item">网络配置</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/WSL2/" class="print-no-link">#WSL2</a>
+      
+        <a href="/tags/%E6%95%85%E9%9A%9C%E5%A4%8D%E7%9B%98/" class="print-no-link">#故障复盘</a>
+      
+        <a href="/tags/Debian/" class="print-no-link">#Debian</a>
+      
+        <a href="/tags/%E6%96%AD%E7%BD%91/" class="print-no-link">#断网</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>WSL2 Debian 桌面环境导致断网 —— 排查与修复记录</div>
+      <div>https://bote798.top/2026/08/08/wsl2-networkmanager-fix/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>bote798</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月8日</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>更新于</div>
+          <div>2026年8月8日</div>
+        </div>
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2026/11/22/VMware%20%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%90%AD%20Proxmox%20VE%20%E9%9B%86%E7%BE%A4%EF%BC%88%E4%B8%80%EF%BC%89%EF%BC%9A%E5%AE%89%E8%A3%85%E3%80%81%E7%BB%84%E9%9B%86%E7%BE%A4%E4%B8%8E%E5%B8%A6%E7%9B%98%E5%9C%A8%E7%BA%BF%E8%BF%81%E7%A7%BB/" title="VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">VMware 虚拟机搭 Proxmox VE 集群（一）：安装、组集群与带盘在线迁移</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/08/08/xrdp-%E6%8E%92%E9%9A%9C%E8%AE%B0%E5%BD%95/" title="WSL Debian xrdp 无法启动 —— 排查与修复记录">
+                        <span class="hidden-mobile">WSL Debian xrdp 无法启动 —— 排查与修复记录</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  <script>
+  Fluid.utils.createScript('https://lib.baomitu.com/mermaid/8.14.0/mermaid.min.js', function() {
+    mermaid.initialize({"theme":"default"});
+
+    Fluid.utils.listenDOMLoaded(function() {
+      Fluid.events.registerRefreshCallback(function() {
+        if ('mermaid' in window) {
+          mermaid.init();
+        }
+      });
+    });
+  });
+</script>
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
